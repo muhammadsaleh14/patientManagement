@@ -1,0 +1,43 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./prisma/dev.db" // Change the file name if needed
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Doctor {
+  id         Int             @id @default(autoincrement())
+  name       String
+  profession String
+  details    DoctorDetails[]
+
+}
+
+model DoctorDetails {
+  id         Int             @id @default(autoincrement())
+  details    String
+  doctor     Doctor?         @relation(fields: [id], references: [id])
+
+  @@index([id], name: "doctorId")
+}
+
+model Patient {
+  id         Int             @id @default(autoincrement())
+  name       String 
+  gender     String
+  age        Int
+  details    PatientDetails[]
+
+  // Cascading on delete for PatientDetails
+}
+
+model PatientDetails {
+  id          Int             @id @default(autoincrement())
+  details     String
+  detailHeading String
+  patient     Patient?        @relation(fields: [id], references: [id])
+
+  @@index([id], name: "patientId")
+}

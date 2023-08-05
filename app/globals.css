@@ -8,20 +8,17 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+} */
+.resizableWindow {
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  resize: horizontal; /* This will enable horizontal resizing */
+  overflow: auto;
+  min-width: 100px; /* Set the minimum width you want */
 }
