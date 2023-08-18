@@ -1,7 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import { ButtonOutline } from "@/components/ui/buttonOutline";
+import Button from "@mui/material/Button";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div>kmcdsdcj</div>
+        <ButtonOutline text="Edit your details" />
+        <ButtonOutline text="Edit patient layout" />
+        <ButtonOutline text="Patients Page" />
         {children}
       </body>
     </html>

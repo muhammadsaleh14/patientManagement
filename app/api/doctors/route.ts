@@ -1,14 +1,18 @@
-import prisma from "@/app/api/db"; // Update the path to prisma.ts as per your project structure
-import { error } from "console";
-import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/app/api/util/db";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextApiRequest, response: NextApiResponse) {
-  response.status(200);
+export async function GET(request: NextRequest) {
+  console.log("hello");
+
+  // NextResponse.json({ name: "hello" });
 }
 
-export async function POST(request: NextApiRequest, response: NextApiResponse) {
+export async function POST(request: NextRequest) {
   console.log("creating doctor");
-  const { name, profession } = request.body;
+
+  const { name, profession } = await request.json();
+  console.log(name + " " + profession);
+
   try {
     const doctor = await prisma.doctor.create({
       data: {
@@ -16,8 +20,11 @@ export async function POST(request: NextApiRequest, response: NextApiResponse) {
         profession,
       },
     });
-    response.status(201).json(doctor);
+    return NextResponse.json(doctor);
   } catch (error) {
-    response.status(500).json({ error: "Error creating doctor" });
+    console.error(error);
+    return NextResponse.json({
+      error: "An error occurred while creating the doctor.",
+    });
   }
 }

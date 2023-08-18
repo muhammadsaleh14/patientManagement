@@ -1,13 +1,13 @@
-"use client";
+// "use client";
 
-import LoginForm from "@/app/components/login";
+// import LoginForm from "@/components/login";
 
-export default function Page() {
-  return (
-    <>
-      <div className="flex items-center justify-center h-screen bg-slate-700">
-        <LoginForm />
-      </div>
-    </>
-  );
-}
+// export default function Page() {
+//   return (
+//     <>
+//       <div className="flex items-center justify-center h-screen bg-slate-700">
+//         <LoginForm />
+//       </div>
+//     </>
+//   );
+// }

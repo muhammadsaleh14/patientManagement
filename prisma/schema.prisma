@@ -26,18 +26,18 @@ model DoctorDetails {
 model Patient {
   id         Int             @id @default(autoincrement())
   name       String 
-  gender     String
   age        Int
+  gender     String
   details    PatientDetails[]
-
-  // Cascading on delete for PatientDetails
+  @@unique([name, age, gender]) // Adding a unique constraint based on name, age, and gender
 }
 
 model PatientDetails {
   id          Int             @id @default(autoincrement())
   details     String
   detailHeading String
-  patient     Patient?        @relation(fields: [id], references: [id])
-
+  patient     Patient        @relation(fields: [id], references: [id])
+  date        DateTime 
   @@index([id], name: "patientId")
 }
+
