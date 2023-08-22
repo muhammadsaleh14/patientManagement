@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import path from "path";
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -6,7 +7,11 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+    path.join(
+      require.resolve("@thaddeusjiang/react-sortable-list"),
+      "../**/*.{js,ts,jsx,tsx}"
+    ),
+  ],
   theme: {
     container: {
       center: true,

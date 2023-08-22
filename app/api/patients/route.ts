@@ -1,8 +1,12 @@
 import prisma from "@/app/api/util/db";
 import { NextRequest, NextResponse } from "next/server";
-import { createPatient } from "../util/patients";
+import { createPatient, getAllPatientsWithDetails } from "../util/patients";
 
-export async function GET(request: NextRequest) {}
+export async function GET(request: NextRequest) {
+  // try {
+  //   let patients = getAllPatientsWithDetails();
+  // } catch (error) {}
+}
 
 export async function POST(request: NextRequest) {
   try {

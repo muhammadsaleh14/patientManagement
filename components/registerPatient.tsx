@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Modal, { Props } from "react-modal";
-import { ButtonOutline } from "./ui/buttonOutline";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
 const RegisterPatient = () => {
@@ -44,7 +43,7 @@ const RegisterPatient = () => {
         className="inline-block"
         onClick={() => setIsOpen(true)}
       >
-        <ButtonOutline text="Add new Patient +" />
+        <Button>Add new Patient +</Button>
       </div>
       {isClient && (
         <Modal

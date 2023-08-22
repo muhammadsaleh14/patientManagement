@@ -1,8 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ButtonOutline } from "@/components/ui/buttonOutline";
 import Button from "@mui/material/Button";
+import { Router } from "react-router-dom";
+import { Box } from "@mui/material";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,11 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <ButtonOutline text="Edit your details" />
-        <ButtonOutline text="Edit patient layout" />
-        <ButtonOutline text="Patients Page" />
-        {children}
+      <body className="h-screen">
+        <Button>Edit your details</Button>
+        <Button>Edit patient layout</Button>
+        <Button>Patients Page</Button>
+        <Box className="h-full">{children}</Box>
       </body>
     </html>
   );
