@@ -3,6 +3,7 @@ import {
   deletePatient,
   getUniquePatientWithDetails,
 } from "../../util/patients";
+import { error } from "console";
 
 export async function DELETE(
   request: NextRequest,
@@ -15,20 +16,27 @@ export async function DELETE(
       { status: 201 }
     );
   } catch (error) {
-    return new NextResponse(null, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string; add: boolean } }
 ) {
   try {
     // console.log(request);
+    console.log(request.url);
     let patient = await getUniquePatientWithDetails(parseInt(params.id));
     // console.log(patient);
     return NextResponse.json({ patient }, { status: 201 });
   } catch (error) {
-    throw error;
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

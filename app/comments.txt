@@ -1,0 +1,4 @@
+Date Format: 
+const formattedDate = detail.date
+  ? format(new Date(detail.date), "hh:mm:ss a dd/MM/yyyy")
+  : "";

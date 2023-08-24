@@ -1,4 +1,7 @@
 import prisma from "@/app/api/util/db";
+import { format, parse } from "date-fns"; // Import the format function from date-fns
+import { da } from "date-fns/locale";
+
 // import { format } from 'date-fns';
 // Function to create a new patient
 
@@ -60,7 +63,6 @@ export async function updatePatient(
     data: updates,
   });
 }
-import { format } from "date-fns"; // Import the format function from date-fns
 
 export async function getPatientsWithLastVisit() {
   try {
@@ -86,7 +88,7 @@ export async function getPatientsWithLastVisit() {
       details: patient.details.map((detail) => ({
         ...detail,
         date: detail.date
-          ? format(new Date(detail.date), "HH:mm:ss dd/MM/yyyy")
+          ? format(new Date(detail.date), "hh:mm:ss a dd/MM/yyyy")
           : null,
       })),
     }));
@@ -103,6 +105,10 @@ export async function getAllPatientsWithDetails() {
     const patients = await prisma.patient.findMany({
       include: {
         details: true,
+        prescriptions: true,
+      },
+      orderBy: {
+        id: "asc", // 'asc' for ascending order, 'desc' for descending
       },
     });
     return patients;
@@ -121,12 +127,71 @@ export async function getUniquePatientWithDetails(patientId: number) {
       },
       include: {
         details: true,
+        prescriptions: true,
       },
     });
     // console.log(patient);
+    console.log(patient);
     return patient;
   } catch (error) {
     console.error("Error fetching patient:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function addPrescription(
+  patientId: number,
+  date: string,
+  prescriptionText: string
+) {
+  try {
+    const temp = parse(date, "hh:mm:ss a dd/MM/yyyy", new Date());
+    const formattedDate = format(temp, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    console.log(temp);
+    console.log(formattedDate);
+    // Create a new prescription record associated with the patient
+    const prescription = await prisma.prescriptions.create({
+      data: {
+        prescription: prescriptionText,
+        patient: {
+          connect: {
+            id: patientId,
+          },
+        },
+
+        date: temp,
+      },
+    });
+
+    console.log("Prescription added:", prescription);
+
+    return prescription;
+  } catch (error) {
+    console.error("Error adding prescription:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function getPrescriptionsByPatientAndDate(
+  patientId: number,
+  date: Date
+) {
+  try {
+    const prescriptions = await prisma.prescriptions.findMany({
+      where: {
+        patientId: patientId,
+        date: date,
+      },
+      orderBy: {
+        id: "asc", // 'asc' for ascending order, 'desc' for descending
+      },
+    });
+    return prescriptions;
+  } catch (error) {
     throw error;
   } finally {
     await prisma.$disconnect();

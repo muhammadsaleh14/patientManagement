@@ -1,5 +1,6 @@
 "use client";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 import React, { createContext, useEffect, useState } from "react";
 import {
   TextField,
@@ -11,12 +12,16 @@ import {
   TableHead,
   TableRow,
   Button,
+  Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import RegisterPatient from "@/components/registerPatient";
 import AutoCloseAlert from "@/components/ui/autoCloseAlert";
 import { useRouter } from "next/navigation";
+import AddBox from "@mui/icons-material/AddBox";
+import HistoryOfPatient from "@/components/historyOfPatientModal";
+import HistoryOfPatientModal from "@/components/historyOfPatientModal";
 
 export interface Patient {
   id: number;
@@ -30,15 +35,24 @@ export interface Patient {
   }> | null;
 }
 
-export const usePatientContext = () => React.useContext(PatientContext);
-const PatientContext = createContext<{
-  patients: Patient[];
-  fetchPatients: () => void;
-} | null>(null);
+export const usePatientContext = () => {
+  const patient = React.useContext(PatientContext);
+  if (patient === undefined) {
+    throw new Error("Patient id is undefined in context");
+  }
+  // console.log("returning patient");
+  return patient;
+};
+
+export const PatientContext = createContext<{ patient: Patient } | undefined>(
+  undefined
+);
+
 const Page: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
+  const [patientId, setPatientId] = useState<null | number>(null);
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
@@ -97,9 +111,7 @@ const Page: React.FC = () => {
       )}
 
       <h1>Patients</h1>
-      <PatientContext.Provider value={{ patients, fetchPatients }}>
-        <RegisterPatient />
-      </PatientContext.Provider>
+      <RegisterPatient />
       {/* Add your RegisterPatient component here */}
       <TextField
         id="standard-search"
@@ -118,7 +130,7 @@ const Page: React.FC = () => {
               <TableCell>Age</TableCell>
               <TableCell>Gender</TableCell>
               <TableCell className="">Last Visit</TableCell>
-              <TableCell className="">Remove</TableCell>
+              <TableCell className="text-center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -143,14 +155,28 @@ const Page: React.FC = () => {
                 <TableCell className="">
                   {patient.details ? patient.details[0].date : "Not available"}
                 </TableCell>
-                <TableCell className="">
-                  <Button
-                    onClick={() => deletePatient(patient)}
-                    variant="outlined"
-                    color="warning"
-                  >
-                    <DeleteIcon />
-                  </Button>
+                <TableCell className="bg-blue-300">
+                  <Box className="w-full h-full flex justify-around">
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={() =>
+                        router.push(`/patients/${patient.id}?add=true`)
+                      }
+                    >
+                      <AddBox />
+                    </Button>
+                    <PatientContext.Provider value={{ patient: patient }}>
+                      <HistoryOfPatientModal />
+                    </PatientContext.Provider>
+                    <Button
+                      onClick={() => deletePatient(patient)}
+                      variant="outlined"
+                      color="warning"
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}

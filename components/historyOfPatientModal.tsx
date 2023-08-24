@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import Modal, { Props } from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
-const RegisterPatient = () => {
+import HistoryOfPatient from "./historyOfPatient";
+const HistoryOfPatientModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    Modal.setAppElement("#addNewPatient");
+    Modal.setAppElement("#historyOfPatient");
   }, []);
 
   const customStyles = {
@@ -26,9 +27,9 @@ const RegisterPatient = () => {
       left: "auto",
       right: "auto",
       bottom: "auto",
-      width: "50%", // Adjust the width as needed
+      width: "80%", // Adjust the width as needed
       height: "80%", // Adjust the height as needed
-      border: "none",
+      border: "black",
       borderRadius: "8px",
       padding: 0,
       overflow: "auto",
@@ -36,13 +37,15 @@ const RegisterPatient = () => {
   };
 
   return (
-    <div className="m-10">
+    <div className="">
       <div
-        id="addNewPatient"
+        id="historyOfPatient"
         className="inline-block"
         onClick={() => setIsOpen(true)}
       >
-        <Button>Add new Patient +</Button>
+        <Button variant="outlined" color="info">
+          History
+        </Button>
       </div>
       {isClient && (
         <Modal
@@ -51,7 +54,7 @@ const RegisterPatient = () => {
           style={customStyles}
         >
           <div className="rounded-lg p-6">
-            <RegisterPatientForm />
+            <HistoryOfPatient />
             <Button
               onClick={() => setIsOpen(false)}
               variant="outlined"
@@ -67,4 +70,4 @@ const RegisterPatient = () => {
   );
 };
 
-export default RegisterPatient;
+export default HistoryOfPatientModal;

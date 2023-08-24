@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import Button from "@mui/material/Button";
 import { Router } from "react-router-dom";
 import { Box } from "@mui/material";
+import { PatientContext } from "./patients/page";
+import { PatientContextProvider } from "@/components/clientComponentWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,7 +24,9 @@ export default function RootLayout({
         <Button>Edit your details</Button>
         <Button>Edit patient layout</Button>
         <Button>Patients Page</Button>
-        <Box className="h-full">{children}</Box>
+        <PatientContextProvider>
+          <Box className="h-full">{children}</Box>
+        </PatientContextProvider>
       </body>
     </html>
   );

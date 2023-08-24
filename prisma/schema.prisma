@@ -12,14 +12,13 @@ model Doctor {
   name       String
   profession String
   details    DoctorDetails[]
-
 }
 
 model DoctorDetails {
   id         Int             @id @default(autoincrement())
   details    String
-  doctor     Doctor?         @relation(fields: [id], references: [id])
-
+  doctorId   Int
+  doctor     Doctor         @relation(fields: [doctorId], references: [id])
   @@index([id], name: "doctorId")
 }
 
@@ -29,15 +28,27 @@ model Patient {
   age        Int
   gender     String
   details    PatientDetails[]
+  prescriptions Prescriptions[]
   @@unique([name, age, gender]) // Adding a unique constraint based on name, age, and gender
 }
 
 model PatientDetails {
-  id          Int             @id @default(autoincrement())
-  details     String
+  id            Int             @id @default(autoincrement())
+  details       String
   detailHeading String
-  patient     Patient        @relation(fields: [id], references: [id])
-  date        DateTime 
-  @@index([id], name: "patientId")
+  patientId     Int
+  patient       Patient        @relation(fields: [patientId], references: [id])
+  date          DateTime 
+  @@index([id], name: "patientDetailsId")
 }
+model Prescriptions {
+  id            Int       @id @default(autoincrement())
+  prescription  String
+  date          DateTime
+  patientId     Int 
+  patient       Patient  @relation(fields: [patientId], references: [id])
+
+  // @@index([id], name: "prescriptionId")
+}
+
 
