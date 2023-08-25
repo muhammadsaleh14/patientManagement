@@ -7,9 +7,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { usePatientContext } from "@/app/patients/page";
 import AutoCloseAlert from "./ui/autoCloseAlert";
 import { error } from "console";
+import { usePatientContext } from "./patientContextProvider";
 
 const RegisterPatientForm: React.FC = () => {
   const [name, setName] = useState("");

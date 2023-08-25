@@ -22,37 +22,27 @@ import { useRouter } from "next/navigation";
 import AddBox from "@mui/icons-material/AddBox";
 import HistoryOfPatient from "@/components/historyOfPatientModal";
 import HistoryOfPatientModal from "@/components/historyOfPatientModal";
+import { usePatientContext } from "@/components/patientContextProvider";
+import { Patient } from "@/components/interfaces/databaseInterfaces";
 
-export interface Patient {
-  id: number;
-  name: string;
-  age: number;
-  gender: string;
-  details: Array<{
-    details: string;
-    detailHeading: string;
-    date: string;
-  }> | null;
-}
-
-export const usePatientContext = () => {
-  const patient = React.useContext(PatientContext);
-  if (patient === undefined) {
-    throw new Error("Patient id is undefined in context");
-  }
-  // console.log("returning patient");
-  return patient;
-};
-
-export const PatientContext = createContext<{ patient: Patient } | undefined>(
-  undefined
-);
+// export interface Patient {
+//   id: number;
+//   name: string;
+//   age: number;
+//   gender: string;
+//   details: Array<{
+//     details: string;
+//     detailHeading: string;
+//     date: string;
+//   }> | null;
+// }
 
 const Page: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
+  const { setPatient } = usePatientContext();
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
@@ -166,9 +156,20 @@ const Page: React.FC = () => {
                     >
                       <AddBox />
                     </Button>
-                    <PatientContext.Provider value={{ patient: patient }}>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      className="inline-block"
+                      onClick={() => {
+                        setPatient(patient);
+                        localStorage.setItem(
+                          "patient",
+                          JSON.stringify(patient)
+                        );
+                      }}
+                    >
                       <HistoryOfPatientModal />
-                    </PatientContext.Provider>
+                    </Button>
                     <Button
                       onClick={() => deletePatient(patient)}
                       variant="outlined"

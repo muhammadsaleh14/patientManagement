@@ -43,17 +43,23 @@ export async function GET(request: NextRequest) {
       const patientId = parseInt(idParam);
       const date = new Date(dateParam);
       // const formattedDate = format(date, "hh:mm:ss a dd/MM/yyyy");
-      getPrescriptionsByPatientAndDate(patientId, date)
-        .then((prescriptions) => {
-          console.log("Prescriptions:", prescriptions);
-          return NextResponse.json({ prescriptions }, { status: 200 });
-        })
-        .catch((error) => {
-          return NextResponse.json({ error }, { status: 500 });
-        })
-        .finally(async () => {
-          await prisma.$disconnect();
-        });
+      console.log("patientId: " + patientId);
+      console.log("date: " + date);
+
+      const prescriptions = await getPrescriptionsByPatientAndDate(
+        patientId,
+        date
+      );
+      // .then((prescriptions) => {
+      // console.log("Prescriptions:", prescriptions);
+      return NextResponse.json(prescriptions, { status: 200 });
+      // })
+      // catch((error) => {
+      //   return NextResponse.json({ error }, { status: 500 });
+      // })
+      // .finally(async () => {
+      //   await prisma.$disconnect();
+      // });
     }
   } catch (error) {
     // console.log("in catch");

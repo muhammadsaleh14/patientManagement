@@ -3,6 +3,7 @@ import Modal, { Props } from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
 import HistoryOfPatient from "./historyOfPatient";
+import { usePatientContext } from "./";
 const HistoryOfPatientModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -43,9 +44,9 @@ const HistoryOfPatientModal = () => {
         className="inline-block"
         onClick={() => setIsOpen(true)}
       >
-        <Button variant="outlined" color="info">
-          History
-        </Button>
+        {/* <Button variant="outlined" color="info" onClick={}> */}
+        History
+        {/* </Button> */}
       </div>
       {isClient && (
         <Modal
