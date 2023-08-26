@@ -31,39 +31,39 @@ import { usePatientContext } from "@/components/patientContextProvider";
 import { usePatientDateContext } from "@/components/dateContextProvider";
 // { params }: { params: { id: string } }
 const Page = () => {
-  const searchParams = useSearchParams();
-  const { patient } = usePatientContext();
   // const patientString = localStorage.getItem("patient");
-  // patient = patientString
-  //   ? (JSON.parse(patientString) as Patient)
+  // patient = patientString?
+  //    (JSON.parse(patientString) as Patient)
   //   : undefined;
   // const [patient, setPatient] = useState<Patient | null>(patientContext.patient);
-  const addParam = searchParams.get("add");
-  const dateParam = searchParams.get("date");
-  const isAdd = addParam ? JSON.parse(addParam) : false;
-  const formattedCurrentDate = format(new Date(), "hh:mm:ss a dd/MM/yyyy");
   // const dateContext = createContext(
   //   dateParam ? dateParam : formattedCurrentDate
   // );
   // useContext(dateContext);
-
+  const searchParams = useSearchParams();
+  const { patient } = usePatientContext();
   const { patientDate: date, setPatientDate } = usePatientDateContext();
-  setPatientDate(dateParam ? dateParam : formattedCurrentDate);
+
+  const addParam = searchParams.get("add");
+  const dateParam = searchParams.get("date");
+  const isAdd = addParam ? JSON.parse(addParam) : false;
+  const formattedCurrentDate = format(new Date(), "hh:mm:ss a dd/MM/yyyy");
 
   useEffect(() => {
-    // const fetchPatient = async () => {
-    //   try {
-    //     // console.log(isAdd);
-    //     const response = await axios.get("/api/patients/" + params.id); // Assuming you have set up an API route
-    //     console.log(response.data);
-    //     setPatient(response.data.patient);
-    //   } catch (error) {
-    //     console.log("Error fetching patients:", error);
-    //   }
-    // };
-    // // Fetch patients from Prisma
-    // fetchPatient();
+    setPatientDate(dateParam ? dateParam : formattedCurrentDate);
   }, []);
+  // const fetchPatient = async () => {
+  //   try {
+  //     // console.log(isAdd);
+  //     const response = await axios.get("/api/patients/" + params.id); // Assuming you have set up an API route
+  //     console.log(response.data);
+  //     setPatient(response.data.patient);
+  //   } catch (error) {
+  //     console.log("Error fetching patients:", error);
+  //   }
+  // };
+  // // Fetch patients from Prisma
+  // fetchPatient();
   return (
     <Stack direction="row" spacing={0} className="h-full">
       {/* Sidebar */}
@@ -112,7 +112,7 @@ const Page = () => {
                   }}
                   value={patient?.gender}
                 />
-                <TextField
+                {/* <TextField
                   id="date"
                   InputProps={{
                     startAdornment: (
@@ -120,10 +120,11 @@ const Page = () => {
                     ),
                   }}
                   value={date ? date : "Not available"}
-                />
+                /> */}
               </>
             )}
           </Box>
+
           <Box className="bg-slate-400 p-7 w-full h-full">
             <Prescription date={date} />
             {/* id={patient?.id}  */}

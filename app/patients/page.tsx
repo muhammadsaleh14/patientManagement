@@ -161,7 +161,7 @@ const Page: React.FC = () => {
                       color="info"
                       className="inline-block"
                       onClick={() => {
-                        setPatient(patient);
+                        setPatient(() => getCompletePatient());
                         localStorage.setItem(
                           "patient",
                           JSON.stringify(patient)

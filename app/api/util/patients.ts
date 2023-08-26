@@ -189,8 +189,36 @@ export async function getPrescriptionsByPatientAndDate(
       orderBy: {
         id: "asc", // 'asc' for ascending order, 'desc' for descending
       },
+      select: {
+        prescription: true,
+      },
     });
-    return prescriptions;
+    const prescriptionStrings = prescriptions.map(
+      (prescription) => prescription.prescription
+    );
+
+    return prescriptionStrings;
+  } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function getAllPrescriptions() {
+  try {
+    const prescriptions = await prisma.prescriptions.findMany({
+      orderBy: {
+        id: "asc", // 'asc' for ascending order, 'desc' for descending
+      },
+      select: {
+        prescription: true,
+      },
+    });
+    const prescriptionStrings = prescriptions.map(
+      (prescription) => prescription.prescription
+    );
+    return prescriptionStrings;
   } catch (error) {
     throw error;
   } finally {

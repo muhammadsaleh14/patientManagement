@@ -12,11 +12,13 @@ export const PatientContext = createContext<
 
 export const usePatientContext = () => {
   const patientContext = React.useContext(PatientContext);
-  if (patientContext?.setPatient === undefined) {
-    throw new Error("setPatient is undefined");
+  if (!patientContext) {
+    throw new Error(
+      "usePatientContext must be used within a PatientContextProvider"
+    );
   }
   return {
-    patient: patientContext?.patient,
+    patient: patientContext.patient,
     setPatient: patientContext.setPatient,
   };
 };
@@ -26,24 +28,25 @@ export function PatientContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [patient, setPatient] = useState<Patient | undefined>(() => {
-    // Retrieve state from localStorage during initialization
-    if (typeof window !== "undefined") {
-      // Perform localStorage action
+  const [patient, setPatient] = useState<Patient | undefined>(undefined);
+
+  const initializePatient = () => {
+    if (typeof localStorage !== "undefined") {
       const storedState = localStorage.getItem("patient");
-      return storedState
-        ? JSON.parse(storedState)
-        : { defaultValue: undefined };
+      console.log(storedState);
+      return storedState ? JSON.parse(storedState) : undefined;
     }
-  });
+    return undefined;
+  };
 
   useEffect(() => {
-    // Save state to localStorage whenever it changes
-    localStorage.setItem("patient", JSON.stringify(patient));
-  }, [patient]);
+    setPatient(initializePatient());
+  }, []); // Run only on the client side after the initial render
 
   const updatePatient = (newPatient: Patient) => {
-    setPatient(newPatient);
+    if (typeof window !== "undefined") {
+      setPatient(newPatient);
+    }
   };
 
   const contextValue = {

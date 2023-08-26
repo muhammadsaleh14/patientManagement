@@ -1,7 +1,7 @@
 "use client";
-import { Button, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import axios from "axios";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Patient, Prescriptions } from "../interfaces/databaseInterfaces";
 import { usePatientContext } from "../patientContextProvider";
 // {
@@ -18,19 +18,35 @@ export default function Prescription({ date }: { date: string }) {
   //   : undefined;
   const { patient } = usePatientContext();
   const [prescription, setPrescription] = useState<null | string>(null);
-  const [prescriptions, setPrescriptions] = useState<Prescriptions[]>([]);
+  const [prescriptions, setPrescriptions] = useState<
+    Prescriptions["prescription"][]
+  >([]);
+  const [allPrescriptions, setAllPrescriptions] = useState<string[] | null>(
+    null
+  );
+  const getAllPrescriptions = useCallback(async () => {
+    if (patient) {
+      let response = await axios.get("/api/patients/prescriptions");
+      // console.log("response of prescriptions" + response.data);
+      setAllPrescriptions(response.data);
+    }
+  }, [patient]);
 
   async function loadPrescriptions() {
-    let response = await axios.get(
-      `/api/patients/prescriptions/prescription?id=${patient?.id}&date=${date}`
-    );
-    console.log("response of prescriptions" + response.data);
-    setPrescriptions(response.data);
+    if (patient) {
+      let response = await axios.get(
+        `/api/patients/prescriptions/prescription?id=${patient?.id}&date=${date}`
+      );
+      // console.log("response of prescriptions" + response.data);
+      //get all prescriptions from
+      setPrescriptions(response.data);
+    }
   }
   function handlePrescription(event: React.ChangeEvent<HTMLInputElement>) {
     setPrescription(event.target.value);
   }
   async function handleSubmit(e: FormEvent) {
+    console.log(patient?.id);
     e.preventDefault();
     // Here you can use the 'prescription' state to submit the value
     const response = await axios.post(
@@ -45,12 +61,33 @@ export default function Prescription({ date }: { date: string }) {
     loadPrescriptions();
   }
   useEffect(() => {
-    loadPrescriptions();
-  }, []);
-
+    setPrescriptions(() => {
+      console.log(patient);
+      if (patient && patient.prescriptions) {
+        const prescriptionStrings = patient?.prescriptions.map(
+          (prescription) => prescription.prescription
+        );
+        return prescriptionStrings || [];
+      }
+      return [];
+    });
+    getAllPrescriptions();
+    // getAllPrescriptions();
+  }, [patient, getAllPrescriptions]);
+  const AllPrescriptionProps = {
+    options: allPrescriptions ? allPrescriptions : [],
+  };
   return (
     <div>
       <form className="flex align-baseline">
+        <Autocomplete
+          {...AllPrescriptionProps}
+          id="clear-on-escape"
+          clearOnEscape
+          renderInput={(params) => (
+            <TextField {...params} label="clearOnEscape" variant="standard" />
+          )}
+        />
         <TextField
           id="outlined-multiline-flexible"
           label="Add Prescription"
@@ -64,21 +101,25 @@ export default function Prescription({ date }: { date: string }) {
           Submit
         </Button>
       </form>
-      {prescriptions.map((value) => {
-        return (
-          <>
-            <TextField
-              id="outlined-multiline-flexible"
-              multiline
-              className="w-3/4"
-              required
-              onInput={handlePrescription}
-              value={value.prescription}
-            />
-            ;
-          </>
-        );
-      })}
+      {prescriptions ? (
+        prescriptions.map((value) => {
+          return (
+            <div key={value}>
+              <TextField
+                id="outlined-multiline-flexible"
+                multiline
+                className="w-3/4"
+                required
+                margin="dense"
+                onInput={handlePrescription}
+                value={value}
+              />
+            </div>
+          );
+        })
+      ) : (
+        <h2>No Prescriptions yet</h2>
+      )}
     </div>
   );
 }

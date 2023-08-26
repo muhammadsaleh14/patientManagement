@@ -8,13 +8,17 @@ import prisma from "@/app/api/util/db";
 
 export async function POST(request: NextRequest) {
   try {
-    const { id, date, prescription } = await request.json();
-    console.log(id, typeof id);
+    const { patientId, date, prescription } = await request.json();
+    console.log(patientId, typeof patientId);
     console.log(date, typeof date);
     console.log(prescription, typeof prescription);
 
     //   console.log(NextResponse.json(createPatient(name, parseInt(age), gender)));
-    let prescriptionCreated = await addPrescription(id, date, prescription);
+    let prescriptionCreated = await addPrescription(
+      patientId,
+      date,
+      prescription
+    );
     return NextResponse.json({ prescriptionCreated }, { status: 200 });
   } catch (error) {
     console.log("in catch");
