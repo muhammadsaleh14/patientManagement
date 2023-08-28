@@ -27,27 +27,31 @@ model Patient {
   name       String 
   age        Int
   gender     String
-  details    PatientDetails[]
-  prescriptions Prescriptions[]
+  visits     visit[]
   @@unique([name, age, gender]) // Adding a unique constraint based on name, age, and gender
 }
 
+model visit{
+  id  Int   @id @default(autoincrement())
+  date DateTime @unique
+  patientId Int
+  patient   Patient   @relation(fields:[patientId],references: [id])
+  patientDetails PatientDetails[] 
+  prescriptions Prescriptions[]
+}
 model PatientDetails {
   id            Int             @id @default(autoincrement())
   details       String
   detailHeading String
-  patientId     Int
-  patient       Patient        @relation(fields: [patientId], references: [id])
-  date          DateTime 
+  visitId        Int
+  visit        visit          @relation(fields:[visitId],references: [id])    
   @@index([id], name: "patientDetailsId")
 }
 model Prescriptions {
   id            Int       @id @default(autoincrement())
   prescription  String
-  date          DateTime
-  patientId     Int 
-  patient       Patient  @relation(fields: [patientId], references: [id])
-
+  visitId        Int
+  visit        visit          @relation(fields:[visitId],references: [id])
   // @@index([id], name: "prescriptionId")
 }
 

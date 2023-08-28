@@ -32,6 +32,11 @@ export default function Prescription({ date }: { date: string }) {
     }
   }, [patient]);
 
+  const visitId = () => {
+    const temp = localStorage.getItem("visitId") ?? "";
+    return parseInt(temp);
+  };
+
   async function loadPrescriptions() {
     if (patient) {
       let response = await axios.get(
@@ -63,9 +68,10 @@ export default function Prescription({ date }: { date: string }) {
   useEffect(() => {
     setPrescriptions(() => {
       console.log(patient);
-      if (patient && patient.prescriptions) {
-        const prescriptionStrings = patient?.prescriptions.map(
-          (prescription) => prescription.prescription
+      if (patient) {
+        const visit = patient.visits.find((visit) => visit.id === visitId());
+        const prescriptionStrings = visit?.prescriptions.map(
+          (value) => value.prescription
         );
         return prescriptionStrings || [];
       }

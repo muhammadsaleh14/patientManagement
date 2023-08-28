@@ -15,7 +15,7 @@ export async function createPatient(name: string, age: number, gender: string) {
       },
     });
 
-    return { message: "Patient Created" };
+    return { patient };
   } catch (error) {
     throw error;
   } finally {
@@ -66,59 +66,50 @@ export async function updatePatient(
 
 export async function getPatientsWithLastVisit() {
   try {
-    const pa = await prisma.patient.findMany({
-      include: {
-        details: {
+    const patients = await prisma.patient.findMany({
+      select: {
+        id: true,
+        name: true,
+        age: true,
+        gender: true,
+        visits: {
           select: {
-            details: true,
-            detailHeading: true,
             date: true,
           },
           orderBy: {
-            date: "desc", // This should now work as it refers to PatientDetails.date
+            date: "desc",
           },
           take: 1,
         },
       },
     });
-
-    // Destructure the result and format the date
-    const formattedPatients = pa.map((patient) => ({
-      ...patient,
-      details: patient.details.map((detail) => ({
-        ...detail,
-        date: detail.date
-          ? format(new Date(detail.date), "hh:mm:ss a dd/MM/yyyy")
-          : null,
-      })),
-    }));
-    return formattedPatients;
-  } catch (error) {
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-export async function getAllPatientsWithDetails() {
-  try {
-    const patients = await prisma.patient.findMany({
-      include: {
-        details: true,
-        prescriptions: true,
-      },
-      orderBy: {
-        id: "asc", // 'asc' for ascending order, 'desc' for descending
-      },
-    });
     return patients;
   } catch (error) {
-    console.error("Error fetching patients:", error);
     throw error;
   } finally {
     await prisma.$disconnect();
   }
 }
+
+// export async function getAllPatientsWithDetails() {
+//   try {
+//     const patients = await prisma.patient.findMany({
+//       include: {
+//         details: true,
+//         prescriptions: true,
+//       },
+//       orderBy: {
+//         id: "asc", // 'asc' for ascending order, 'desc' for descending
+//       },
+//     });
+//     return patients;
+//   } catch (error) {
+//     console.error("Error fetching patients:", error);
+//     throw error;
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 export async function getUniquePatientWithDetails(patientId: number) {
   try {
     const patient = await prisma.patient.findUnique({
@@ -126,8 +117,12 @@ export async function getUniquePatientWithDetails(patientId: number) {
         id: patientId,
       },
       include: {
-        details: true,
-        prescriptions: true,
+        visits: {
+          include: {
+            patientDetails: true,
+            prescriptions: true,
+          },
+        },
       },
     });
     // console.log(patient);
@@ -142,26 +137,19 @@ export async function getUniquePatientWithDetails(patientId: number) {
 }
 
 export async function addPrescription(
-  patientId: number,
-  date: string,
+  visitIdProp: number,
   prescriptionText: string
 ) {
   try {
-    const temp = parse(date, "hh:mm:ss a dd/MM/yyyy", new Date());
-    const formattedDate = format(temp, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-    console.log(temp);
-    console.log(formattedDate);
+    // this is the right one -> const temp = parse(date, "hh:mm:ss a dd/MM/yyyy", new Date());
+    // const formattedDate = format(temp, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    // console.log(temp);
+    // console.log(formattedDate);
     // Create a new prescription record associated with the patient
     const prescription = await prisma.prescriptions.create({
       data: {
         prescription: prescriptionText,
-        patient: {
-          connect: {
-            id: patientId,
-          },
-        },
-
-        date: temp,
+        visitId: visitIdProp,
       },
     });
 
@@ -223,5 +211,25 @@ export async function getAllPrescriptions() {
     throw error;
   } finally {
     await prisma.$disconnect();
+  }
+}
+
+export async function addNewVisit(patientId: number, dateString: string) {
+  try {
+    const newVisit = await prisma.visit.create({
+      data: {
+        date: parse(dateString, "hh:mm:ss a dd/MM/yyyy", new Date()),
+        patient: {
+          connect: {
+            id: patientId,
+          },
+        },
+      },
+    });
+    console.log("New visit added:", newVisit);
+    return newVisit;
+  } catch (error) {
+    console.error("Error adding new visit:", error);
+    throw error;
   }
 }

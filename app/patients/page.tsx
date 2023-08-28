@@ -24,6 +24,7 @@ import HistoryOfPatient from "@/components/historyOfPatientModal";
 import HistoryOfPatientModal from "@/components/historyOfPatientModal";
 import { usePatientContext } from "@/components/patientContextProvider";
 import { Patient } from "@/components/interfaces/databaseInterfaces";
+import { format, parse } from "date-fns";
 
 // export interface Patient {
 //   id: number;
@@ -42,12 +43,28 @@ const Page: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
-  const { setPatient } = usePatientContext();
+  const { patient: patientContext, setPatient } = usePatientContext();
+  // console.log("patients/page");
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
     message: string;
   } | null>(null);
+  async function getCompletePatient(id: number) {
+    try {
+      const response = await axios.get("/api/patients/" + id);
+      // console.log(response.data);
+      setPatient(response.data);
+    } catch (error) {
+      console.error("Error fetching patient:", error);
+    }
+  }
+  function getCurrentDate() {
+    // const temp = parse(date, "hh:mm:ss a dd/MM/yyyy", new Date())
+    const currentDate = new Date();
+    const formattedDate = format(currentDate, "hh:mm:ss a dd/MM/yyyy");
+    return formattedDate;
+  }
   async function fetchPatients() {
     try {
       const response = await axios.get("/api/patients/table");
@@ -57,7 +74,11 @@ const Page: React.FC = () => {
     }
   }
   useEffect(() => {
+    localStorage.removeItem("patient");
+  }, []);
+  useEffect(() => {
     fetchPatients();
+    // localStorage.removeItem("patient");
   }, []);
 
   const filteredPatients = patients.filter(
@@ -143,7 +164,7 @@ const Page: React.FC = () => {
                 <TableCell>{patient.age}</TableCell>
                 <TableCell>{patient.gender}</TableCell>
                 <TableCell className="">
-                  {patient.details ? patient.details[0].date : "Not available"}
+                  {patient?.visits[0]?.date ?? "Not available"}
                 </TableCell>
                 <TableCell className="bg-blue-300">
                   <Box className="w-full h-full flex justify-around">
@@ -151,7 +172,10 @@ const Page: React.FC = () => {
                       variant="outlined"
                       color="info"
                       onClick={() =>
-                        router.push(`/patients/${patient.id}?add=true`)
+                        router.push(
+                          `/patients/${patient.id}?visitDate=` +
+                            getCurrentDate()
+                        )
                       }
                     >
                       <AddBox />
@@ -161,11 +185,7 @@ const Page: React.FC = () => {
                       color="info"
                       className="inline-block"
                       onClick={() => {
-                        setPatient(() => getCompletePatient());
-                        localStorage.setItem(
-                          "patient",
-                          JSON.stringify(patient)
-                        );
+                        getCompletePatient(patient.id);
                       }}
                     >
                       <HistoryOfPatientModal />

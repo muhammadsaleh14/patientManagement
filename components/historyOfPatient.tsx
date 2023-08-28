@@ -5,54 +5,38 @@ import { useEffect, useState } from "react";
 import { usePatientContext } from "./patientContextProvider";
 
 function HistoryOfPatient() {
-  const { patient, setPatient } = usePatientContext();
-
+  const { patient } = usePatientContext();
   // const [patient, setPatient] = useState(patientContext);
-  const [uniqueDates, setUniqueDates] = useState<string[]>([]);
+  // console.count("HistoryOfPatient");
   const router = useRouter();
-  //   console.log(patient);
-  useEffect(() => {
-    async function fetchPatient() {
-      // let url = "/api/patients/" + patient?.id;
-      // console.log(url);
-      // let response = await axios.get(url);
-      // setPatient
-      //   ? setPatient(response.data)
-      //   : console.log("setPatient is undefined");
-    }
-    function setDates() {
-      setUniqueDates(
-        patient?.details
-          ? patient.details.reduce((dates, detail) => {
-              if (detail.date && !dates.includes(detail.date)) {
-                return [...dates, detail.date];
-              }
-              return dates;
-            }, [] as string[])
-          : []
-      );
-    }
-    async function fetchData() {
-      await fetchPatient();
-      setDates();
-    }
-    fetchData();
-  }, []);
+  // console.log(patient);
+
+  // useEffect(() => {}, [patient]);
   return (
     <div className="w-full h-full">
       <h1>History of Patient: {patient?.name}</h1>
       <ul>
-        {uniqueDates.map((date, index) => (
-          <li key={index}>
-            <Button
-              onClick={() =>
-                router.push(`/patients/${patient?.id}?add=false&date=` + date)
-              }
-            >
-              {date}
-            </Button>
-          </li>
-        ))}
+        {patient ? (
+          patient.visits.length > 0 ? (
+            patient.visits.map((visit) => (
+              <li key={visit.id}>
+                <Button
+                  onClick={() =>
+                    router.push(
+                      `/patients/${patient?.id}?visitDate=` + visit.date
+                    )
+                  }
+                >
+                  {visit.date}
+                </Button>
+              </li>
+            ))
+          ) : (
+            <div>No history available</div>
+          )
+        ) : (
+          ""
+        )}
       </ul>
     </div>
   );

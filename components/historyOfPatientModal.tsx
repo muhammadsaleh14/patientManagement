@@ -3,11 +3,13 @@ import Modal, { Props } from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
 import HistoryOfPatient from "./historyOfPatient";
-import { usePatientContext } from "./";
+import { usePatientContext } from "./patientContextProvider";
+
 const HistoryOfPatientModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-
+  const { patient } = usePatientContext();
+  console.log("historyOfPatientModel");
   useEffect(() => {
     setIsClient(true);
     Modal.setAppElement("#historyOfPatient");
@@ -38,12 +40,9 @@ const HistoryOfPatientModal = () => {
   };
 
   return (
-    <div className="">
-      <div
-        id="historyOfPatient"
-        className="inline-block"
-        onClick={() => setIsOpen(true)}
-      >
+    <div id="historyOfPatient" className="">
+      <div className="inline-block" onClick={() => setIsOpen(true)}>
+        {/* You can uncomment this button element if needed */}
         {/* <Button variant="outlined" color="info" onClick={}> */}
         History
         {/* </Button> */}

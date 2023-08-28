@@ -18,8 +18,8 @@ export const usePatientContext = () => {
     );
   }
   return {
-    patient: patientContext.patient,
-    setPatient: patientContext.setPatient,
+    patient: patientContext["patient"],
+    setPatient: patientContext["setPatient"],
   };
 };
 
@@ -28,12 +28,12 @@ export function PatientContextProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // console.log("patientContextProvider");
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
-
   const initializePatient = () => {
-    if (typeof localStorage !== "undefined") {
+    if (typeof window !== "undefined") {
       const storedState = localStorage.getItem("patient");
-      console.log(storedState);
+      // console.log(storedState);
       return storedState ? JSON.parse(storedState) : undefined;
     }
     return undefined;
@@ -46,6 +46,7 @@ export function PatientContextProvider({
   const updatePatient = (newPatient: Patient) => {
     if (typeof window !== "undefined") {
       setPatient(newPatient);
+      localStorage.setItem("patient", JSON.stringify(newPatient));
     }
   };
 

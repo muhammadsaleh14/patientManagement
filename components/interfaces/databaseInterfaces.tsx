@@ -1,4 +1,4 @@
-export interface Doctor {
+interface Doctor {
   id: number;
   name: string;
   profession: string;
@@ -17,7 +17,15 @@ export interface Patient {
   name: string;
   age: number;
   gender: string;
-  details: PatientDetails[];
+  visits: Visit[];
+}
+
+export interface Visit {
+  id: number;
+  date: string;
+  patientId: number;
+  patient: Patient;
+  patientDetails: PatientDetails[];
   prescriptions: Prescriptions[];
 }
 
@@ -25,15 +33,13 @@ export interface PatientDetails {
   id: number;
   details: string;
   detailHeading: string;
-  patientId: number;
-  patient: Patient;
-  date: string;
+  dateId: number;
+  date: Visit;
 }
 
 export interface Prescriptions {
   id: number;
   prescription: string;
-  date: Date;
-  patientId: number;
-  patient: Patient;
+  dateId: number;
+  date: Visit;
 }
