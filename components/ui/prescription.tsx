@@ -2,8 +2,15 @@
 import { Autocomplete, Button, TextField } from "@mui/material";
 import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { Patient, Prescriptions } from "../interfaces/databaseInterfaces";
-import { usePatientContext } from "../patientContextProvider";
+import { Patient, Prescription } from "../interfaces/databaseInterfaces";
+import { useSelector } from "react-redux";
+import {
+  addPrescription,
+  getCurrentVisit,
+  getPatient,
+  getPatientState,
+} from "@/app/GlobalRedux/store/patientSlice";
+import { store } from "@/app/GlobalRedux/store/store";
 
 // ... Import statements ...
 
@@ -11,40 +18,33 @@ const API_PATIENT_PRESCRIPTIONS = "/api/patients/prescriptions";
 const API_ADD_PRESCRIPTION = "/api/patients/prescriptions/prescription";
 
 export default function Prescription() {
-  const { patient } = usePatientContext();
+  const patient = useSelector(getPatient);
+  const visit = useSelector(getCurrentVisit);
   const [prescription, setPrescription] = useState<string | null>("");
-  const [visitId, setVisitId] = useState<number | undefined>(undefined);
-  const [prescriptions, setPrescriptions] = useState<string[]>([]);
   const [allPrescriptions, setAllPrescriptions] = useState<string[] | null>(
     null
   );
 
   const loadPrescriptions = useCallback(async () => {
     console.log("running load prescriptions: " + patient);
-    if (patient) {
-      const visit = patient.visits.find((visit) => visit.id === visitId);
-      if (visit) {
-        setPrescriptions(
-          visit.prescriptions.map((prescription) => prescription.prescription)
-        );
-      } else {
-        setPrescriptions([]);
-      }
-
-      // Fetch other prescriptions here if needed
-      try {
-        const response = await axios.get("/api/patients/prescriptions");
-
-        setAllPrescriptions(response.data);
-      } catch (error) {
-        console.error("Error fetching prescriptions:", error);
-      }
+    // if (patient) {
+    //   if (visit) {
+    //     setPrescriptions(
+    //       visit?.prescriptions.map((prescription) => prescription.prescription)
+    //     );
+    //   } else {
+    //     setPrescriptions([]);
+    //   }
+    // Fetch other prescriptions here if needed
+    try {
+      const response = await axios.get("/api/patients/prescriptions");
+      setAllPrescriptions(response.data);
+    } catch (error) {
+      console.error("Error fetching prescriptions:", error);
     }
-  }, [patient, visitId]);
+  }, [patient]);
 
   useEffect(() => {
-    const temp = localStorage.getItem("visitId") ?? "";
-    setVisitId(parseInt(temp));
     loadPrescriptions();
   }, [loadPrescriptions]);
 
@@ -57,18 +57,9 @@ export default function Prescription() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!patient) return;
-
+    if (!patient || !prescription) return;
     try {
-      const response = await axios.post(
-        "/api/patients/prescriptions/prescription",
-        {
-          visitId: visitId,
-          prescription: prescription,
-        }
-      );
-      console.log(response.data);
-      loadPrescriptions();
+      store.dispatch(addPrescription(prescription));
     } catch (error) {
       console.error("Error adding prescription:", error);
     }
@@ -104,9 +95,10 @@ export default function Prescription() {
           Submit
         </Button>
       </form>
-      {prescriptions.length > 0 ? (
-        prescriptions.map((value, index) => (
-          <div key={index}>
+      {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
+      {visit?.prescriptions ? (
+        visit.prescriptions.map((value, index) => (
+          <div key={value.id}>
             <TextField
               id="outlined-multiline-flexible"
               multiline

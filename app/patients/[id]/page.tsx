@@ -27,46 +27,31 @@ import Prescription from "@/components/ui/prescription";
 import { useSearchParams } from "next/navigation";
 import format from "date-fns/format";
 import { Patient, Visit } from "@/components/interfaces/databaseInterfaces";
-import { usePatientContext } from "@/components/patientContextProvider";
-import { usePatientDateContext } from "@/components/dateContextProvider";
+import {
+  addVisit,
+  getPatientState,
+  setPatient,
+  setVisitId,
+} from "@/app/GlobalRedux/store/patientSlice";
+import { useSelector } from "react-redux";
 // { params }: { params: { id: string } }
 const Page = () => {
+  const { patient, currentVisitId } = useSelector(getPatientState);
   const searchParams = useSearchParams();
-  const { patient, setPatient, addVisit } = usePatientContext();
   const date = searchParams.get("visitDate") as string;
-  console.log(date);
 
   useEffect(() => {
-    async function manageDate() {
-      async function getVisitIdFromDate() {
-        console.log(patient);
-        const visit = patient?.visits.find((visit) => visit.date === date);
-        if (visit) {
-          return visit.id;
-        } else {
-          const { data: newVisit }: { data: Visit } = await axios.post(
-            "/api/patients/" + patient?.id + "/visits",
-            { date }
-          );
-          if (!patient) {
-            throw new Error("patient is not defined");
-          } // Return early if patient is undefined
-          const updatedVisits = [...patient.visits, newVisit];
-          const updatedPatient: Patient = {
-            ...patient,
-            visits: updatedVisits,
-          };
-          setPatient(updatedPatient);
-
-          return newVisit.id;
-          // Creating a new patient object with the updated visits array
-        }
-      }
-      const visitId = await getVisitIdFromDate();
-      localStorage.setItem("visitId", visitId.toString());
+    if (!patient) {
+      return;
     }
-    manageDate();
-  }, [patient?.id, patient?.visits, date, patient, setPatient]);
+    const visit = patient?.visits.find((visit) => visit.date === date);
+    if (visit) {
+      setVisitId(visit.id);
+    } else {
+      addVisit(date);
+    }
+    console.log("visit id = ", patient);
+  }, [date, patient]);
   return (
     <Stack direction="row" spacing={0} className="h-full">
       {/* Sidebar */}

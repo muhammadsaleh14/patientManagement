@@ -9,18 +9,19 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import AutoCloseAlert from "./ui/autoCloseAlert";
 import { error } from "console";
-import { usePatientContext } from "./patientContextProvider";
+import { useRouter } from "next/navigation";
 
 const RegisterPatientForm: React.FC = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
-  const patientContext = usePatientContext();
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
     message: string;
   } | null>(null);
+  const router = useRouter();
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     axios
@@ -34,6 +35,7 @@ const RegisterPatientForm: React.FC = () => {
           severity: "success",
           message: "",
         });
+        router.push("/patients");
         console.log("added");
       })
       .catch((error) => {

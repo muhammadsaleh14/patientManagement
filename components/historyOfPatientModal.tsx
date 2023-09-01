@@ -3,12 +3,10 @@ import Modal, { Props } from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
 import HistoryOfPatient from "./historyOfPatient";
-import { usePatientContext } from "./patientContextProvider";
 
 const HistoryOfPatientModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const { patient } = usePatientContext();
   console.log("historyOfPatientModel");
   useEffect(() => {
     setIsClient(true);
@@ -47,25 +45,23 @@ const HistoryOfPatientModal = () => {
         History
         {/* </Button> */}
       </div>
-      {isClient && (
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={() => setIsOpen(false)}
-          style={customStyles}
-        >
-          <div className="rounded-lg p-6">
-            <HistoryOfPatient />
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="outlined"
-              color="primary"
-              className="m-auto w-full"
-            >
-              Close Modal
-            </Button>
-          </div>
-        </Modal>
-      )}
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        style={customStyles}
+      >
+        <div className="rounded-lg p-6">
+          <HistoryOfPatient />
+          <Button
+            onClick={() => setIsOpen(false)}
+            variant="outlined"
+            color="primary"
+            className="m-auto w-full"
+          >
+            Close Modal
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

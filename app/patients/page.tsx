@@ -27,6 +27,7 @@ import { format, parse } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { getPatientState } from "../GlobalRedux/store/patientSlice";
 import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
+import { store } from "../GlobalRedux/store/store";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -45,6 +46,7 @@ const Page: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
   const { patient } = useSelector(getPatientState);
+  //? setPatient imported from redux
 
   // console.log("patients/page");
   const [alert, setAlert] = useState<{
@@ -52,9 +54,9 @@ const Page: React.FC = () => {
     severity: "success" | "error";
     message: string;
   } | null>(null);
-  function getCompletePatient(id: number) {
+  function getCompletePatientForStore(id: number) {
     try {
-      setPatient(id);
+      store.dispatch(setPatient(id));
     } catch (error) {
       console.error("Error fetching patient:", error);
     }
@@ -73,22 +75,23 @@ const Page: React.FC = () => {
       console.error("Error fetching patients:", error);
     }
   }
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.age.toString().includes(searchTerm) ||
       patient.gender.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const deletePatient = (patient: Patient) => {
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const deletePatient = (patientId: number) => {
     axios
-      .delete("/api/patients/" + patient.id)
+      .delete("/api/patients/" + patientId)
       .then((response) => {
         setPatients((prevPatients) =>
-          prevPatients.filter((p) => p.id !== patient.id)
+          prevPatients.filter((p) => p.id !== patientId)
         );
         setAlert({
           title: "Patient deleted",
@@ -181,13 +184,13 @@ const Page: React.FC = () => {
                       color="info"
                       className="inline-block"
                       onClick={() => {
-                        getCompletePatient(patient.id);
+                        getCompletePatientForStore(patient.id);
                       }}
                     >
                       <HistoryOfPatientModal />
                     </Button>
                     <Button
-                      onClick={() => deletePatient(patient)}
+                      onClick={() => deletePatient(patient.id)}
                       variant="outlined"
                       color="warning"
                     >

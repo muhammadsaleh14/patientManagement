@@ -23,8 +23,7 @@ export interface Patient {
 export interface Visit {
   id: number;
   date: string;
-  patientId: number;
-  patient: Patient;
+  patientId: Patient["id"];
   patientDetails: PatientDetails[];
   prescriptions: Prescription[];
 }

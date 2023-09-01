@@ -14,19 +14,22 @@ import {
 } from "@/components/interfaces/databaseInterfaces";
 import { error } from "console";
 import { RootState } from "./store";
+import { getFromLocalStorage, setToLocalStorage } from "../manageLocalStorage";
 
 interface PatientState {
-  patient: Patient | null;
-  currentVisitId: number | null;
+  patient: Patient | undefined;
+  currentVisitId: number | undefined;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: undefined | string;
 }
 
+const { patient: patientLS, currentVisitId: currentVisitIdLS } =
+  getFromLocalStorage();
 // const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 const initialState: PatientState = {
-  patient: null,
-  currentVisitId: null,
+  patient: patientLS,
+  currentVisitId: currentVisitIdLS,
   status: "idle",
   error: undefined,
 };
@@ -34,6 +37,7 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number) => {
+    console.log("running set patient");
     const response = await axios.get("/api/patients/" + patientId);
     return response.data;
   }
@@ -67,6 +71,42 @@ export const addPrescription = createAsyncThunk(
     return response.data;
   }
 );
+// export const deletePatient = createAsyncThunk(
+//   "patient/deletePatient",
+//   async (patientId, { getState }) => {
+//     const state = getState() as PatientState;
+//     const response = await axios.post(
+//       "/api/patients/prescriptions/prescription",
+//       {
+//         visitId: state.currentVisitId,
+//         prescription: prescriptionText,
+//       }
+//     );
+//     return response.data;
+//   }
+// );
+// const deletePatient = (patientId: number) => {
+//   axios
+//     .delete("/api/patients/" + patientId)
+//     .then((response) => {
+//       setPatients((prevPatients) =>
+//         prevPatients.filter((p) => p.id !== patientId)
+//       );
+//       setAlert({
+//         title: "Patient deleted",
+//         severity: "success",
+//         message: "",
+//       });
+//     })
+//     .catch(() => {
+//       console.log("delete patient failed");
+//       setAlert({
+//         title: "Deleting patient failed",
+//         severity: "error",
+//         message: "",
+//       });
+//     });
+// };
 
 // addPrescription: (
 //     state,
@@ -87,6 +127,7 @@ const patientSlice = createSlice({
   reducers: {
     setVisitId: (state, action: PayloadAction<number>) => {
       state.currentVisitId = action.payload;
+      setToLocalStorage(state.patient, state.currentVisitId);
     },
   },
   extraReducers(builder) {
@@ -99,6 +140,7 @@ const patientSlice = createSlice({
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
           state.patient = action.payload;
+          setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
       )
@@ -117,7 +159,7 @@ const patientSlice = createSlice({
           throw new Error(message);
         }
         state.patient.visits = state.patient?.visits.concat(action.payload);
-
+        setToLocalStorage(state.patient, state.currentVisitId);
         state.status = "succeeded";
       })
       .addCase(addVisit.rejected, (state, action) => {
@@ -147,6 +189,7 @@ const patientSlice = createSlice({
             }
             return visit;
           });
+          setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
       )
@@ -162,6 +205,12 @@ export const getPatient = (state: RootState) => state.patient.patient;
 export const getPatientError = (state: RootState) => state.patient.error;
 export const getVisitById = (state: RootState, visitId: number) =>
   state.patient.patient?.visits.find((visit) => visit.id === visitId);
+export const getCurrentVisit = (state: RootState): Visit | undefined => {
+  // Use the find method to search for the visit with the matching ID
+  return state.patient.patient?.visits.find(
+    (visit) => visit.id === state.patient.currentVisitId
+  );
+};
 
 export const { setVisitId } = patientSlice.actions;
 
