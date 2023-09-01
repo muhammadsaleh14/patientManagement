@@ -4,125 +4,120 @@ import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Patient, Prescriptions } from "../interfaces/databaseInterfaces";
 import { usePatientContext } from "../patientContextProvider";
-// {
-//   id,
-//   date,
-// }: {
-//   id: number | undefined;
-//   date: string;
-// }
-export default function Prescription({ date }: { date: string }) {
-  // const patientString = localStorage.getItem("patient");
-  // = patientString
-  //  (JSON.parse(patientString) as Patient)
-  //   : undefined;
+
+// ... Import statements ...
+
+const API_PATIENT_PRESCRIPTIONS = "/api/patients/prescriptions";
+const API_ADD_PRESCRIPTION = "/api/patients/prescriptions/prescription";
+
+export default function Prescription() {
   const { patient } = usePatientContext();
-  const [prescription, setPrescription] = useState<null | string>(null);
-  const [prescriptions, setPrescriptions] = useState<
-    Prescriptions["prescription"][]
-  >([]);
+  const [prescription, setPrescription] = useState<string | null>("");
+  const [visitId, setVisitId] = useState<number | undefined>(undefined);
+  const [prescriptions, setPrescriptions] = useState<string[]>([]);
   const [allPrescriptions, setAllPrescriptions] = useState<string[] | null>(
     null
   );
-  const getAllPrescriptions = useCallback(async () => {
-    if (patient) {
-      let response = await axios.get("/api/patients/prescriptions");
-      // console.log("response of prescriptions" + response.data);
-      setAllPrescriptions(response.data);
-    }
-  }, [patient]);
 
-  const visitId = () => {
-    const temp = localStorage.getItem("visitId") ?? "";
-    return parseInt(temp);
-  };
-
-  async function loadPrescriptions() {
+  const loadPrescriptions = useCallback(async () => {
+    console.log("running load prescriptions: " + patient);
     if (patient) {
-      let response = await axios.get(
-        `/api/patients/prescriptions/prescription?id=${patient?.id}&date=${date}`
-      );
-      // console.log("response of prescriptions" + response.data);
-      //get all prescriptions from
-      setPrescriptions(response.data);
-    }
-  }
-  function handlePrescription(event: React.ChangeEvent<HTMLInputElement>) {
-    setPrescription(event.target.value);
-  }
-  async function handleSubmit(e: FormEvent) {
-    console.log(patient?.id);
-    e.preventDefault();
-    // Here you can use the 'prescription' state to submit the value
-    const response = await axios.post(
-      "/api/patients/prescriptions/prescription",
-      {
-        patientId: patient?.id,
-        date: date,
-        prescription: prescription,
-      }
-    );
-    console.log(response.data);
-    loadPrescriptions();
-  }
-  useEffect(() => {
-    setPrescriptions(() => {
-      console.log(patient);
-      if (patient) {
-        const visit = patient.visits.find((visit) => visit.id === visitId());
-        const prescriptionStrings = visit?.prescriptions.map(
-          (value) => value.prescription
+      const visit = patient.visits.find((visit) => visit.id === visitId);
+      if (visit) {
+        setPrescriptions(
+          visit.prescriptions.map((prescription) => prescription.prescription)
         );
-        return prescriptionStrings || [];
+      } else {
+        setPrescriptions([]);
       }
-      return [];
-    });
-    getAllPrescriptions();
-    // getAllPrescriptions();
-  }, [patient, getAllPrescriptions]);
-  const AllPrescriptionProps = {
-    options: allPrescriptions ? allPrescriptions : [],
+
+      // Fetch other prescriptions here if needed
+      try {
+        const response = await axios.get("/api/patients/prescriptions");
+
+        setAllPrescriptions(response.data);
+      } catch (error) {
+        console.error("Error fetching prescriptions:", error);
+      }
+    }
+  }, [patient, visitId]);
+
+  useEffect(() => {
+    const temp = localStorage.getItem("visitId") ?? "";
+    setVisitId(parseInt(temp));
+    loadPrescriptions();
+  }, [loadPrescriptions]);
+
+  const handlePrescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPrescription(event.target.value);
+    // console.log(prescription);
   };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!patient) return;
+
+    try {
+      const response = await axios.post(
+        "/api/patients/prescriptions/prescription",
+        {
+          visitId: visitId,
+          prescription: prescription,
+        }
+      );
+      console.log(response.data);
+      loadPrescriptions();
+    } catch (error) {
+      console.error("Error adding prescription:", error);
+    }
+  };
+
+  // const allPrescriptionProps = {
+  const options = allPrescriptions || [];
+  // };
+
   return (
     <div>
       <form className="flex align-baseline">
         <Autocomplete
-          {...AllPrescriptionProps}
-          id="clear-on-escape"
+          className="w-3/4"
+          options={options}
+          // {...allPrescriptionProps}
+          id="free-solo-demo"
           clearOnEscape
+          freeSolo
+          value={prescription}
           renderInput={(params) => (
-            <TextField {...params} label="clearOnEscape" variant="standard" />
+            <TextField
+              {...params}
+              id="outlined-multiline-flexible"
+              label="Add Prescription"
+              required
+              onChange={(event) => handlePrescriptionChange(event)}
+            />
           )}
         />
-        <TextField
-          id="outlined-multiline-flexible"
-          label="Add Prescription"
-          placeholder="Add prescription"
-          multiline
-          className="w-3/4"
-          required
-          onInput={handlePrescription}
-        />
+
         <Button type="submit" onClick={handleSubmit} className="">
           Submit
         </Button>
       </form>
-      {prescriptions ? (
-        prescriptions.map((value) => {
-          return (
-            <div key={value}>
-              <TextField
-                id="outlined-multiline-flexible"
-                multiline
-                className="w-3/4"
-                required
-                margin="dense"
-                onInput={handlePrescription}
-                value={value}
-              />
-            </div>
-          );
-        })
+      {prescriptions.length > 0 ? (
+        prescriptions.map((value, index) => (
+          <div key={index}>
+            <TextField
+              id="outlined-multiline-flexible"
+              multiline
+              className="w-3/4"
+              required
+              margin="dense"
+              value={value}
+              onChange={() => {}}
+            />
+          </div>
+        ))
       ) : (
         <h2>No Prescriptions yet</h2>
       )}

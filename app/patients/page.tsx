@@ -22,10 +22,11 @@ import { useRouter } from "next/navigation";
 import AddBox from "@mui/icons-material/AddBox";
 import HistoryOfPatient from "@/components/historyOfPatientModal";
 import HistoryOfPatientModal from "@/components/historyOfPatientModal";
-import { usePatientContext } from "@/components/patientContextProvider";
 import { Patient } from "@/components/interfaces/databaseInterfaces";
 import { format, parse } from "date-fns";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getPatientState } from "../GlobalRedux/store/patientSlice";
+import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -43,18 +44,17 @@ const Page: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
-  const { patient: patientContext, setPatient } = usePatientContext();
+  const { patient } = useSelector(getPatientState);
+
   // console.log("patients/page");
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
     message: string;
   } | null>(null);
-  async function getCompletePatient(id: number) {
+  function getCompletePatient(id: number) {
     try {
-      const response = await axios.get("/api/patients/" + id);
-      // console.log(response.data);
-      setPatient(response.data);
+      setPatient(id);
     } catch (error) {
       console.error("Error fetching patient:", error);
     }
@@ -74,11 +74,7 @@ const Page: React.FC = () => {
     }
   }
   useEffect(() => {
-    localStorage.removeItem("patient");
-  }, []);
-  useEffect(() => {
     fetchPatients();
-    // localStorage.removeItem("patient");
   }, []);
 
   const filteredPatients = patients.filter(

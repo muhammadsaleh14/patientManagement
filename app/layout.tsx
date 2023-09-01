@@ -6,6 +6,7 @@ import { Router } from "react-router-dom";
 import { Box } from "@mui/material";
 import { DateContextProvider } from "@/components/dateContextProvider";
 import { PatientContextProvider } from "@/components/patientContextProvider";
+import Provider from "./GlobalRedux/store/Provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,11 +25,9 @@ export default function RootLayout({
         <Button>Edit your details</Button>
         <Button>Edit patient layout</Button>
         <Button>Patients Page</Button>
-        <PatientContextProvider>
-          <DateContextProvider>
-            <Box className="h-full">{children}</Box>
-          </DateContextProvider>
-        </PatientContextProvider>
+        <Provider>
+          <Box className="h-full">{children}</Box>
+        </Provider>
       </body>
     </html>
   );

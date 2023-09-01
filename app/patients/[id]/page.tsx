@@ -32,12 +32,14 @@ import { usePatientDateContext } from "@/components/dateContextProvider";
 // { params }: { params: { id: string } }
 const Page = () => {
   const searchParams = useSearchParams();
-  const { patient } = usePatientContext();
+  const { patient, setPatient, addVisit } = usePatientContext();
+  const date = searchParams.get("visitDate") as string;
+  console.log(date);
 
   useEffect(() => {
     async function manageDate() {
-      const date = searchParams.get("visitDate") as string;
-      async function getVisitIdFromDate(date: string) {
+      async function getVisitIdFromDate() {
+        console.log(patient);
         const visit = patient?.visits.find((visit) => visit.date === date);
         if (visit) {
           return visit.id;
@@ -46,14 +48,25 @@ const Page = () => {
             "/api/patients/" + patient?.id + "/visits",
             { date }
           );
+          if (!patient) {
+            throw new Error("patient is not defined");
+          } // Return early if patient is undefined
+          const updatedVisits = [...patient.visits, newVisit];
+          const updatedPatient: Patient = {
+            ...patient,
+            visits: updatedVisits,
+          };
+          setPatient(updatedPatient);
+
           return newVisit.id;
+          // Creating a new patient object with the updated visits array
         }
       }
-      const visitId = await getVisitIdFromDate(date);
+      const visitId = await getVisitIdFromDate();
       localStorage.setItem("visitId", visitId.toString());
     }
     manageDate();
-  }, [patient?.id, patient?.visits, searchParams]);
+  }, [patient?.id, patient?.visits, date, patient, setPatient]);
   return (
     <Stack direction="row" spacing={0} className="h-full">
       {/* Sidebar */}
@@ -116,7 +129,7 @@ const Page = () => {
           </Box>
 
           <Box className="bg-slate-400 p-7 w-full h-full">
-            <Prescription date={getVisitDate(patient, visitId)} />
+            <Prescription />
             {/* id={patient?.id}  */}
           </Box>
         </Stack>
