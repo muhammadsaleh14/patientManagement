@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     //   console.log(NextResponse.json(createPatient(name, parseInt(age), gender)));
     return NextResponse.json(await createPatient(name, parseInt(age), gender));
   } catch (error) {
-    console.log("in catch");
+    // console.log("in catch");
     return new NextResponse("Error Creating patient", {
       status: 500, // Internal Server Error
       headers: {

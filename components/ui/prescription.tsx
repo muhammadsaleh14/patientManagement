@@ -1,9 +1,10 @@
 "use client";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Patient, Prescription } from "../interfaces/databaseInterfaces";
 import { useSelector } from "react-redux";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   addPrescription,
   getCurrentVisit,
@@ -20,24 +21,18 @@ const API_ADD_PRESCRIPTION = "/api/patients/prescriptions/prescription";
 export default function Prescription() {
   const patient = useSelector(getPatient);
   const visit = useSelector(getCurrentVisit);
-  const [prescription, setPrescription] = useState<string | null>("");
+  const [prescription, setPrescription] = useState<string>("");
+  const [domMounted, setDomMounted] = useState(false);
   const [allPrescriptions, setAllPrescriptions] = useState<string[] | null>(
     null
   );
 
   const loadPrescriptions = useCallback(async () => {
     console.log("running load prescriptions: " + patient);
-    // if (patient) {
-    //   if (visit) {
-    //     setPrescriptions(
-    //       visit?.prescriptions.map((prescription) => prescription.prescription)
-    //     );
-    //   } else {
-    //     setPrescriptions([]);
-    //   }
     // Fetch other prescriptions here if needed
     try {
       const response = await axios.get("/api/patients/prescriptions");
+      // console.log(response.data);
       setAllPrescriptions(response.data);
     } catch (error) {
       console.error("Error fetching prescriptions:", error);
@@ -46,6 +41,7 @@ export default function Prescription() {
 
   useEffect(() => {
     loadPrescriptions();
+    setDomMounted(true);
   }, [loadPrescriptions]);
 
   const handlePrescriptionChange = (
@@ -55,64 +51,97 @@ export default function Prescription() {
     // console.log(prescription);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!patient || !prescription) return;
+    if (!patient || !prescription) {
+      console.log("returning");
+      return;
+    }
     try {
+      console.log("adding prescription");
       store.dispatch(addPrescription(prescription));
+      setPrescription("");
     } catch (error) {
       console.error("Error adding prescription:", error);
     }
   };
-
+  const deletePrescription= (prescriptionsId:number)=>{
+    
+  }
   // const allPrescriptionProps = {
   const options = allPrescriptions || [];
   // };
-
+  const flatProps = {
+    options: allPrescriptions || [],
+  };
   return (
-    <div>
-      <form className="flex align-baseline">
-        <Autocomplete
-          className="w-3/4"
-          options={options}
-          // {...allPrescriptionProps}
-          id="free-solo-demo"
-          clearOnEscape
-          freeSolo
-          value={prescription}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id="outlined-multiline-flexible"
-              label="Add Prescription"
-              required
-              onChange={(event) => handlePrescriptionChange(event)}
-            />
-          )}
-        />
+    domMounted && (
+      <div>
+        <form className="flex align-baseline">
+          <Autocomplete
+            className="w-3/4"
+            // {...allPrescriptionProps}
+            {...flatProps}
+            id="free-solo-demo"
+            clearOnEscape
+            freeSolo
+            inputValue={prescription}
+            onInputChange={(event, newInputValue) => {
+              setPrescription(newInputValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="outlined-multiline-flexible"
+                label="Add Prescription"
+                required
+                onChange={(e) => setPrescription(e.target.value)}
+              />
+            )}
+            renderOption={(props, option) => (
+              <li {...props} key={option}>
+                {option}
+              </li>
+            )}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip {...getTagProps({ index })} key={option} label={option} />
+              ))
+            }
+          />
 
-        <Button type="submit" onClick={handleSubmit} className="">
-          Submit
-        </Button>
-      </form>
-      {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
-      {visit?.prescriptions ? (
-        visit.prescriptions.map((value, index) => (
-          <div key={value.id}>
-            <TextField
-              id="outlined-multiline-flexible"
-              multiline
-              className="w-3/4"
-              required
-              margin="dense"
-              value={value}
-              onChange={() => {}}
-            />
-          </div>
-        ))
-      ) : (
-        <h2>No Prescriptions yet</h2>
-      )}
-    </div>
+          <Button type="submit" onClick={handleSubmit} className="">
+            Submit
+          </Button>
+        </form>
+        {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
+        {visit?.prescriptions ? (
+          visit.prescriptions.map((value, index) => {
+            return (
+              <div key={value.id}>
+                <TextField
+                  id="outlined-multiline-flexible"
+                  multiline
+                  className="w-3/4"
+                  required
+                  margin="dense"
+                  value={value.prescription}
+                  onChange={() => {}}
+                />
+                <Button
+                  onClick={() => deletePrescription(value.id)}
+                  variant="outlined"
+                  color="warning"
+                >
+                  <DeleteIcon />
+                </Button>
+              </div>
+            );
+          })
+        ) : (
+          <h2>No Prescriptions yet</h2>
+        )}
+      </div>
+    )
   );
 }

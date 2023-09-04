@@ -4,9 +4,9 @@ import { Inter } from "next/font/google";
 import Button from "@mui/material/Button";
 import { Router } from "react-router-dom";
 import { Box } from "@mui/material";
-import { DateContextProvider } from "@/components/dateContextProvider";
-import { PatientContextProvider } from "@/components/patientContextProvider";
 import Provider from "./GlobalRedux/store/Provider";
+import { store } from "./GlobalRedux/store/store";
+import { initializeState } from "./GlobalRedux/store/patientSlice";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,10 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-screen">
+        <Provider>
+          
         <Button>Edit your details</Button>
         <Button>Edit patient layout</Button>
         <Button>Patients Page</Button>
-        <Provider>
           <Box className="h-full">{children}</Box>
         </Provider>
       </body>

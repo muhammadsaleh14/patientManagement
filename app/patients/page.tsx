@@ -25,7 +25,7 @@ import HistoryOfPatientModal from "@/components/historyOfPatientModal";
 import { Patient } from "@/components/interfaces/databaseInterfaces";
 import { format, parse } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { getPatientState } from "../GlobalRedux/store/patientSlice";
+import { getPatient, getPatientState } from "../GlobalRedux/store/patientSlice";
 import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "../GlobalRedux/store/store";
 // export interface Patient {
@@ -45,7 +45,7 @@ const Page: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
-  const { patient } = useSelector(getPatientState);
+  const patient = useSelector(getPatient);
   //? setPatient imported from redux
 
   // console.log("patients/page");
@@ -54,9 +54,9 @@ const Page: React.FC = () => {
     severity: "success" | "error";
     message: string;
   } | null>(null);
-  function getCompletePatientForStore(id: number) {
+  async function getCompletePatientForStore(id: number) {
     try {
-      store.dispatch(setPatient(id));
+      await store.dispatch(setPatient(id));
     } catch (error) {
       console.error("Error fetching patient:", error);
     }
@@ -170,12 +170,12 @@ const Page: React.FC = () => {
                     <Button
                       variant="outlined"
                       color="info"
-                      onClick={() =>
+                      onClick={() => {
                         router.push(
                           `/patients/${patient.id}?visitDate=` +
                             getCurrentDate()
-                        )
-                      }
+                        );
+                      }}
                     >
                       <AddBox />
                     </Button>

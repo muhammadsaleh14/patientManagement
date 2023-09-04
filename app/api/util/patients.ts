@@ -42,10 +42,10 @@ export async function deletePatient(id: number) {
         id: id,
       },
     });
-    console.log("patient deleted");
+    // console.log("patient deleted");
     return { message: `Patient with ID ${id} deleted successfully.` };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -126,7 +126,7 @@ export async function getUniquePatientWithDetails(patientId: number) {
       },
     });
     // console.log(patient);
-    console.log(patient);
+    // console.log(patient);
     return patient;
   } catch (error) {
     console.error("Error fetching patient:", error);
@@ -153,7 +153,7 @@ export async function addPrescription(
       },
     });
 
-    console.log("Prescription added:", prescription);
+    // console.log("Prescription added:", prescription);
 
     return prescription;
   } catch (error) {
@@ -164,34 +164,34 @@ export async function addPrescription(
   }
 }
 
-export async function getPrescriptionsByPatientAndDate(
-  patientId: number,
-  date: Date
-) {
-  try {
-    const prescriptions = await prisma.prescriptions.findMany({
-      where: {
-        patientId: patientId,
-        date: date,
-      },
-      orderBy: {
-        id: "asc", // 'asc' for ascending order, 'desc' for descending
-      },
-      select: {
-        prescription: true,
-      },
-    });
-    const prescriptionStrings = prescriptions.map(
-      (prescription) => prescription.prescription
-    );
+// export async function getPrescriptionsByPatientAndDate(
+//   patientId: number,
+//   date: Date
+// ) {
+//   try {
+//     const prescriptions = await prisma.prescriptions.findMany({
+//       where: {
+//         patientId: patientId,
+//         date: date,
+//       },
+//       orderBy: {
+//         id: "asc", // 'asc' for ascending order, 'desc' for descending
+//       },
+//       select: {
+//         prescription: true,
+//       },
+//     });
+//     const prescriptionStrings = prescriptions.map(
+//       (prescription) => prescription.prescription
+//     );
 
-    return prescriptionStrings;
-  } catch (error) {
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+//     return prescriptionStrings;
+//   } catch (error) {
+//     throw error;
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 
 export async function getAllPrescriptions() {
   try {
@@ -203,9 +203,16 @@ export async function getAllPrescriptions() {
         prescription: true,
       },
     });
-    const prescriptionStrings = prescriptions.map(
-      (prescription) => prescription.prescription
-    );
+
+    // Use a Set to store unique prescription strings
+    const uniquePrescriptionSet = new Set();
+
+    prescriptions.forEach((prescription) => {
+      uniquePrescriptionSet.add(prescription.prescription);
+    });
+    // Convert the Set back to an array
+    const prescriptionStrings = Array.from(uniquePrescriptionSet);
+
     return prescriptionStrings;
   } catch (error) {
     throw error;
@@ -226,7 +233,7 @@ export async function addNewVisit(patientId: number, dateString: string) {
         },
       },
     });
-    console.log("New visit added:", newVisit);
+    // console.log("New visit added:", newVisit);
     return newVisit;
   } catch (error) {
     console.error("Error adding new visit:", error);

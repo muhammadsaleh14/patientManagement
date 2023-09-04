@@ -5,7 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { sub } from "date-fns";
+import { format, parse, sub } from "date-fns";
 import axios from "axios";
 import {
   Patient,
@@ -13,8 +13,9 @@ import {
   Visit,
 } from "@/components/interfaces/databaseInterfaces";
 import { error } from "console";
-import { RootState } from "./store";
-import { getFromLocalStorage, setToLocalStorage } from "../manageLocalStorage";
+import { RootState, store } from "./store";
+import { getPatientApi } from "../apiCalls";
+import { formatDateString } from "../utilMethods";
 
 interface PatientState {
   patient: Patient | undefined;
@@ -23,13 +24,11 @@ interface PatientState {
   error: undefined | string;
 }
 
-const { patient: patientLS, currentVisitId: currentVisitIdLS } =
-  getFromLocalStorage();
 // const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 const initialState: PatientState = {
-  patient: patientLS,
-  currentVisitId: currentVisitIdLS,
+  patient: undefined,
+  currentVisitId: undefined,
   status: "idle",
   error: undefined,
 };
@@ -37,40 +36,114 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number) => {
-    console.log("running set patient");
-    const response = await axios.get("/api/patients/" + patientId);
-    return response.data;
+    return await getPatientApi(patientId);
   }
 );
-export const addVisit = createAsyncThunk(
-  "patient/addVisit",
+
+// export const setVisit = createAsyncThunk(
+//   "patient/setVisit",
+//   async (visitDate: string, { getState, dispatch }) => {
+//     const state = getState() as PatientState;
+//     console.log(state.patient?.visits);
+//     if (!state.patient) {
+//       throw new Error("Patient is not defined");
+//     }
+//     const pId = state.patient.id;
+//     console.log("state" + state.patient);
+//     console.log("patientID:" + pId);
+//     const response = await axios.post("/api/patients/" + pId + "/visits", {
+//       visitDate,
+//     });
+//     const visit = response.data as Visit;
+//     console.log("visit kamdkm" + visit);
+//     dispatch(setVisitId(visit.id));
+//     return response.data;
+//   }
+// );
+export const setVisit = createAsyncThunk(
+  "patient/setVisit",
   async (visitDate: string, { getState, dispatch }) => {
-    const state = getState() as PatientState;
-    if (!state.patient) {
+    const rootState = getState() as RootState;
+    const state = rootState.patient as PatientState;
+    // Logging state.patient and its properties
+    // console.log("state.patient:", state.patient);
+    if (!state.patient || !state.patient.id) {
       throw new Error("Patient is not defined");
     }
-    const pId = state.patient.id;
-    const response = await axios.post("/api/patients/" + pId + "/visits", {
-      visitDate,
+    const visit = state.patient?.visits.find(
+      (value) => value.date === visitDate
+    );
+    state.patient.visits.map((visit) => {
+      // console.log(visit.date);
     });
-    dispatch(setVisitId);
-    return response.data;
+    // console.log("date" + visitDate);
+    if (visit) {
+      dispatch(setVisitId(visit.id));
+      return "";
+    } else {
+      const pId = state.patient.id;
+      // console.log("date:", visitDate);
+      const response = await axios.post("/api/patients/" + pId + "/visits", {
+        visitDate,
+      });
+      const visitResponse = response.data as Visit;
+      // Logging the 'visitResponse' object and its properties
+      // console.log("visitResponse:", visitResponse);
+      dispatch(setVisitId(visitResponse.id));
+      return response.data;
+    }
   }
 );
+
 export const addPrescription = createAsyncThunk(
   "patient/addPrescription",
   async (prescriptionText: string, { getState }) => {
-    const state = getState() as PatientState;
+    const state = getState() as RootState;
     const response = await axios.post(
       "/api/patients/prescriptions/prescription",
       {
-        visitId: state.currentVisitId,
+        visitId: state.patient.currentVisitId,
         prescription: prescriptionText,
       }
     );
+    console.log("this prescription was added" + response.data);
     return response.data;
   }
 );
+
+export const deletePrescription = createAsyncThunk(
+  "patient/deletePrescription",
+  async (prescriptionText: string, { getState }) => {
+    const state = getState() as RootState;
+    const response = await axios.post(
+      "/api/patients/prescriptions/prescription",
+      {
+        visitId: state.patient.currentVisitId,
+        prescription: prescriptionText,
+      }
+    );
+    console.log("this prescription was added" + response.data);
+    return response.data;
+  }
+);
+// export const setPatientState = createAsyncThunk(
+//   "patient/setPatientState",
+//   async (
+//     { patientId, date }: { patientId: number; date: string },
+//     { getState }
+//   ) => {
+//     const state = getState() as RootState;
+//     const response = await axios.post(
+//       "/api/patients/prescriptions/prescription",
+//       {
+//         visitId: state.patient.currentVisitId,
+//         prescription: prescriptionText,
+//       }
+//     );
+//     console.log("this prescription was added" + response.data);
+//     return response.data;
+//   }
+// );
 // export const deletePatient = createAsyncThunk(
 //   "patient/deletePatient",
 //   async (patientId, { getState }) => {
@@ -121,17 +194,62 @@ export const addPrescription = createAsyncThunk(
 //       throw new Error("Cannot add prescription: Visit not availible");
 //     }
 //   },
+
+// export const initializeState = createAsyncThunk(
+//   "patient/initializeState",
+//   async () => {
+//     // console.log("running initialise state");
+//     if (typeof window !== "undefined") {
+//       const { patient, currentVisitId } = getFromLocalStorage();
+//       const patientId = patient?.id;
+//       const updatedPatient = patientId
+//         ? await getPatientApi(patientId)
+//         : console.log("patientId undefined");
+//       const visitId = currentVisitId;
+//       // console.log("updated patient" + updatedPatient);
+//       if (updatedPatient && visitId) {
+//         return { updatedPatient, visitId };
+//       }
+//     }
+//   }
+// );
 const patientSlice = createSlice({
   name: "patient",
   initialState,
   reducers: {
     setVisitId: (state, action: PayloadAction<number>) => {
       state.currentVisitId = action.payload;
-      setToLocalStorage(state.patient, state.currentVisitId);
+      // setToLocalStorage(state.patient, state.currentVisitId);
     },
   },
   extraReducers(builder) {
+    builder;
+    //? For Initialize state
     builder
+      // .addCase(initializeState.pending, (state) => {
+      //   state.status = "loading";
+      //   console.log("initializeState loading");
+      // })
+      // .addCase(initializeState.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   // console.log(
+      //   //   "initializeState fulfiulled: " + action.payload.updatedPatient
+      //   // );
+      //   if (action.payload) {
+      //     if (action.payload.updatedPatient) {
+      //       state.patient = action.payload.updatedPatient;
+      //       state.currentVisitId = action.payload.visitId;
+      //     } else {
+      //       console.log("patient is not defined to initialise");
+      //     }
+      //   }
+      // })
+      // .addCase(initializeState.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      //   console.log(state.error);
+      // })
+
       //? For setPatient
       .addCase(setPatient.pending, (state) => {
         state.status = "loading";
@@ -140,7 +258,7 @@ const patientSlice = createSlice({
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
           state.patient = action.payload;
-          setToLocalStorage(state.patient, state.currentVisitId);
+          // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
       )
@@ -148,21 +266,27 @@ const patientSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
+
       //? For setVisit
-      .addCase(addVisit.pending, (state) => {
+      .addCase(setVisit.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(addVisit.fulfilled, (state, action: PayloadAction<Visit>) => {
+      .addCase(setVisit.fulfilled, (state, action: PayloadAction<Visit>) => {
         if (!state.patient?.visits) {
           const message = "Patient is not defined, visit added";
           state.error = message;
           throw new Error(message);
         }
-        state.patient.visits = state.patient?.visits.concat(action.payload);
-        setToLocalStorage(state.patient, state.currentVisitId);
+        console.log("action Payload" + action.payload);
+        if (action.payload) {
+          let visit = action.payload;
+          visit.date = formatDateString(visit.date);
+          state.patient.visits = state.patient?.visits.concat(visit);
+        }
+        // setToLocalStorage(state.patient, state.currentVisitId);
         state.status = "succeeded";
       })
-      .addCase(addVisit.rejected, (state, action) => {
+      .addCase(setVisit.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
@@ -184,12 +308,13 @@ const patientSlice = createSlice({
               // Use concat to create a new array with the updated prescriptions
               return {
                 ...visit,
-                prescriptions: visit.prescriptions.concat(action.payload),
+                prescriptions: [...visit.prescriptions, action.payload],
               };
             }
             return visit;
           });
-          setToLocalStorage(state.patient, state.currentVisitId);
+
+          // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
       )
@@ -200,11 +325,11 @@ const patientSlice = createSlice({
   },
 });
 
-export const getPatientState = (state: RootState) => state.patient;
-export const getPatient = (state: RootState) => state.patient.patient;
-export const getPatientError = (state: RootState) => state.patient.error;
+export const getPatientState = (state: RootState) => state?.patient;
+export const getPatient = (state: RootState) => state?.patient?.patient;
+export const getPatientError = (state: RootState) => state?.patient?.error;
 export const getVisitById = (state: RootState, visitId: number) =>
-  state.patient.patient?.visits.find((visit) => visit.id === visitId);
+  state?.patient?.patient?.visits.find((visit) => visit.id === visitId);
 export const getCurrentVisit = (state: RootState): Visit | undefined => {
   // Use the find method to search for the visit with the matching ID
   return state.patient.patient?.visits.find(

@@ -49,7 +49,7 @@ model PatientDetails {
 }
 model Prescriptions {
   id            Int       @id @default(autoincrement())
-  prescription  String
+  prescription  String    
   visitId        Int
   visit        visit          @relation(fields:[visitId],references: [id])
   // @@index([id], name: "prescriptionId")

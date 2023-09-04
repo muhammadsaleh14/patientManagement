@@ -7,10 +7,11 @@ export async function POST(
 ) {
   try {
     const patientId = parseInt(params.id);
-    const { date }: { date: string } = await request.json();
+    const { visitDate }: { visitDate: string } = await request.json();
 
-    console.log(patientId + date);
-    let newVisit = await addNewVisit(patientId, date);
+    // console.log("patientID:" + patientId + " date:" + visitDate);
+
+    let newVisit = await addNewVisit(patientId, visitDate);
     // console.log(patient);
     return NextResponse.json(newVisit, { status: 201 });
   } catch (error) {

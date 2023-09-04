@@ -29,7 +29,7 @@ export async function GET(
 ) {
   try {
     // console.log(request);
-    console.log(request.url);
+    // console.log(request.url);
     let patient = await getUniquePatientWithDetails(parseInt(params.id));
     // console.log(patient);
     return NextResponse.json(patient, { status: 201 });
