@@ -3,6 +3,7 @@ import {
   nanoid,
   createAsyncThunk,
   PayloadAction,
+  AsyncThunk,
 } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { format, parse, sub } from "date-fns";
@@ -113,17 +114,11 @@ export const addPrescription = createAsyncThunk(
 
 export const deletePrescription = createAsyncThunk(
   "patient/deletePrescription",
-  async (prescriptionText: string, { getState }) => {
-    const state = getState() as RootState;
-    const response = await axios.post(
-      "/api/patients/prescriptions/prescription",
-      {
-        visitId: state.patient.currentVisitId,
-        prescription: prescriptionText,
-      }
+  async (prescriptionId: number) => {
+    const response = await axios.delete(
+      "/api/patients/prescriptions/" + prescriptionId
     );
-    console.log("this prescription was added" + response.data);
-    return response.data;
+    return prescriptionId;
   }
 );
 // export const setPatientState = createAsyncThunk(
@@ -303,6 +298,7 @@ const patientSlice = createSlice({
           if (!state.patient?.visits) {
             throw new Error(`Visit with ID ${visitId} not found.`);
           }
+          console.log("updating visits");
           state.patient.visits = state.patient?.visits.map((visit) => {
             if (visit.id === visitId) {
               // Use concat to create a new array with the updated prescriptions
@@ -319,6 +315,29 @@ const patientSlice = createSlice({
         }
       )
       .addCase(addPrescription.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+      })
+      .addCase(deletePrescription.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(
+        deletePrescription.fulfilled,
+        (state, action: PayloadAction<Prescription["id"]>) => {
+          if (state.patient) {
+            state.patient.visits.forEach((visit) => {
+              // Use filter to remove the prescription with the specified id
+              visit.prescriptions = visit.prescriptions.filter(
+                (prescription) => prescription.id !== action.payload
+              );
+            });
+            state.status = "succeeded";
+          } else {
+            throw new Error("patient is not defined");
+          }
+        }
+      )
+      .addCase(deletePrescription.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
       });

@@ -11,6 +11,7 @@ export async function DELETE(
 ) {
   try {
     let patientId = parseInt(params.id);
+    console.log(typeof patientId + " " + patientId);
     return NextResponse.json(
       { message: await deletePatient(patientId) },
       { status: 201 }

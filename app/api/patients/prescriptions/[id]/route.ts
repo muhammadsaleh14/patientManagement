@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  addPrescription,
-  getPrescriptionsByPatientAndDate,
-} from "../../../util/patients";
+import { addPrescription, deletePrescription } from "../../../util/patients";
 import format from "date-fns/format";
 import prisma from "@/app/api/util/db";
 
@@ -66,3 +63,22 @@ export async function POST(request: NextRequest) {
 //     });
 //   }
 // }
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const prescriptionId = parseInt(params.id);
+    let deletedPrescription = await deletePrescription(prescriptionId);
+    console.log("prescription deleted" + deletedPrescription);
+    return NextResponse.json(deletedPrescription, { status: 200 });
+  } catch (error) {
+    // console.log("in catch");
+    return new NextResponse("Error deleting prescription", {
+      status: 500, // Internal Server Error
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    });
+  }
+}

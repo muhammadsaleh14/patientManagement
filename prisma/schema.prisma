@@ -35,7 +35,7 @@ model visit{
   id  Int   @id @default(autoincrement())
   date DateTime @unique
   patientId Int
-  patient   Patient   @relation(fields:[patientId],references: [id])
+  patient   Patient   @relation(fields:[patientId],references: [id], onDelete: Cascade)
   patientDetails PatientDetails[] 
   prescriptions Prescriptions[]
 }
@@ -44,14 +44,14 @@ model PatientDetails {
   details       String
   detailHeading String
   visitId        Int
-  visit        visit          @relation(fields:[visitId],references: [id])    
+  visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)    
   @@index([id], name: "patientDetailsId")
 }
 model Prescriptions {
   id            Int       @id @default(autoincrement())
   prescription  String    
   visitId        Int
-  visit        visit          @relation(fields:[visitId],references: [id])
+  visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
   // @@index([id], name: "prescriptionId")
 }
 

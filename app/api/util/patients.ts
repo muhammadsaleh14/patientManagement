@@ -25,11 +25,11 @@ export async function createPatient(name: string, age: number, gender: string) {
 
 // Function to delete a patient by ID
 
-export async function deletePatient(id: number) {
+export async function deletePatient(patientId: number) {
   try {
     const patient = await prisma.patient.findUnique({
       where: {
-        id: id,
+        id: patientId,
       },
     });
 
@@ -39,13 +39,13 @@ export async function deletePatient(id: number) {
 
     await prisma.patient.delete({
       where: {
-        id: id,
+        id: patientId,
       },
     });
     // console.log("patient deleted");
-    return { message: `Patient with ID ${id} deleted successfully.` };
+    return { message: `Patient with ID ${patientId} deleted successfully.` };
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -142,22 +142,33 @@ export async function addPrescription(
 ) {
   try {
     // this is the right one -> const temp = parse(date, "hh:mm:ss a dd/MM/yyyy", new Date());
-    // const formattedDate = format(temp, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-    // console.log(temp);
-    // console.log(formattedDate);
-    // Create a new prescription record associated with the patient
     const prescription = await prisma.prescriptions.create({
       data: {
         prescription: prescriptionText,
         visitId: visitIdProp,
       },
     });
-
     // console.log("Prescription added:", prescription);
-
     return prescription;
   } catch (error) {
     console.error("Error adding prescription:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deletePrescription(prescriptionId: number) {
+  try {
+    const prescription = await prisma.prescriptions.delete({
+      where: {
+        id: prescriptionId,
+      },
+    });
+    // console.log("Prescription added:", prescription);
+    return prescription;
+  } catch (error) {
+    console.error("Error Deleting prescription:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

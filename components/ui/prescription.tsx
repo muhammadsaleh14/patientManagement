@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   addPrescription,
+  deletePrescription,
   getCurrentVisit,
   getPatient,
   getPatientState,
@@ -26,6 +27,7 @@ export default function Prescription() {
   const [allPrescriptions, setAllPrescriptions] = useState<string[] | null>(
     null
   );
+  // const [prescriptions, setPrescriptions] = useOptimistic(visit?.prescriptions);
 
   const loadPrescriptions = useCallback(async () => {
     console.log("running load prescriptions: " + patient);
@@ -33,6 +35,7 @@ export default function Prescription() {
     try {
       const response = await axios.get("/api/patients/prescriptions");
       // console.log(response.data);
+      console.log("setting autocomplete prescriptions");
       setAllPrescriptions(response.data);
     } catch (error) {
       console.error("Error fetching prescriptions:", error);
@@ -60,14 +63,12 @@ export default function Prescription() {
     try {
       console.log("adding prescription");
       store.dispatch(addPrescription(prescription));
+
       setPrescription("");
     } catch (error) {
       console.error("Error adding prescription:", error);
     }
   };
-  const deletePrescription= (prescriptionsId:number)=>{
-    
-  }
   // const allPrescriptionProps = {
   const options = allPrescriptions || [];
   // };
@@ -118,7 +119,7 @@ export default function Prescription() {
         {visit?.prescriptions ? (
           visit.prescriptions.map((value, index) => {
             return (
-              <div key={value.id}>
+              <div key={value.id} className="flex items-baseline">
                 <TextField
                   id="outlined-multiline-flexible"
                   multiline
@@ -129,9 +130,10 @@ export default function Prescription() {
                   onChange={() => {}}
                 />
                 <Button
-                  onClick={() => deletePrescription(value.id)}
+                  onClick={() => store.dispatch(deletePrescription(value.id))}
                   variant="outlined"
                   color="warning"
+                  className="m-auto ml-2"
                 >
                   <DeleteIcon />
                 </Button>
