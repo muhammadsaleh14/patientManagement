@@ -32,7 +32,6 @@ export interface PatientDetails {
   id: number;
   details: string;
   detailHeading: string;
-  dateId: number;
   visitId: Visit["id"];
 }
 

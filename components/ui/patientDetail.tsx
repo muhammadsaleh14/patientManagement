@@ -11,9 +11,9 @@ import {
 import { useState } from "react";
 import { previousDay } from "date-fns";
 
-export default function SortableItem(props: { detail: PatientDetails }) {
+export default function PatientDetail(props: { detail: PatientDetails }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ props });
+    useSortable({ id: props.detail.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -24,14 +24,7 @@ export default function SortableItem(props: { detail: PatientDetails }) {
       <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
         {/* <div className="m-3">{props.detail.detailHeading}</div> */}
         {/* <div className="m-3">{props.detail.details}</div> */}
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {props.detail.detailHeading}
-            </Typography>
-            <Typography variant="body2">{props.detail.details}</Typography>
-          </CardContent>
-        </Card>
+        
       </div>
     </>
   );
