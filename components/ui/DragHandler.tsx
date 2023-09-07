@@ -33,7 +33,7 @@ const DragHandlerExample = (props: Object) => (
 export const DragHandler: React.FC = () => {
   const [items, setItems] = useState<SortableItemProps[]>([
     { id: "1", name: "Item 1" },
-    { id: "2", name: "Item 2" },
+    { id: "2", name: "Item 3" },
     { id: "3", name: "Item 3" },
   ]);
 

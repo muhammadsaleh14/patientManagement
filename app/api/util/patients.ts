@@ -251,3 +251,25 @@ export async function addNewVisit(patientId: number, dateString: string) {
     throw error;
   }
 }
+
+export async function addPatientDetail(
+  detailHeadingArg: string,
+  detailArg: string,
+  visitIdArg: number
+) {
+  try {
+    console.log(detailHeadingArg, detailArg, visitIdArg);
+    const patientDetail = await prisma.patientDetails.create({
+      data: {
+        detailHeading: detailHeadingArg,
+        details: detailArg,
+        visitId: visitIdArg,
+      },
+    });
+    // console.log("New visit added:", newVisit);
+    return patientDetail;
+  } catch (error) {
+    console.error("Error adding new visit:", error);
+    throw error;
+  }
+}

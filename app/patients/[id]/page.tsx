@@ -37,6 +37,7 @@ import {
 import { useSelector } from "react-redux";
 import { AppDispatch, store } from "@/app/GlobalRedux/store/store";
 import { useDispatch } from "react-redux";
+import DndKitWrapper from "@/components/ui/dndKitWrapper";
 // { params }: { params: { id: string } }
 const Page = ({ params }: { params: { id: string } }) => {
   const { patient, currentVisitId } = useSelector(getPatientState);
@@ -64,12 +65,11 @@ const Page = ({ params }: { params: { id: string } }) => {
       <Stack direction="row" spacing={0} className="h-full">
         {/* Sidebar */}
         <Box
-          className="bg-gray-300 p-5 overflow-y-auto h-screen"
-          style={{ width: "220px" }}
+          className="bg-gray-300 overflow-y-auto h-screen"
+          style={{ minWidth: "200px", maxWidth: "200px" }}
         >
           {/* Sidebar content */}
-
-          <DragHandler />
+          <DndKitWrapper />
         </Box>
         {/* Main content */}
         <Box className="h-full w-full">

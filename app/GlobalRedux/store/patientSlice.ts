@@ -10,6 +10,7 @@ import { format, parse, sub } from "date-fns";
 import axios from "axios";
 import {
   Patient,
+  PatientDetails,
   Prescription,
   Visit,
 } from "@/components/interfaces/databaseInterfaces";
@@ -121,93 +122,33 @@ export const deletePrescription = createAsyncThunk(
     return prescriptionId;
   }
 );
-// export const setPatientState = createAsyncThunk(
-//   "patient/setPatientState",
-//   async (
-//     { patientId, date }: { patientId: number; date: string },
-//     { getState }
-//   ) => {
-//     const state = getState() as RootState;
-//     const response = await axios.post(
-//       "/api/patients/prescriptions/prescription",
-//       {
-//         visitId: state.patient.currentVisitId,
-//         prescription: prescriptionText,
-//       }
-//     );
-//     console.log("this prescription was added" + response.data);
-//     return response.data;
-//   }
-// );
-// export const deletePatient = createAsyncThunk(
-//   "patient/deletePatient",
-//   async (patientId, { getState }) => {
-//     const state = getState() as PatientState;
-//     const response = await axios.post(
-//       "/api/patients/prescriptions/prescription",
-//       {
-//         visitId: state.currentVisitId,
-//         prescription: prescriptionText,
-//       }
-//     );
-//     return response.data;
-//   }
-// );
-// const deletePatient = (patientId: number) => {
-//   axios
-//     .delete("/api/patients/" + patientId)
-//     .then((response) => {
-//       setPatients((prevPatients) =>
-//         prevPatients.filter((p) => p.id !== patientId)
-//       );
-//       setAlert({
-//         title: "Patient deleted",
-//         severity: "success",
-//         message: "",
-//       });
-//     })
-//     .catch(() => {
-//       console.log("delete patient failed");
-//       setAlert({
-//         title: "Deleting patient failed",
-//         severity: "error",
-//         message: "",
-//       });
-//     });
-// };
 
-// addPrescription: (
-//     state,
-//     action: PayloadAction<{ prescription: Prescription }>
-//   ) => {
-//     if (state.visit) {
-//       state.visit.prescriptions = [
-//         ...state.visit.prescriptions,
-//         action.payload.prescription,
-//       ];
-//     } else {
-//       throw new Error("Cannot add prescription: Visit not availible");
-//     }
-//   },
+export const addDetailToPatient = createAsyncThunk(
+  "patient/addDetailToPatient",
+  async (
+    {
+      detailHeading,
+      detail,
+      visitId,
+    }: {
+      detailHeading: string;
+      detail: string;
+      visitId: number;
+    },
+    { getState }
+  ) => {
+    console.log("in async thunk addPAtientDetail");
+    const state = getState() as RootState;
+    const response = await axios.post(
+      "/api/patients/" + state.patient.patient?.id + "/visits/details",
+      { detailHeading, detail, visitId }
+    );
+    console.log("response:" + response.data);
+    const patientDetail = response.data as PatientDetails;
+    return patientDetail;
+  }
+);
 
-// export const initializeState = createAsyncThunk(
-//   "patient/initializeState",
-//   async () => {
-//     // console.log("running initialise state");
-//     if (typeof window !== "undefined") {
-//       const { patient, currentVisitId } = getFromLocalStorage();
-//       const patientId = patient?.id;
-//       const updatedPatient = patientId
-//         ? await getPatientApi(patientId)
-//         : console.log("patientId undefined");
-//       const visitId = currentVisitId;
-//       // console.log("updated patient" + updatedPatient);
-//       if (updatedPatient && visitId) {
-//         return { updatedPatient, visitId };
-//       }
-//     }
-//   }
-// );
 const patientSlice = createSlice({
   name: "patient",
   initialState,
@@ -340,10 +281,37 @@ const patientSlice = createSlice({
       .addCase(deletePrescription.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
+      })
+
+      .addCase(addDetailToPatient.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        addDetailToPatient.fulfilled,
+        (state, action: PayloadAction<PatientDetails>) => {
+          if (state.patient) {
+            state.patient.visits.forEach((visit) => {
+              if (visit.id === state.currentVisitId) {
+                visit.patientDetails = visit.patientDetails.concat(
+                  action.payload
+                );
+              }
+            });
+            state.status = "succeeded";
+          } else {
+            throw new Error("Patient is not defined");
+          }
+        }
+      )
+      .addCase(addDetailToPatient.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+        console.log(state.error);
       });
   },
 });
 
+// export const getPatientDetails = (state:RootState) => state.patient.patient?.visits
 export const getPatientState = (state: RootState) => state?.patient;
 export const getPatient = (state: RootState) => state?.patient?.patient;
 export const getPatientError = (state: RootState) => state?.patient?.error;
