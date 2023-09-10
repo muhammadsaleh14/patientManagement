@@ -6,7 +6,8 @@ import { Router } from "react-router-dom";
 import { Box } from "@mui/material";
 import Provider from "./GlobalRedux/store/Provider";
 import { store } from "./GlobalRedux/store/store";
-import { initializeState } from "./GlobalRedux/store/patientSlice";
+import Link from "next/link";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,10 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-screen">
         <Provider>
-          
-        <Button>Edit your details</Button>
-        <Button>Edit patient layout</Button>
-        <Button>Patients Page</Button>
+          <Button>Edit your details</Button>
+          <Button>Patients</Button>
+          <Link href="/patients/editDetailsLayout">Edit Details Layout</Link>
+
           <Box className="h-full">{children}</Box>
         </Provider>
       </body>

@@ -19,7 +19,7 @@ import { RootState, store } from "./store";
 import { getPatientApi } from "../apiCalls";
 import { formatDateString } from "../utilMethods";
 
-interface PatientState {
+export interface PatientState {
   patient: Patient | undefined;
   currentVisitId: number | undefined;
   status: "idle" | "loading" | "succeeded" | "failed";

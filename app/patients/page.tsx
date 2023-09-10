@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPatient, getPatientState } from "../GlobalRedux/store/patientSlice";
 import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "../GlobalRedux/store/store";
+import SettingsIcon from "@mui/icons-material/Settings";
 // export interface Patient {
 //   id: number;
 //   name: string;

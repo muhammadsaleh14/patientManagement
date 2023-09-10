@@ -46,7 +46,7 @@ model PatientDetails {
   visitId        Int
   visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)    
   @@index([id], name: "patientDetailsId")
-  @@unique([visitId,detailHeading])
+  @@unique([detailHeading])
 }
 model Prescriptions {
   id            Int       @id @default(autoincrement())

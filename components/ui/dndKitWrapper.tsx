@@ -12,29 +12,20 @@ import {
   addDetailToPatient,
   getCurrentVisit,
 } from "@/app/GlobalRedux/store/patientSlice";
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
 import { Visit } from "../interfaces/databaseInterfaces";
 // Default SortableJS
-import Sortable from "sortablejs";
-import PatientDetail from "./patientDetail";
 import Details from "./sortabletest";
 
 export default function DndKitWrapper() {
   const visit = useSelector(getCurrentVisit) as Visit;
-  const [sortedDetails, setSortedDetails] = useState(visit?.patientDetails);
   const [detail, setDetail] = useState<{
     detailHeading: string;
     detailText: string;
   }>({ detailHeading: "", detailText: "" });
-  const [addDetail, setAddDetail] = useState(true);
-
+  const [addDetail, setAddDetail] = useState(false);
+  console.log("rendering dnd kit wrapper");
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Get the name and value from the input element
     const { name, value } = e.target;
@@ -62,7 +53,9 @@ export default function DndKitWrapper() {
         );
         setDetail({ detailHeading: "", detailText: "" });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -122,7 +115,7 @@ export default function DndKitWrapper() {
           </form>
         )}
       </div>
-      <Details />
+      <Details visit={visit} />
     </div>
   );
 }

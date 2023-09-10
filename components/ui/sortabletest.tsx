@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -7,7 +7,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PatientDetails } from "../interfaces/databaseInterfaces";
+import { PatientDetails, Visit } from "../interfaces/databaseInterfaces";
 import { useSelector } from "react-redux";
 import { getCurrentVisit } from "@/app/GlobalRedux/store/patientSlice";
 import {
@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const SortableUser = ({ detail }: { detail: PatientDetails }) => {
+const SortableDetails = ({ detail }: { detail: PatientDetails }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: detail.id });
   const style = {
@@ -46,9 +46,8 @@ const SortableUser = ({ detail }: { detail: PatientDetails }) => {
   );
 };
 
-export default function Details() {
-  const visit = useSelector(getCurrentVisit);
-
+export default function Details({ visit }: { visit: Visit }) {
+  console.log("rendering Details");
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
 
   const onDragEnd = (event: DragEndEvent) => {
@@ -58,14 +57,16 @@ export default function Details() {
     }
     setDetailOrder((prev) => {
       if (!prev || !over) {
-        return;
+        return [];
       }
       const oldIndex = prev?.findIndex((detail) => detail.id === active.id);
       const newIndex = prev?.findIndex((detail) => detail.id === over.id);
       return arrayMove(prev, oldIndex, newIndex);
     });
   };
-
+  useEffect(() => {
+    setDetailOrder(visit.patientDetails);
+  }, [visit.patientDetails]);
   return (
     <div className="details">
       <div>
@@ -75,7 +76,7 @@ export default function Details() {
             strategy={verticalListSortingStrategy}
           >
             {detailOrder?.map((detail) => (
-              <SortableUser key={detail.id} detail={detail} />
+              <SortableDetails key={detail.id} detail={detail} />
             ))}
           </SortableContext>
         </DndContext>
