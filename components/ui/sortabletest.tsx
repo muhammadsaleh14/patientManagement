@@ -66,7 +66,7 @@ export default function Details({ visit }: { visit: Visit }) {
   };
   useEffect(() => {
     setDetailOrder(visit.patientDetails);
-  }, [visit.patientDetails]);
+  }, [visit?.patientDetails]);
   return (
     <div className="details">
       <div>

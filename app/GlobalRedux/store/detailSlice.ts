@@ -7,6 +7,7 @@ import {
   createSelector,
 } from "@reduxjs/toolkit";
 import { RootState } from "./store";
+import { error } from "console";
 
 export interface Detail {
   detailHeading: string;
@@ -64,8 +65,28 @@ const detailsLayoutSlice = createSlice({
       if (!action.payload) {
         state.status = "failed";
         state.error = "details list is not defined";
+        return;
       }
       state.detailsInfo = action.payload;
+      state.status = "succeeded";
+    },
+    deleteDetail: (state, action: PayloadAction<number>) => {
+      state.status = "loading";
+      if (action.payload === undefined) {
+        state.status = "failed";
+        state.error = "details is not defined";
+        throw new Error("Detail id is not defined");
+      }
+      if (!state || !state.detailsInfo) {
+        console.log("state is not defined");
+        throw new Error("state is not defined");
+      }
+      console.log("deleting detail");
+      const updatedDetailsInfo = state.detailsInfo.filter(
+        (detail) => detail.id !== action.payload
+      );
+      console.log(updatedDetailsInfo);
+      state.detailsInfo = updatedDetailsInfo;
       state.status = "succeeded";
     },
     // updateDetail: (
@@ -84,7 +105,7 @@ const detailsLayoutSlice = createSlice({
 });
 
 export default detailsLayoutSlice.reducer;
-export const { addDetailInfoWithHeading, setNewDetailsOrder } =
+export const { addDetailInfoWithHeading, setNewDetailsOrder, deleteDetail } =
   detailsLayoutSlice.actions;
 
 export const getDetailsLayout = (state: RootState) => state.detailsLayout;

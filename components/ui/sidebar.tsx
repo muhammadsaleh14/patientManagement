@@ -12,13 +12,13 @@ import {
   addDetailToPatient,
   getCurrentVisit,
 } from "@/app/GlobalRedux/store/patientSlice";
-import { Button } from "@mui/material";
+import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
 import { Visit } from "../interfaces/databaseInterfaces";
 // Default SortableJS
 import Details from "./sortabletest";
 
-export default function DndKitWrapper() {
+export default function Sidebar() {
   const visit = useSelector(getCurrentVisit) as Visit;
   const [detail, setDetail] = useState<{
     detailHeading: string;
@@ -26,15 +26,29 @@ export default function DndKitWrapper() {
   }>({ detailHeading: "", detailText: "" });
   const [addDetail, setAddDetail] = useState(false);
   console.log("rendering dnd kit wrapper");
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Get the name and value from the input element
-    const { name, value } = e.target;
 
-    // Update the detail state based on the input element's name
-    setDetail((prevDetail) => ({
-      ...prevDetail,
-      [name]: value,
-    }));
+  const handleInputChange = (
+    e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Get the name and value from the input element
+    console.log(newValue);
+    if (newValue) {
+      setDetail((prevDetail) => ({
+        ...prevDetail,
+        detailHeading: newValue,
+      }));
+    } else {
+      if (e) {
+        const { name, value } = e.target;
+        console.log(name);
+        // Update the detail state based on the input element's name
+        setDetail((prevDetail) => ({
+          ...prevDetail,
+          [name]: value,
+        }));
+      }
+    }
     console.log(detail);
   };
 
@@ -79,14 +93,44 @@ export default function DndKitWrapper() {
               >
                 Detail Heading
               </label>
-              <input
-                type="text"
-                id="detailHeading"
-                name="detailHeading"
-                required
-                value={detail.detailHeading}
-                onChange={handleInputChange}
+              <Autocomplete
                 className="border border-gray-300 rounded-md py-1 px-2 w-full"
+                // {...allPrescriptionProps}
+                options={["sdad", "dsada", "sada"]}
+                id="free-solo-demo"
+                clearOnEscape
+                freeSolo
+                inputValue={detail.detailHeading}
+                onInputChange={(event, newInputValue) => {
+                  handleInputChange(undefined, newInputValue);
+                }}
+                renderInput={(params) => (
+                  <>
+                    <TextField
+                      {...params}
+                      id="standard"
+                      variant="standard"
+                      name="detailHeading"
+                      // label="Add Prescription"
+                      required
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                  </>
+                )}
+                renderOption={(props, option) => (
+                  <li {...props} key={option}>
+                    {option}
+                  </li>
+                )}
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => (
+                    <Chip
+                      {...getTagProps({ index })}
+                      key={option}
+                      label={option}
+                    />
+                  ))
+                }
               />
             </div>
             <div className="mb-1">
@@ -96,14 +140,14 @@ export default function DndKitWrapper() {
               >
                 Detail Text
               </label>
-              <input
-                type="text"
+              <TextField
                 id="detailText"
                 name="detailText"
-                required
+                variant="standard"
                 value={detail.detailText}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md py-1 px-2 w-full"
+                onChange={(e) => handleInputChange(e)}
+                required
+                // label="Add Prescription"
               />
             </div>
             <button

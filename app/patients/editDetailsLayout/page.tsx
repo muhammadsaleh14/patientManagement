@@ -24,11 +24,13 @@ import {
 } from "@mui/material";
 import {
   addDetailInfoWithHeading,
+  deleteDetail,
   getDetailsLayout,
   setNewDetailsOrder,
 } from "@/app/GlobalRedux/store/detailSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
+import DeleteDetailDialog from "@/components/ui/deleteDetailDialog";
 // function sortDetailsByPosition(details: DetailsLayoutSlice["detailsInfo"]) {
 //   const detailsInfo = details?.slice().sort((a, b) => a.id - b.id);
 //   return detailsInfo;
@@ -45,16 +47,22 @@ const SortableDetails = ({
     transition,
     transform: CSS.Transform.toString(transform),
   };
+  const details = useSelector(getDetailsLayout);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(detail.detailHeading);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
-
   const handleDeleteClick = () => {
-    // Implement your delete logic here
+    try {
+      store.dispatch(deleteDetail(detail.id));
+      // console.log(details);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <div
       ref={setNodeRef}
@@ -68,6 +76,7 @@ const SortableDetails = ({
           <div className="p-4">
             <h2 className="text-lg font-semibold">{detail.detailHeading}</h2>
           </div>
+
           {/* {isEditing && (
             <>
               <input
@@ -83,22 +92,23 @@ const SortableDetails = ({
               </button>
             </>
           )} */}
-          <div className="p-4">
-            <button {...listeners} {...attributes} className="font-bold m-2">
-              <UnfoldMoreIcon />
-            </button>
-            <button
+          <div className="p-4 h-full w-full flex justify-end ">
+            {/* <button
               className="px-4 py-2 text-sm bg-blue-300 rounded text-blue-500 hover:text-blue-900"
               onClick={handleEditClick}
             >
               Edit
-            </button>
+            </button> */}
             <button
-              className="px-4 py-2 text-sm bg-red-300 rounded text-red-500 hover:text-red-900 ml-2 "
-              onClick={handleDeleteClick}
+              {...listeners}
+              {...attributes}
+              className="bg-blue-400 text-white hover:bg-blue-700 py-2 px-4 rounded-full text-lg w-12 h-12 flex items-center justify-center"
             >
-              Delete
+              <UnfoldMoreIcon />
             </button>
+            <div className="px-4 py-2 text-sm bg-red-300 rounded text-red-500 hover:text-red-900 ml-2 ">
+              <DeleteDetailDialog detailId={detail.id} />
+            </div>
           </div>
         </div>
       </div>
@@ -109,13 +119,10 @@ const SortableDetails = ({
 const Page: React.FC = () => {
   console.log("rendering Details");
   const details = useSelector(getDetailsLayout);
-  // console.log(JSON.stringify(details.detailsInfo));
   const [detailOrder, setDetailOrder] = useState(details.detailsInfo);
-  const detailsRef = useRef(detailOrder);
-  // console.log("detailOrder" + detailOrder);
   const [detailInput, setDetailInput] = useState("");
   const [domLoaded, setDomLoaded] = useState(false);
-  const [saveBtnDisabled, setSaveBtnDisabled] = useState(true);
+  // const [saveBtnDisabled, setSaveBtnDisabled] = useState(true);
   const status = details.status;
   console.log(status);
   const error = details.error;
@@ -134,19 +141,24 @@ const Page: React.FC = () => {
       const newIndex = prev?.findIndex((detail) => detail.id === over.id);
       return arrayMove(prev, oldIndex, newIndex);
     });
-    setSaveBtnDisabled(false);
+    // setSaveBtnDisabled(false);
   };
 
-  const saveConfig = () => {
+  // Use useCallback to memoize the saveConfig function
+  const saveConfig = useCallback(() => {
     store.dispatch(setNewDetailsOrder(detailOrder));
-    setSaveBtnDisabled(true);
-  };
+    // setSaveBtnDisabled(true);
+  }, [detailOrder]);
+
+  useEffect(() => {
+    saveConfig();
+  }, [saveConfig]);
 
   useEffect(() => {
     setDomLoaded(true);
     setDetailOrder(details.detailsInfo);
-    // console.log("detailsRef" + detailsRef);
-  }, [domLoaded, details]);
+  }, [details]);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     saveConfig();
@@ -189,13 +201,6 @@ const Page: React.FC = () => {
           ) : null}
         </form>
         <br />
-        <Button
-          disabled={saveBtnDisabled}
-          onClick={saveConfig}
-          // className="mt-3 bg-blue-500 text-white hover:bg-blue-700 py-2 px-4 rounded-md m-auto"
-        >
-          Save Config
-        </Button>
         {status === "loading" ? (
           <div>Loading...</div>
         ) : status === "succeeded" || "idle" ? (
