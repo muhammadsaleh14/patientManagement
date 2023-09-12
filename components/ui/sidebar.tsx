@@ -5,12 +5,13 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import SortableItem from "./patientDetail";
 import { useSelector } from "react-redux";
 import {
   addDetailToPatient,
   getCurrentVisit,
+  updateDetailsOrder,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
@@ -26,6 +27,10 @@ export default function Sidebar() {
   }>({ detailHeading: "", detailText: "" });
   const [addDetail, setAddDetail] = useState(false);
   console.log("rendering dnd kit wrapper");
+
+  useEffect(() => {
+    store.dispatch(updateDetailsOrder());
+  }, [visit.patientDetails.length]);
 
   const handleInputChange = (
     e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

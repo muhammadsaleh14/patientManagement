@@ -33,6 +33,7 @@ import {
   setPatient,
   setVisit,
   setVisitId,
+  updateDetailsOrder,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { useSelector } from "react-redux";
 import { AppDispatch, store } from "@/app/GlobalRedux/store/store";

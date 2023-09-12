@@ -17,7 +17,8 @@ import {
 import { error } from "console";
 import { RootState, store } from "./store";
 import { getPatientApi } from "../apiCalls";
-import { formatDateString } from "../utilMethods";
+import { formatDateString, setDetailsOrder } from "../utilMethods";
+import { Detail, setNewDetailsOrder } from "./detailSlice";
 
 export interface PatientState {
   patient: Patient | undefined;
@@ -148,6 +149,21 @@ export const addDetailToPatient = createAsyncThunk(
     return patientDetail;
   }
 );
+// export const updateDetailsOrder = () =>
+//   createAsyncThunk("patient/updateDetailsOrder", () => {
+//     const currentLayout = store.getState().detailsLayout.detailsInfo; // Get current details
+//     const visit = getCurrentVisit(store.getState());
+//     if (!currentLayout || !visit) {
+//       throw new Error(
+//         "detail layout template Or current details is not defined"
+//       );
+//     }
+//     const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
+
+//     // Update the order of details in the Redux state using the action
+
+//     return orderedDetails;
+//   });
 
 const patientSlice = createSlice({
   name: "patient",
@@ -156,6 +172,37 @@ const patientSlice = createSlice({
     setVisitId: (state, action: PayloadAction<number>) => {
       state.currentVisitId = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
+    },
+    updateDetailsOrder: (state) => {
+      const currentLayout = store.getState().detailsLayout.detailsInfo; // Get current details
+      const visit = getCurrentVisit(store.getState());
+      if (!currentLayout || !visit) {
+        throw new Error(
+          "detail layout template Or current details is not defined"
+        );
+      }
+      const orderedDetails = setDetailsOrder(
+        currentLayout,
+        visit.patientDetails
+      );
+      // Update the order of details in the Redux state using the action
+      const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
+        if (visit.id === state.currentVisitId) {
+          // Clone the visit object and update its patientDetails property
+          return {
+            ...visit,
+            patientDetails: orderedDetails,
+          };
+        }
+        // For other visits, return them as they are (no changes)
+        return visit;
+      });
+
+      // Update the state with the new array of visits
+      if (state.patient) {
+        state.patient.visits = updatedVisits;
+      }
+      // Update the state with the new array of visits
     },
   },
   extraReducers(builder) {
@@ -259,6 +306,8 @@ const patientSlice = createSlice({
         state.error = action.error.message;
         state.status = "failed";
       })
+
+      //? For deletePrescription
       .addCase(deletePrescription.pending, (state, action) => {
         state.status = "loading";
       })
@@ -283,6 +332,7 @@ const patientSlice = createSlice({
         state.status = "failed";
       })
 
+      //? For addDetailToPatient
       .addCase(addDetailToPatient.pending, (state) => {
         state.status = "loading";
       })
@@ -308,6 +358,8 @@ const patientSlice = createSlice({
         state.status = "failed";
         console.log(state.error);
       });
+
+    //? updateDetailsOrder
   },
 });
 
@@ -324,6 +376,6 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
   );
 };
 
-export const { setVisitId } = patientSlice.actions;
+export const { setVisitId, updateDetailsOrder } = patientSlice.actions;
 
 export default patientSlice.reducer;
