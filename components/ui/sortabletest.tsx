@@ -9,7 +9,10 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { PatientDetails, Visit } from "../interfaces/databaseInterfaces";
 import { useSelector } from "react-redux";
-import { getCurrentVisit } from "@/app/GlobalRedux/store/patientSlice";
+import {
+  getCurrentVisit,
+  updateDetailsOrder,
+} from "@/app/GlobalRedux/store/patientSlice";
 import {
   Button,
   Card,
@@ -17,6 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { store } from "@/app/GlobalRedux/store/store";
 
 const Detail = ({ detail }: { detail: PatientDetails }) => {
   return (
@@ -32,11 +36,16 @@ const Detail = ({ detail }: { detail: PatientDetails }) => {
 };
 
 export default function Details({ visit }: { visit: Visit }) {
-  console.log("rendering Details");
+  // console.log("rendering Details");
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
 
   useEffect(() => {
+    store.dispatch(updateDetailsOrder());
+  }, [visit.patientDetails.length]);
+
+  useEffect(() => {
     setDetailOrder(visit.patientDetails);
+    console.log(visit.patientDetails);
   }, [visit?.patientDetails]);
   return (
     <div className="details">

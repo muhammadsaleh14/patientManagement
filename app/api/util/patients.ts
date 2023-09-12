@@ -1,4 +1,5 @@
 import prisma from "@/app/api/util/db";
+import { PatientDetails } from "@/components/interfaces/databaseInterfaces";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
 import { da } from "date-fns/locale";
 
@@ -260,6 +261,26 @@ export async function addPatientDetail(
   try {
     console.log(detailHeadingArg, detailArg, visitIdArg);
     const patientDetail = await prisma.patientDetails.create({
+      data: {
+        detailHeading: detailHeadingArg,
+        details: detailArg,
+        visitId: visitIdArg,
+      },
+    });
+    // console.log("New visit added:", newVisit);
+    return patientDetail;
+  } catch (error) {
+    console.error("Error adding new visit:", error);
+    throw error;
+  }
+}
+
+export async function setOrderedDetails(
+  details: PatientDetails[],
+  visitIdArg: number
+) {
+  try {
+    const patientDetails = await prisma.patientDetails.create({
       data: {
         detailHeading: detailHeadingArg,
         details: detailArg,

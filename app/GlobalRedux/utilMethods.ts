@@ -41,5 +41,9 @@ export const setDetailsOrder = (
   // Push non-matching patientDetails to the ordered list
   orderedDetails.push(...nonMatchingPatientDetails);
 
+  // orderedDetails.map((detail) => {
+  //   console.log("ordered detail: " + detail.detailHeading);
+  // });
+
   return orderedDetails;
 };

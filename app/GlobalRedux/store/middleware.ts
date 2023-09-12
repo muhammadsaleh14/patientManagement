@@ -16,6 +16,7 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
     // Let the action pass through first
     next(action);
     const newState = store.getState(); // Get the new state after the action has been processed
+
     // Check if the 'patient' state has changed
     if (prevState.patient !== newState.patient) {
       const patientState = newState.patient; // Get the updated 'patient' state

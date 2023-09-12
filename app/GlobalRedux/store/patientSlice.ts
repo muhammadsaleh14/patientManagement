@@ -39,6 +39,7 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number) => {
+    console.log("running setPatient AsyncThunk");
     return await getPatientApi(patientId);
   }
 );
@@ -66,6 +67,7 @@ export const setPatient = createAsyncThunk(
 export const setVisit = createAsyncThunk(
   "patient/setVisit",
   async (visitDate: string, { getState, dispatch }) => {
+    console.log("running setVisit");
     const rootState = getState() as RootState;
     const state = rootState.patient as PatientState;
     // Logging state.patient and its properties
@@ -101,6 +103,7 @@ export const setVisit = createAsyncThunk(
 export const addPrescription = createAsyncThunk(
   "patient/addPrescription",
   async (prescriptionText: string, { getState }) => {
+    console.log("runnning add prescription");
     const state = getState() as RootState;
     const response = await axios.post(
       "/api/patients/prescriptions/prescription",
@@ -109,7 +112,7 @@ export const addPrescription = createAsyncThunk(
         prescription: prescriptionText,
       }
     );
-    console.log("this prescription was added" + response.data);
+    // console.log("this prescription was added" + response.data);
     return response.data;
   }
 );
@@ -138,32 +141,39 @@ export const addDetailToPatient = createAsyncThunk(
     },
     { getState }
   ) => {
-    console.log("in async thunk addPAtientDetail");
+    // console.log("in async thunk addPAtientDetail");
     const state = getState() as RootState;
     const response = await axios.post(
       "/api/patients/" + state.patient.patient?.id + "/visits/details",
       { detailHeading, detail, visitId }
     );
-    console.log("response:" + response.data);
+    // console.log("response:" + response.data);
     const patientDetail = response.data as PatientDetails;
     return patientDetail;
   }
 );
-// export const updateDetailsOrder = () =>
-//   createAsyncThunk("patient/updateDetailsOrder", () => {
-//     const currentLayout = store.getState().detailsLayout.detailsInfo; // Get current details
-//     const visit = getCurrentVisit(store.getState());
-//     if (!currentLayout || !visit) {
-//       throw new Error(
-//         "detail layout template Or current details is not defined"
-//       );
-//     }
-//     const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
 
-//     // Update the order of details in the Redux state using the action
+export const updateDetailsOrder = createAsyncThunk(
+  "patient/updateDetailsOrder",
+  async (_, { getState, dispatch }) => {
+    console.log("updating details order");
+    const state = getState() as RootState;
+    const currentLayout = state.detailsLayout.detailsInfo;
+    const visit = getCurrentVisit(state);
 
-//     return orderedDetails;
-//   });
+    if (!currentLayout || !visit) {
+      throw new Error(
+        "detail layout template or current details is not defined"
+      );
+    }
+
+    const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
+    // Dispatch an action to update the order of details in Redux state
+    dispatch(updateDetailsOrderAsync(orderedDetails));
+
+    return orderedDetails;
+  }
+);
 
 const patientSlice = createSlice({
   name: "patient",
@@ -173,35 +183,27 @@ const patientSlice = createSlice({
       state.currentVisitId = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
-    updateDetailsOrder: (state) => {
-      const currentLayout = store.getState().detailsLayout.detailsInfo; // Get current details
-      const visit = getCurrentVisit(store.getState());
-      if (!currentLayout || !visit) {
-        throw new Error(
-          "detail layout template Or current details is not defined"
-        );
-      }
-      const orderedDetails = setDetailsOrder(
-        currentLayout,
-        visit.patientDetails
-      );
+    updateDetailsOrderAsync: (
+      state,
+      action: PayloadAction<PatientDetails[]>
+    ) => {
       // Update the order of details in the Redux state using the action
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
           // Clone the visit object and update its patientDetails property
           return {
             ...visit,
-            patientDetails: orderedDetails,
+            patientDetails: action.payload,
           };
         }
         // For other visits, return them as they are (no changes)
         return visit;
       });
-
       // Update the state with the new array of visits
       if (state.patient) {
         state.patient.visits = updatedVisits;
       }
+      // console.log(JSON.stringify(updatedVisits));
       // Update the state with the new array of visits
     },
   },
@@ -260,7 +262,7 @@ const patientSlice = createSlice({
           state.error = message;
           throw new Error(message);
         }
-        console.log("action Payload" + action.payload);
+        // console.log("action Payload" + action.payload);
         if (action.payload) {
           let visit = action.payload;
           visit.date = formatDateString(visit.date);
@@ -376,6 +378,6 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
   );
 };
 
-export const { setVisitId, updateDetailsOrder } = patientSlice.actions;
+export const { setVisitId, updateDetailsOrderAsync } = patientSlice.actions;
 
 export default patientSlice.reducer;
