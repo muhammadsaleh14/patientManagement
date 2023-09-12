@@ -1,12 +1,4 @@
-import {
-  createSlice,
-  nanoid,
-  createAsyncThunk,
-  PayloadAction,
-  AsyncThunk,
-} from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-import { format, parse, sub } from "date-fns";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
   Patient,
@@ -14,10 +6,9 @@ import {
   Prescription,
   Visit,
 } from "@/components/interfaces/databaseInterfaces";
-import { error } from "console";
-import { RootState, store } from "./store";
+import { RootState } from "./store";
 import { getPatientApi } from "../apiCalls";
-import { formatDateString, setDetailsOrder } from "../utilMethods";
+import { formatDateString } from "../utilMethods";
 import { Detail, setNewDetailsOrder } from "./detailSlice";
 
 export interface PatientState {
@@ -153,27 +144,27 @@ export const addDetailToPatient = createAsyncThunk(
   }
 );
 
-export const updateDetailsOrder = createAsyncThunk(
-  "patient/updateDetailsOrder",
-  async (_, { getState, dispatch }) => {
-    console.log("updating details order");
-    const state = getState() as RootState;
-    const currentLayout = state.detailsLayout.detailsInfo;
-    const visit = getCurrentVisit(state);
+// export const updateDetailsOrder = createAsyncThunk(
+//   "patient/updateDetailsOrder",
+//   async (_, { getState, dispatch }) => {
+//     console.log("updating details order");
+//     const state = getState() as RootState;
+//     const currentLayout = state.detailsLayout.detailsInfo;
+//     const visit = getCurrentVisit(state);
 
-    if (!currentLayout || !visit) {
-      throw new Error(
-        "detail layout template or current details is not defined"
-      );
-    }
+//     if (!currentLayout || !visit) {
+//       throw new Error(
+//         "detail layout template or current details is not defined"
+//       );
+//     }
 
-    const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
-    // Dispatch an action to update the order of details in Redux state
-    dispatch(updateDetailsOrderAsync(orderedDetails));
+//     const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
+//     // Dispatch an action to update the order of details in Redux state
+//     dispatch(updateDetailsOrderAsync(orderedDetails));
 
-    return orderedDetails;
-  }
-);
+//     return orderedDetails;
+//   }
+// );
 
 const patientSlice = createSlice({
   name: "patient",
@@ -183,10 +174,7 @@ const patientSlice = createSlice({
       state.currentVisitId = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
-    updateDetailsOrderAsync: (
-      state,
-      action: PayloadAction<PatientDetails[]>
-    ) => {
+    updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
       // Update the order of details in the Redux state using the action
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
@@ -199,6 +187,7 @@ const patientSlice = createSlice({
         // For other visits, return them as they are (no changes)
         return visit;
       });
+      console.log("here");
       // Update the state with the new array of visits
       if (state.patient) {
         state.patient.visits = updatedVisits;
@@ -243,13 +232,16 @@ const patientSlice = createSlice({
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
           state.patient = action.payload;
+          console.log("patient" + JSON.stringify(action.payload));
           // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
+          console.log("setPatient" + state.patient.name);
         }
       )
       .addCase(setPatient.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+        console.log(state.error);
       })
 
       //? For setVisit
@@ -365,6 +357,7 @@ const patientSlice = createSlice({
   },
 });
 
+export default patientSlice;
 // export const getPatientDetails = (state:RootState) => state.patient.patient?.visits
 export const getPatientState = (state: RootState) => state?.patient;
 export const getPatient = (state: RootState) => state?.patient?.patient;
@@ -378,6 +371,4 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
   );
 };
 
-export const { setVisitId, updateDetailsOrderAsync } = patientSlice.actions;
-
-export default patientSlice.reducer;
+export const { setVisitId, updateDetailsOrder } = patientSlice.actions;

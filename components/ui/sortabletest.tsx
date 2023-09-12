@@ -38,13 +38,12 @@ const Detail = ({ detail }: { detail: PatientDetails }) => {
 export default function Details({ visit }: { visit: Visit }) {
   // console.log("rendering Details");
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
-
+  // useEffect(() => {
+  // }, [visit.patientDetails.length]);
   useEffect(() => {
-    store.dispatch(updateDetailsOrder());
-  }, [visit.patientDetails.length]);
-
-  useEffect(() => {
-    setDetailOrder(visit.patientDetails);
+    if (visit.patientDetails) {
+      setDetailOrder(visit.patientDetails);
+    }
     console.log(visit.patientDetails);
   }, [visit?.patientDetails]);
   return (

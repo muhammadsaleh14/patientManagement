@@ -30,3 +30,27 @@ const formattedDate = detail.date
     //     </Box>
     //   </Stack>
     // </Box>
+
+
+
+Create an empty orderedDetails array to store the patient details in the desired order.
+ok
+
+Create a detailIndexMap to map each detailHeading from currentLayout to its index in the array.
+
+
+Iterate through each detail in currentLayout using currentDetail.
+
+For each currentDetail, check if its detailHeading exists in the detailIndexMap.
+You are made the index map using current layout, and using equating the list to itself
+
+If the detailHeading exists in the detailIndexMap, it means it's a detail that should be included in the orderedDetails array.
+what is in both 
+
+If the index of the detailHeading in currentLayout is within the bounds of the patientDetails array (i.e., it exists in patientDetails), push the corresponding patientDetail to the orderedDetails array at the same index as in currentLayout.
+
+If the index is out of bounds for patientDetails, push a placeholder value (in this case, null) to orderedDetails. This handles the situation where a detail in currentLayout doesn't have a corresponding entry in patientDetails.
+
+After processing all details in currentLayout, check if there are any remaining details in patientDetails that are not present in currentLayout.
+
+Append any remaining patientetails to the end of the orderedDetails array. These are the details that exist in patientDetails but not in currentLayout.

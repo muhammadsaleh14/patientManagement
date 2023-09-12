@@ -8,38 +8,48 @@ import { useSelector } from "react-redux";
 function HistoryOfPatient() {
   // const [patient, setPatient] = useState(patientContext);
   // console.count("HistoryOfPatient");
-  const { patient } = useSelector(getPatientState);
+  const { patient, status } = useSelector(getPatientState);
   const router = useRouter();
   // console.log(patient);
 
-  // useEffect(() => {}, [patient]);
+  useEffect(() => {}, [patient]);
   return (
-    <div className="w-full h-full">
-      <h1>History of Patient: {patient?.name}</h1>
-      <ul>
-        {patient ? (
-          patient.visits.length > 0 ? (
-            patient.visits.map((visit) => (
-              <li key={visit.id}>
-                <Button
-                  onClick={() =>
-                    router.push(
-                      `/patients/${patient?.id}?visitDate=` + visit.date
-                    )
-                  }
-                >
-                  {visit.date}
-                </Button>
-              </li>
-            ))
-          ) : (
-            <div>No history available</div>
-          )
-        ) : (
-          ""
-        )}
-      </ul>
-    </div>
+    <>
+      {status === "loading" ? (
+        // Display loading content
+        <p>Loading...</p>
+      ) : status === "succeeded" ? (
+        // Display success content
+        <div className="w-full h-full">
+          <h1>History of Patient: {patient?.name}</h1>
+          <ul>
+            {patient ? (
+              patient.visits.length > 0 ? (
+                patient.visits.map((visit) => (
+                  <li key={visit.id}>
+                    <Button
+                      onClick={() =>
+                        router.push(
+                          `/patients/${patient?.id}?visitDate=` + visit.date
+                        )
+                      }
+                    >
+                      {visit.date}
+                    </Button>
+                  </li>
+                ))
+              ) : (
+                <div>No history available</div>
+              )
+            ) : (
+              ""
+            )}
+          </ul>
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 

@@ -1,12 +1,12 @@
-import { configureStore, Middleware } from "@reduxjs/toolkit";
-import patientReducer, {
-  PatientState,
-} from "@/app/GlobalRedux/store/patientSlice";
+import { configureStore, Middleware, Reducer } from "@reduxjs/toolkit";
+import patientSlice from "@/app/GlobalRedux/store/patientSlice";
+import { PatientState } from "@/app/GlobalRedux/store/patientSlice";
 import detailsLayoutReducer, {
   Detail,
   DetailsLayoutSlice,
 } from "@/app/GlobalRedux/store/detailSlice";
 import { customLocalStorageMiddleware } from "@/app/GlobalRedux/store/middleware"; // Replace with the actual path to your customLocalStorageMiddleware
+import { Patient } from "@/components/interfaces/databaseInterfaces";
 
 let storedPatientData;
 let detailSort;
@@ -37,7 +37,6 @@ type InitialState = {
 const initialState: InitialState = {
   // Initialize the 'patient' state with data from local storage, or null if not found
   patient: storedPatientData ? JSON.parse(storedPatientData) : {},
-
   detailsLayout: {
     detailsInfo: uniqueDetails || [],
     status: "idle",
@@ -51,14 +50,15 @@ const middleware: Middleware[] = [customLocalStorageMiddleware];
 
 export const store = configureStore({
   reducer: {
-    patient: patientReducer,
     detailsLayout: detailsLayoutReducer,
+    patient: patientSlice.reducer as Reducer<PatientState>,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(middleware),
-  // Use the middleware property to specify middleware
   preloadedState: initialState, // Set the preloadedState outside of the reducer property
+  // Use the middleware property to specify middleware
 });
-
+const state = store.getState();
+export const rootState = state;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
