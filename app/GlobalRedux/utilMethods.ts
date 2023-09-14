@@ -1,10 +1,11 @@
 import { format, parse } from "date-fns";
 import { Detail } from "./store/detailSlice";
-import { Visit } from "@/components/interfaces/databaseInterfaces";
-import { getCurrentVisit } from "./store/patientSlice";
+import { Patient, Visit } from "@/components/interfaces/databaseInterfaces";
+import { PatientState, getCurrentVisit } from "./store/patientSlice";
 import { error } from "console";
 import { Store } from "redux";
 import { RootState } from "./store/store";
+import { PatientDetails } from "@prisma/client";
 
 export function formatDateString(date: string): string {
   const parsedDate = parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", new Date());
@@ -12,10 +13,32 @@ export function formatDateString(date: string): string {
   const formattedDate = format(parsedDate, "hh:mm:ss a dd/MM/yyyy");
   return formattedDate;
 }
+
+// export function initialisePatientState() {
+//   if (typeof localStorage !== "undefined") {
+//     const storedPatientData = localStorage.getItem("patientData");
+//     const patientState = storedPatientData
+//       ? (JSON.parse(storedPatientData) as PatientState)
+//       : {};
+//     if (!isEmpty(patientState)) {
+//       setDetailsOrder();
+//     }
+//   }
+// }
 // Define a function to set the order of patient visit details
 export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   const currentLayout = state.detailsLayout.detailsInfo;
-  const patientDetails = getCurrentVisit(state)?.patientDetails;
+  const _ = getCurrentVisit(state)?.patientDetails;
+  if (!_) {
+    return [];
+  }
+  const patientDetails = _.reduce((acc, current) => {
+    if (!acc.find((detail) => detail.detailHeading === current.detailHeading)) {
+      acc.push(current);
+    }
+    return acc;
+  }, [] as PatientDetails[]);
+
   // Iterate through the detailSlice to maintain the specified sequence
   if (!patientDetails || !currentLayout) {
     throw new Error("Not defined patient details OR details order");
@@ -23,7 +46,7 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
 
   // Create a map to store the index of each detailHeading in currentLayout
   const detailIndexMap = new Map();
-
+  // console.log("unique details: " + JSON.stringify(patientDetails));
   currentLayout.forEach((currentDetail, index) => {
     detailIndexMap.set(currentDetail.detailHeading, index);
   });
@@ -57,14 +80,13 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   );
 
   // Push non-matching patientDetails to the ordered list
-  orderedDetails.push(...orderedPatientDetails, ...nonMatchingPatientDetails);
+  orderedPatientDetails.push(...nonMatchingPatientDetails);
 
   // orderedDetails.map((detail) => {
   //   console.log("ordered detail: " + detail.detailHeading);
   // });
-  const uniqueList = [...new Set(orderedDetails)];
-
-  return orderedDetails;
+  // console.log("set details order:", setDetailsOrder);
+  return orderedPatientDetails;
 };
 
 export function areObjectsEqual(objA: Object, objB: Object) {
@@ -95,3 +117,11 @@ export function areObjectsEqual(objA: Object, objB: Object) {
 
   return true;
 }
+export const isEmpty = (obj: Object) => {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false; // If any property is found, it's not empty
+    }
+  }
+  return true; // If no properties are found, it's empty
+};

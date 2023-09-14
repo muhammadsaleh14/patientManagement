@@ -30,7 +30,7 @@ export default function Prescription() {
   // const [prescriptions, setPrescriptions] = useOptimistic(visit?.prescriptions);
 
   const loadPrescriptions = useCallback(async () => {
-    console.log("running load prescriptions: " + patient);
+    // console.log("running load prescriptions: " + patient);
     // Fetch other prescriptions here if needed
     try {
       const response = await axios.get("/api/patients/prescriptions");

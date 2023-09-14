@@ -1,5 +1,5 @@
 import { configureStore, Middleware, Reducer } from "@reduxjs/toolkit";
-import patientSlice from "@/app/GlobalRedux/store/patientSlice";
+import patientSlice, { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { PatientState } from "@/app/GlobalRedux/store/patientSlice";
 import detailsLayoutReducer, {
   Detail,
@@ -29,14 +29,16 @@ if (typeof localStorage !== "undefined") {
     }, [] as Array<Detail>);
   }
 }
+// console.log("unique details:" + JSON.stringify(uniqueDetails));
 type InitialState = {
   patient: PatientState; // Replace with the actual type for 'patient'
   detailsLayout: DetailsLayoutSlice;
 };
 
+const initialPatient = storedPatientData ? JSON.parse(storedPatientData) : {};
 const initialState: InitialState = {
   // Initialize the 'patient' state with data from local storage, or null if not found
-  patient: storedPatientData ? JSON.parse(storedPatientData) : {},
+  patient: initialPatient,
   detailsLayout: {
     detailsInfo: uniqueDetails || [],
     status: "idle",
@@ -58,7 +60,6 @@ export const store = configureStore({
   preloadedState: initialState, // Set the preloadedState outside of the reducer property
   // Use the middleware property to specify middleware
 });
-const state = store.getState();
-export const rootState = state;
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

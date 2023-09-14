@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -21,17 +21,26 @@ import {
   Typography,
 } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
+import DetailsMenu from "./detailsMenu";
 
-const Detail = ({ detail }: { detail: PatientDetails }) => {
+export const detailContext = createContext<undefined | PatientDetails>(
+  undefined
+);
+const Detail = ({ detail }: { detail: PatientDetails | undefined }) => {
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {detail.detailHeading}
-        </Typography>
-        <Typography variant="body2">{detail.details}</Typography>
-      </CardContent>
-    </Card>
+    <detailContext.Provider value={detail}>
+      <Card variant="outlined" className="flex">
+        <CardContent className="px-4 py-2 flex-grow">
+          <Typography variant="h6" gutterBottom className="">
+            {detail?.detailHeading}
+          </Typography>
+          <Typography variant="body2" className="whitespace-pre-wrap">
+            {detail?.details}
+          </Typography>
+        </CardContent>
+        <DetailsMenu />
+      </Card>
+    </detailContext.Provider>
   );
 };
 
@@ -40,8 +49,9 @@ export default function Details({ visit }: { visit: Visit }) {
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
   // useEffect(() => {
   // }, [visit.patientDetails.length]);
+  console.log("rendering details");
   useEffect(() => {
-    if (visit.patientDetails) {
+    if (visit?.patientDetails) {
       setDetailOrder(visit.patientDetails);
     }
     console.log(visit.patientDetails);
@@ -49,7 +59,7 @@ export default function Details({ visit }: { visit: Visit }) {
   return (
     <div className="details">
       {detailOrder?.map((detail) => (
-        <Detail key={detail.id} detail={detail} />
+        <Detail key={detail?.id} detail={detail} />
       ))}
     </div>
   );

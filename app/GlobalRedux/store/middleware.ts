@@ -17,12 +17,13 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
     // Let the action pass through first
     next(action);
     const newState = store.getState(); // Get the new state after the action has been processed
-    console.log(JSON.stringify(newState));
+    // console.log(JSON.stringify(newState));
     const currentVisit = getCurrentVisit(newState);
     // Check if the 'patient' state has changed
     if (prevState.patient !== newState.patient) {
       const patientState = newState.patient; // Get the updated 'patient' state
       if (currentVisit && oldVisit) {
+        // console.log("current visit", currentVisit, " oldVisit", oldVisit);
         if (
           !areObjectsEqual(
             currentVisit?.patientDetails,
@@ -30,11 +31,13 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
           )
         ) {
           const orderedDetails = setDetailsOrder(newState);
+          // console.log("running sorting middleware");
           store.dispatch(updateDetailsOrder(orderedDetails));
         }
       }
       // Save the 'patient' state to local storage
       if (typeof localStorage !== "undefined") {
+        // console.log("Storing in local Storage");
         localStorage.setItem("patientData", JSON.stringify(patientState));
       }
     }

@@ -145,6 +145,8 @@ export default function Sidebar() {
                 id="detailText"
                 name="detailText"
                 variant="standard"
+                multiline
+                maxRows={4}
                 value={detail.detailText}
                 onChange={(e) => handleInputChange(e)}
                 required

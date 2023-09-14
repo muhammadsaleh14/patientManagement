@@ -6,9 +6,9 @@ import {
   Prescription,
   Visit,
 } from "@/components/interfaces/databaseInterfaces";
-import { RootState } from "./store";
+import { RootState, store } from "./store";
 import { getPatientApi } from "../apiCalls";
-import { formatDateString } from "../utilMethods";
+import { formatDateString, setDetailsOrder } from "../utilMethods";
 import { Detail, setNewDetailsOrder } from "./detailSlice";
 
 export interface PatientState {
@@ -29,9 +29,15 @@ const initialState: PatientState = {
 
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
-  async (patientId: number) => {
-    console.log("running setPatient AsyncThunk");
-    return await getPatientApi(patientId);
+  async (patientId: number, { getState, dispatch }) => {
+    const state = getState() as RootState;
+    // console.log("running setPatient AsyncThunk");
+    const patient = await getPatientApi(patientId);
+    const sortedDetails = setDetailsOrder(state);
+    dispatch(setPatientFromApi(patient));
+    dispatch(updateDetailsOrder(sortedDetails));
+    // console.log("set patient async thunk: ");
+    return patient;
   }
 );
 
@@ -170,11 +176,26 @@ const patientSlice = createSlice({
   name: "patient",
   initialState,
   reducers: {
+    //to make the middleware run
+    // initialisePatientStateWithSortedDetails: (
+    //   state,
+    //   action: PayloadAction<PatientDetails>
+    // ) => {
+
+    //   // setToLocalStorage(state.patient, state.currentVisitId);
+    // },
+
+    setPatientFromApi: (state, action: PayloadAction<Patient>) => {
+      state.patient = action.payload;
+      // setToLocalStorage(state.patient, state.currentVisitId);
+    },
     setVisitId: (state, action: PayloadAction<number>) => {
+      console.log("setting visit id");
       state.currentVisitId = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
+      console.log("update details order");
       // Update the order of details in the Redux state using the action
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
@@ -187,7 +208,6 @@ const patientSlice = createSlice({
         // For other visits, return them as they are (no changes)
         return visit;
       });
-      console.log("here");
       // Update the state with the new array of visits
       if (state.patient) {
         state.patient.visits = updatedVisits;
@@ -231,11 +251,12 @@ const patientSlice = createSlice({
       .addCase(
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
-          state.patient = action.payload;
-          console.log("patient" + JSON.stringify(action.payload));
+          console.log("set patient fulfilled");
+          // const sortedDetails = setDetailsOrder(store.getState());
+          // store.dispatch(updateDetailsOrder(sortedDetails));
+          // console.log("patient" + JSON.stringify(action.payload));
           // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
-          console.log("setPatient" + state.patient.name);
         }
       )
       .addCase(setPatient.rejected, (state, action) => {
@@ -254,7 +275,7 @@ const patientSlice = createSlice({
           state.error = message;
           throw new Error(message);
         }
-        // console.log("action Payload" + action.payload);
+        console.log("set visit fulfilled");
         if (action.payload) {
           let visit = action.payload;
           visit.date = formatDateString(visit.date);
@@ -280,7 +301,7 @@ const patientSlice = createSlice({
           if (!state.patient?.visits) {
             throw new Error(`Visit with ID ${visitId} not found.`);
           }
-          console.log("updating visits");
+          console.log("add prescription fulfilled");
           state.patient.visits = state.patient?.visits.map((visit) => {
             if (visit.id === visitId) {
               // Use concat to create a new array with the updated prescriptions
@@ -308,6 +329,7 @@ const patientSlice = createSlice({
       .addCase(
         deletePrescription.fulfilled,
         (state, action: PayloadAction<Prescription["id"]>) => {
+          console.log("delete prescription fulfilled");
           if (state.patient) {
             state.patient.visits.forEach((visit) => {
               // Use filter to remove the prescription with the specified id
@@ -333,6 +355,7 @@ const patientSlice = createSlice({
       .addCase(
         addDetailToPatient.fulfilled,
         (state, action: PayloadAction<PatientDetails>) => {
+          console.log("add detail to patient fulfilled");
           if (state.patient) {
             state.patient.visits.forEach((visit) => {
               if (visit.id === state.currentVisitId) {
@@ -371,4 +394,5 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
   );
 };
 
-export const { setVisitId, updateDetailsOrder } = patientSlice.actions;
+export const { setVisitId, updateDetailsOrder, setPatientFromApi } =
+  patientSlice.actions;
