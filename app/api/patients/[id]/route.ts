@@ -11,7 +11,7 @@ export async function DELETE(
 ) {
   try {
     let patientId = parseInt(params.id);
-    console.log(typeof patientId + " " + patientId);
+    //console.log(typeof patientId + " " + patientId);
     return NextResponse.json(
       { message: await deletePatient(patientId) },
       { status: 201 }
@@ -29,10 +29,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // console.log(request);
-    // console.log(request.url);
+    // //console.log(request);
+    // //console.log(request.url);
     let patient = await getUniquePatientWithDetails(parseInt(params.id));
-    // console.log(patient);
+    // //console.log(patient);
     return NextResponse.json(patient, { status: 201 });
   } catch (error) {
     return NextResponse.json(

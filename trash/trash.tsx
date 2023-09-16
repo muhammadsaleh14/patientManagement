@@ -29,12 +29,12 @@ export function PatientContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // console.log("patientContextProvider");
+  // //console.log("patientContextProvider");
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
   const initializePatient = () => {
     if (typeof window !== "undefined") {
       const storedState = localStorage.getItem("patient");
-      // console.log(storedState);
+      // //console.log(storedState);
       return storedState ? JSON.parse(storedState) : undefined;
     }
     return undefined;

@@ -12,7 +12,7 @@ function UseStore() {
   const rootState = store.getState();
 
   useEffect(() => {
-    // console.log("useStore comp");
+    // //console.log("useStore comp");
     // const sortedDetails = setDetailsOrder(rootState);
     // store.dispatch(updateDetailsOrder(sortedDetails));
   }, []);

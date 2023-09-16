@@ -7,7 +7,7 @@ import HistoryOfPatient from "./historyOfPatient";
 const HistoryOfPatientModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  console.log("historyOfPatientModel");
+  //console.log("historyOfPatientModel");
   useEffect(() => {
     setIsClient(true);
     Modal.setAppElement("#historyOfPatient");

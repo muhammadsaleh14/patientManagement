@@ -29,7 +29,7 @@ if (typeof localStorage !== "undefined") {
     }, [] as Array<Detail>);
   }
 }
-// console.log("unique details:" + JSON.stringify(uniqueDetails));
+// //console.log("unique details:" + JSON.stringify(uniqueDetails));
 type InitialState = {
   patient: PatientState; // Replace with the actual type for 'patient'
   detailsLayout: DetailsLayoutSlice;

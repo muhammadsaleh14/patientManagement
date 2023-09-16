@@ -43,13 +43,13 @@ import Sidebar from "@/components/ui/sidebar";
 const Page = ({ params }: { params: { id: string } }) => {
   const { patient, currentVisitId } = useSelector(getPatientState);
   const searchParams = useSearchParams();
-  // console.log("id" + params.id);
+  // //console.log("id" + params.id);
   const [domLoaded, setDomLoaded] = useState(false);
   const date = searchParams.get("visitDate") as string;
 
   useEffect(() => {
     // store.dispatch(initializeState());
-    // console.log("initialising state");
+    // //console.log("initialising state");
     const initialiseState = async () => {
       const pId = parseInt(params.id);
       await store.dispatch(setPatient(pId));

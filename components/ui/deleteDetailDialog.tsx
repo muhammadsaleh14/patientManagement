@@ -23,9 +23,9 @@ export default function DeleteDetailDialog({ detailId }: { detailId: number }) {
     if (!isPersist) {
       try {
         store.dispatch(deleteDetail(detailId));
-        // console.log(details);
+        // //console.log(details);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     }
     setOpen(false);

@@ -30,12 +30,12 @@ export default function Prescription() {
   // const [prescriptions, setPrescriptions] = useOptimistic(visit?.prescriptions);
 
   const loadPrescriptions = useCallback(async () => {
-    // console.log("running load prescriptions: " + patient);
+    // //console.log("running load prescriptions: " + patient);
     // Fetch other prescriptions here if needed
     try {
       const response = await axios.get("/api/patients/prescriptions");
-      // console.log(response.data);
-      console.log("setting autocomplete prescriptions");
+      // //console.log(response.data);
+      // //console.log("setting autocomplete prescriptions");
       setAllPrescriptions(response.data);
     } catch (error) {
       console.error("Error fetching prescriptions:", error);
@@ -51,17 +51,17 @@ export default function Prescription() {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setPrescription(event.target.value);
-    // console.log(prescription);
+    // //console.log(prescription);
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!patient || !prescription) {
-      console.log("returning");
+      //console.log("returning");
       return;
     }
     try {
-      console.log("adding prescription");
+      //console.log("adding prescription");
       store.dispatch(addPrescription(prescription));
 
       setPrescription("");

@@ -46,7 +46,7 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
 
   // Create a map to store the index of each detailHeading in currentLayout
   const detailIndexMap = new Map();
-  // console.log("unique details: " + JSON.stringify(patientDetails));
+  // //console.log("unique details: " + JSON.stringify(patientDetails));
   currentLayout.forEach((currentDetail, index) => {
     detailIndexMap.set(currentDetail.detailHeading, index);
   });
@@ -83,40 +83,74 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   orderedPatientDetails.push(...nonMatchingPatientDetails);
 
   // orderedDetails.map((detail) => {
-  //   console.log("ordered detail: " + detail.detailHeading);
+  //   //console.log("ordered detail: " + detail.detailHeading);
   // });
-  // console.log("set details order:", setDetailsOrder);
+  // //console.log("set details order:", setDetailsOrder);
   return orderedPatientDetails;
 };
 
-export function areObjectsEqual(objA: Object, objB: Object) {
-  // Check if both objects are the same reference
-  if (objA === objB) {
-    return true;
-  }
-
-  // Check if both objects are null or undefined
-  if (objA == null || objB == null) {
+export function areArraysOfPatientDetailsEqual(
+  arrayA: PatientDetails[],
+  arrayB: PatientDetails[]
+): boolean {
+  // Check if the arrays have the same length
+  if (arrayA.length !== arrayB.length) {
     return false;
   }
 
-  // Check if both objects have the same keys
-  const keysA = Object.keys(objA);
-  const keysB = Object.keys(objB);
-
-  if (keysA.length !== keysB.length) {
-    return false;
+  // Iterate through the arrays and compare each element
+  for (let i = 0; i < arrayA.length; i++) {
+    if (!arePatientDetailsEqual(arrayA[i], arrayB[i])) {
+      return false;
+    }
   }
 
-  // Check if values of corresponding keys are equal
-  // for (const key of keysA) {
-  //   if (objA[key] !== objB[key]) {
-  //     return false;
-  //   }
-  // }
-
+  // If all elements are equal, return true
   return true;
 }
+
+// Function to compare individual PatientDetails objects
+export function arePatientDetailsEqual(
+  detailA: PatientDetails,
+  detailB: PatientDetails
+): boolean {
+  return (
+    detailA.id === detailB.id &&
+    detailA.details === detailB.details &&
+    detailA.detailHeading === detailB.detailHeading &&
+    detailA.visitId === detailB.visitId
+  );
+}
+
+// export function areObjectsEqual(objA: Object, objB: Object) {
+//   // Check if both objects are the same reference
+//   if (objA === objB) {
+//     return true;
+//   }
+
+//   // Check if both objects are null or undefined
+//   if (objA == null || objB == null) {
+//     return false;
+//   }
+
+//   // Check if both objects have the same keys
+//   const keysA = Object.keys(objA);
+//   const keysB = Object.keys(objB);
+
+//   if (keysA.length !== keysB.length) {
+//     return false;
+//   }
+
+//   // Check if values of corresponding keys are equal
+//   for (const key of keysA) {
+//     if (objA[key]:any !== objB[key]:any) {
+//       return false;
+//     }
+//   }
+
+//   return true;
+// }
+
 export const isEmpty = (obj: Object) => {
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {

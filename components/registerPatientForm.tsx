@@ -36,10 +36,10 @@ const RegisterPatientForm: React.FC = () => {
           message: "",
         });
         router.push("/patients");
-        console.log("added");
+        //console.log("added");
       })
       .catch((error) => {
-        console.log("error caught");
+        //console.log("error caught");
         setAlert({
           title: "Error Creating patient",
           severity: "error",

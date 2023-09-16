@@ -45,16 +45,16 @@ const Detail = ({ detail }: { detail: PatientDetails | undefined }) => {
 };
 
 export default function Details({ visit }: { visit: Visit }) {
-  // console.log("rendering Details");
+  // //console.log("rendering Details");
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
   // useEffect(() => {
   // }, [visit.patientDetails.length]);
-  console.log("rendering details");
+  // //console.log("rendering details");
   useEffect(() => {
     if (visit?.patientDetails) {
       setDetailOrder(visit.patientDetails);
     }
-    console.log(visit.patientDetails);
+    //console.log(visit.patientDetails);
   }, [visit?.patientDetails]);
   return (
     <div className="details">

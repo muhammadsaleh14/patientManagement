@@ -30,13 +30,13 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number, { getState, dispatch }) => {
-    const state = getState() as RootState;
-    // console.log("running setPatient AsyncThunk");
+    // //console.log("running setPatient AsyncThunk");
     const patient = await getPatientApi(patientId);
-    const sortedDetails = setDetailsOrder(state);
     dispatch(setPatientFromApi(patient));
+    const state = getState() as RootState;
+    const sortedDetails = setDetailsOrder(state);
     dispatch(updateDetailsOrder(sortedDetails));
-    // console.log("set patient async thunk: ");
+    // //console.log("set patient async thunk: ");
     return patient;
   }
 );
@@ -45,18 +45,18 @@ export const setPatient = createAsyncThunk(
 //   "patient/setVisit",
 //   async (visitDate: string, { getState, dispatch }) => {
 //     const state = getState() as PatientState;
-//     console.log(state.patient?.visits);
+//     //console.log(state.patient?.visits);
 //     if (!state.patient) {
 //       throw new Error("Patient is not defined");
 //     }
 //     const pId = state.patient.id;
-//     console.log("state" + state.patient);
-//     console.log("patientID:" + pId);
+//     //console.log("state" + state.patient);
+//     //console.log("patientID:" + pId);
 //     const response = await axios.post("/api/patients/" + pId + "/visits", {
 //       visitDate,
 //     });
 //     const visit = response.data as Visit;
-//     console.log("visit kamdkm" + visit);
+//     //console.log("visit kamdkm" + visit);
 //     dispatch(setVisitId(visit.id));
 //     return response.data;
 //   }
@@ -64,33 +64,33 @@ export const setPatient = createAsyncThunk(
 export const setVisit = createAsyncThunk(
   "patient/setVisit",
   async (visitDate: string, { getState, dispatch }) => {
-    console.log("running setVisit");
+    //console.log("running setVisit");
     const rootState = getState() as RootState;
     const state = rootState.patient as PatientState;
     // Logging state.patient and its properties
-    // console.log("state.patient:", state.patient);
+    // //console.log("state.patient:", state.patient);
     if (!state.patient || !state.patient.id) {
       throw new Error("Patient is not defined");
     }
     const visit = state.patient?.visits.find(
       (value) => value.date === visitDate
     );
-    state.patient.visits.map((visit) => {
-      // console.log(visit.date);
-    });
-    // console.log("date" + visitDate);
+    // state.patient.visits.map((visit) => {
+    //   // //console.log(visit.date);
+    // });
+    // //console.log("date" + visitDate);
     if (visit) {
       dispatch(setVisitId(visit.id));
       return "";
     } else {
       const pId = state.patient.id;
-      // console.log("date:", visitDate);
+      // //console.log("date:", visitDate);
       const response = await axios.post("/api/patients/" + pId + "/visits", {
         visitDate,
       });
       const visitResponse = response.data as Visit;
       // Logging the 'visitResponse' object and its properties
-      // console.log("visitResponse:", visitResponse);
+      // //console.log("visitResponse:", visitResponse);
       dispatch(setVisitId(visitResponse.id));
       return response.data;
     }
@@ -100,7 +100,7 @@ export const setVisit = createAsyncThunk(
 export const addPrescription = createAsyncThunk(
   "patient/addPrescription",
   async (prescriptionText: string, { getState }) => {
-    console.log("runnning add prescription");
+    //console.log("runnning add prescription");
     const state = getState() as RootState;
     const response = await axios.post(
       "/api/patients/prescriptions/prescription",
@@ -109,7 +109,7 @@ export const addPrescription = createAsyncThunk(
         prescription: prescriptionText,
       }
     );
-    // console.log("this prescription was added" + response.data);
+    // //console.log("this prescription was added" + response.data);
     return response.data;
   }
 );
@@ -138,22 +138,49 @@ export const addDetailToPatient = createAsyncThunk(
     },
     { getState }
   ) => {
-    // console.log("in async thunk addPAtientDetail");
+    // //console.log("in async thunk addPAtientDetail");
     const state = getState() as RootState;
     const response = await axios.post(
       "/api/patients/" + state.patient.patient?.id + "/visits/details",
       { detailHeading, detail, visitId }
     );
-    // console.log("response:" + response.data);
+    // //console.log("response:" + response.data);
     const patientDetail = response.data as PatientDetails;
     return patientDetail;
+  }
+);
+
+export const updateDetail = createAsyncThunk(
+  "patient/updateDetail",
+  async ({
+    detailId,
+    detailHeading,
+    detailText,
+  }: {
+    detailId: PatientDetails["id"];
+    detailHeading: PatientDetails["detailHeading"];
+    detailText: PatientDetails["details"];
+  }) => {
+    const response = await axios.put("/api/patients/detail", {
+      detailId,
+      detailHeading,
+      detailText,
+    });
+    return response.data;
+  }
+);
+export const deleteDetail = createAsyncThunk(
+  "patient/deleteDetail",
+  async (detailId: number) => {
+    const response = await axios.delete("/api/patients/detail/");
+    return response.data;
   }
 );
 
 // export const updateDetailsOrder = createAsyncThunk(
 //   "patient/updateDetailsOrder",
 //   async (_, { getState, dispatch }) => {
-//     console.log("updating details order");
+//     //console.log("updating details order");
 //     const state = getState() as RootState;
 //     const currentLayout = state.detailsLayout.detailsInfo;
 //     const visit = getCurrentVisit(state);
@@ -190,13 +217,14 @@ const patientSlice = createSlice({
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
     setVisitId: (state, action: PayloadAction<number>) => {
-      console.log("setting visit id");
+      //console.log("setting visit id");
       state.currentVisitId = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
-      console.log("update details order");
+      //console.log("update details order");
       // Update the order of details in the Redux state using the action
+      console.log(action.payload);
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
           // Clone the visit object and update its patientDetails property
@@ -212,21 +240,22 @@ const patientSlice = createSlice({
       if (state.patient) {
         state.patient.visits = updatedVisits;
       }
-      // console.log(JSON.stringify(updatedVisits));
+      // //console.log(JSON.stringify(updatedVisits));
       // Update the state with the new array of visits
     },
   },
   extraReducers(builder) {
     builder;
     //? For Initialize state
+    //? updateDetail
     builder
       // .addCase(initializeState.pending, (state) => {
       //   state.status = "loading";
-      //   console.log("initializeState loading");
+      //   //console.log("initializeState loading");
       // })
       // .addCase(initializeState.fulfilled, (state, action) => {
       //   state.status = "succeeded";
-      //   // console.log(
+      //   // //console.log(
       //   //   "initializeState fulfiulled: " + action.payload.updatedPatient
       //   // );
       //   if (action.payload) {
@@ -234,14 +263,14 @@ const patientSlice = createSlice({
       //       state.patient = action.payload.updatedPatient;
       //       state.currentVisitId = action.payload.visitId;
       //     } else {
-      //       console.log("patient is not defined to initialise");
+      //       //console.log("patient is not defined to initialise");
       //     }
       //   }
       // })
       // .addCase(initializeState.rejected, (state, action) => {
       //   state.status = "failed";
       //   state.error = action.error.message;
-      //   console.log(state.error);
+      //   //console.log(state.error);
       // })
 
       //? For setPatient
@@ -251,10 +280,10 @@ const patientSlice = createSlice({
       .addCase(
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
-          console.log("set patient fulfilled");
+          //console.log("set patient fulfilled");
           // const sortedDetails = setDetailsOrder(store.getState());
           // store.dispatch(updateDetailsOrder(sortedDetails));
-          // console.log("patient" + JSON.stringify(action.payload));
+          // //console.log("patient" + JSON.stringify(action.payload));
           // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
@@ -262,7 +291,7 @@ const patientSlice = createSlice({
       .addCase(setPatient.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-        console.log(state.error);
+        //console.log(state.error);
       })
 
       //? For setVisit
@@ -275,7 +304,7 @@ const patientSlice = createSlice({
           state.error = message;
           throw new Error(message);
         }
-        console.log("set visit fulfilled");
+        //console.log("set visit fulfilled");
         if (action.payload) {
           let visit = action.payload;
           visit.date = formatDateString(visit.date);
@@ -301,7 +330,7 @@ const patientSlice = createSlice({
           if (!state.patient?.visits) {
             throw new Error(`Visit with ID ${visitId} not found.`);
           }
-          console.log("add prescription fulfilled");
+          //console.log("add prescription fulfilled");
           state.patient.visits = state.patient?.visits.map((visit) => {
             if (visit.id === visitId) {
               // Use concat to create a new array with the updated prescriptions
@@ -329,7 +358,7 @@ const patientSlice = createSlice({
       .addCase(
         deletePrescription.fulfilled,
         (state, action: PayloadAction<Prescription["id"]>) => {
-          console.log("delete prescription fulfilled");
+          //console.log("delete prescription fulfilled");
           if (state.patient) {
             state.patient.visits.forEach((visit) => {
               // Use filter to remove the prescription with the specified id
@@ -355,7 +384,7 @@ const patientSlice = createSlice({
       .addCase(
         addDetailToPatient.fulfilled,
         (state, action: PayloadAction<PatientDetails>) => {
-          console.log("add detail to patient fulfilled");
+          //console.log("add detail to patient fulfilled");
           if (state.patient) {
             state.patient.visits.forEach((visit) => {
               if (visit.id === state.currentVisitId) {
@@ -373,10 +402,38 @@ const patientSlice = createSlice({
       .addCase(addDetailToPatient.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
-        console.log(state.error);
+        //console.log(state.error);
+      })
+      .addCase(updateDetail.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        updateDetail.fulfilled,
+        (state, action: PayloadAction<PatientDetails>) => {
+          //console.log("add detail to patient fulfilled");
+          console.log("update detail in fulfilled");
+          if (state && state.patient) {
+            //console.log("inside if");
+            const visits = state?.patient?.visits.map((visit) => {
+              if (visit.id === state.currentVisitId) {
+                visit.patientDetails = visit.patientDetails.map((detail) => {
+                  if (detail.id === action.payload.id) {
+                    return action.payload;
+                  }
+                  return detail;
+                });
+              }
+              return visit;
+            });
+            state.patient.visits = visits;
+          }
+        }
+      )
+      .addCase(updateDetail.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+        //console.log(state.error);
       });
-
-    //? updateDetailsOrder
   },
 });
 
@@ -391,6 +448,14 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
   // Use the find method to search for the visit with the matching ID
   return state.patient.patient?.visits.find(
     (visit) => visit.id === state.patient.currentVisitId
+  );
+};
+export const getCurrentVisitWithPatientState = (
+  state: PatientState
+): Visit | undefined => {
+  // Use the find method to search for the visit with the matching ID
+  return state.patient?.visits.find(
+    (visit) => visit.id === state.currentVisitId
   );
 };
 

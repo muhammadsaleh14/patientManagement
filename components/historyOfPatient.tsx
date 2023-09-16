@@ -10,7 +10,7 @@ function HistoryOfPatient() {
   // console.count("HistoryOfPatient");
   const { patient, status } = useSelector(getPatientState);
   const router = useRouter();
-  // console.log(patient);
+  // //console.log(patient);
 
   useEffect(() => {}, [patient]);
   return (

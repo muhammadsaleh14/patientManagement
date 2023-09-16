@@ -49,7 +49,7 @@ const Page: React.FC = () => {
   const patient = useSelector(getPatient);
   //? setPatient imported from redux
 
-  // console.log("patients/page");
+  // //console.log("patients/page");
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
@@ -101,7 +101,7 @@ const Page: React.FC = () => {
         });
       })
       .catch(() => {
-        console.log("delete patient failed");
+        //console.log("delete patient failed");
         setAlert({
           title: "Deleting patient failed",
           severity: "error",

@@ -1,3 +1,4 @@
+import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
 import { PatientDetails } from "@/components/interfaces/databaseInterfaces";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
@@ -43,10 +44,10 @@ export async function deletePatient(patientId: number) {
         id: patientId,
       },
     });
-    // console.log("patient deleted");
+    // //console.log("patient deleted");
     return { message: `Patient with ID ${patientId} deleted successfully.` };
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -126,8 +127,8 @@ export async function getUniquePatientWithDetails(patientId: number) {
         },
       },
     });
-    // console.log(patient);
-    // console.log(patient);
+    // //console.log(patient);
+    // //console.log(patient);
     return patient;
   } catch (error) {
     console.error("Error fetching patient:", error);
@@ -149,7 +150,7 @@ export async function addPrescription(
         visitId: visitIdProp,
       },
     });
-    // console.log("Prescription added:", prescription);
+    // //console.log("Prescription added:", prescription);
     return prescription;
   } catch (error) {
     console.error("Error adding prescription:", error);
@@ -166,7 +167,7 @@ export async function deletePrescription(prescriptionId: number) {
         id: prescriptionId,
       },
     });
-    // console.log("Prescription added:", prescription);
+    // //console.log("Prescription added:", prescription);
     return prescription;
   } catch (error) {
     console.error("Error Deleting prescription:", error);
@@ -245,11 +246,13 @@ export async function addNewVisit(patientId: number, dateString: string) {
         },
       },
     });
-    // console.log("New visit added:", newVisit);
+    // //console.log("New visit added:", newVisit);
     return newVisit;
   } catch (error) {
     console.error("Error adding new visit:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -259,7 +262,7 @@ export async function addPatientDetail(
   visitIdArg: number
 ) {
   try {
-    console.log(detailHeadingArg, detailArg, visitIdArg);
+    //console.log(detailHeadingArg, detailArg, visitIdArg);
     const patientDetail = await prisma.patientDetails.create({
       data: {
         detailHeading: detailHeadingArg,
@@ -267,30 +270,65 @@ export async function addPatientDetail(
         visitId: visitIdArg,
       },
     });
-    // console.log("New visit added:", newVisit);
+    // //console.log("New visit added:", newVisit);
     return patientDetail;
   } catch (error) {
     console.error("Error adding new visit:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-export async function setOrderedDetails(
-  details: PatientDetails[],
-  visitIdArg: number
+export async function updateDetail(
+  detailId: PatientDetails["id"],
+  detailHeadingProp: PatientDetails["detailHeading"],
+  detailText: PatientDetails["details"]
 ) {
   try {
-    const patientDetails = await prisma.patientDetails.create({
+    // Find the patient by ID
+    const existingDetail = await prisma.patientDetails.findUnique({
+      where: { id: detailId },
+    });
+
+    if (!existingDetail) {
+      throw new Error(`Patient Detail with ID ${detailId} not found.`);
+    }
+
+    // Update patient detail
+    const updatedPatientDetail = await prisma.patientDetails.update({
+      where: { id: detailId },
       data: {
-        detailHeading: detailHeadingArg,
-        details: detailArg,
-        visitId: visitIdArg,
+        detailHeading: detailHeadingProp,
+        details: detailText,
       },
     });
-    // console.log("New visit added:", newVisit);
-    return patientDetail;
+
+    return updatedPatientDetail;
   } catch (error) {
     console.error("Error adding new visit:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
+
+// export async function setOrderedDetails(
+//   details: PatientDetails[],
+//   visitIdArg: number
+// ) {
+//   try {
+//     const patientDetails = await prisma.patientDetails.create({
+//       data: {
+//         detailHeading: detailHeadingArg,
+//         details: detailArg,
+//         visitId: visitIdArg,
+//       },
+//     });
+//     // //console.log("New visit added:", newVisit);
+//     return patientDetail;
+//   } catch (error) {
+//     console.error("Error adding new visit:", error);
+//     throw error;
+//   }
+// }

@@ -14,7 +14,7 @@ enum Options {
 
 const optionsArray: string[] = Object.values(Options);
 
-console.log(optionsArray);
+//console.log(optionsArray);
 
 const ITEM_HEIGHT = 48;
 
