@@ -29,6 +29,7 @@ import { getPatient, getPatientState } from "../GlobalRedux/store/patientSlice";
 import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "../GlobalRedux/store/store";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { formatDateString } from "../GlobalRedux/utilMethods";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -71,17 +72,26 @@ const Page: React.FC = () => {
   async function fetchPatients() {
     try {
       const response = await axios.get("/api/patients/table");
+      // const patients = response.map((patient) => {
+      //   patient.visits.map(
+      //     (visit) => (visit.date = formatDateString(visit.date))
+      //   );
+      // });
+      // visit.date = ;
       setPatients(response.data);
     } catch (error) {
       console.error("Error fetching patients:", error);
     }
   }
+
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.age.toString().includes(searchTerm) ||
       patient.gender.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  // const filteredPatients = patients;
+  // console.log(filteredPatients);
 
   useEffect(() => {
     fetchPatients();

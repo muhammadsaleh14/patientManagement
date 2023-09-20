@@ -7,7 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { detailContext } from "./sortabletest";
-import { updateDetail } from "@/app/GlobalRedux/store/patientSlice";
+import {
+  deleteDetail,
+  updateDetail,
+} from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import { useEffect } from "react";
 
@@ -42,8 +45,6 @@ export default function DetailsEditDialog({
           })
         );
       }
-    } else {
-      deleteDetail(detail?.id);
     }
     setOpen(false);
   };

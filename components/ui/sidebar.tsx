@@ -18,9 +18,12 @@ import { store } from "@/app/GlobalRedux/store/store";
 import { Visit } from "../interfaces/databaseInterfaces";
 // Default SortableJS
 import Details from "./sortabletest";
+import { getDetailsLayoutArray } from "@/app/GlobalRedux/store/detailSlice";
 
 export default function Sidebar() {
   const visit = useSelector(getCurrentVisit) as Visit;
+  const detailOptions = useSelector(getDetailsLayoutArray);
+  // console.log(detailOptions);
   const [detail, setDetail] = useState<{
     detailHeading: string;
     detailText: string;
@@ -97,7 +100,7 @@ export default function Sidebar() {
               <Autocomplete
                 className="border border-gray-300 rounded-md py-1 px-2 w-full"
                 // {...allPrescriptionProps}
-                options={["sdad", "dsada", "sada"]}
+                options={[...detailOptions]}
                 id="free-solo-demo"
                 clearOnEscape
                 freeSolo
@@ -145,6 +148,7 @@ export default function Sidebar() {
                 id="detailText"
                 name="detailText"
                 variant="standard"
+                placeholder="Enter for next line"
                 multiline
                 maxRows={4}
                 value={detail.detailText}

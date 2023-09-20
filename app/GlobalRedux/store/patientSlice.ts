@@ -140,10 +140,11 @@ export const addDetailToPatient = createAsyncThunk(
   ) => {
     // //console.log("in async thunk addPAtientDetail");
     const state = getState() as RootState;
-    const response = await axios.post(
-      "/api/patients/" + state.patient.patient?.id + "/visits/details",
-      { detailHeading, detail, visitId }
-    );
+    const response = await axios.post("/api/patients/detail", {
+      detailHeading,
+      detail,
+      visitId,
+    });
     // //console.log("response:" + response.data);
     const patientDetail = response.data as PatientDetails;
     return patientDetail;
@@ -171,9 +172,10 @@ export const updateDetail = createAsyncThunk(
 );
 export const deleteDetail = createAsyncThunk(
   "patient/deleteDetail",
-  async (detailId: number) => {
-    const response = await axios.delete("/api/patients/detail/");
-    return response.data;
+  async (detailID: number) => {
+    const response = await axios.delete("/api/patients/detail/" + detailID);
+    const { detailId } = response.data;
+    return detailId;
   }
 );
 
@@ -433,6 +435,36 @@ const patientSlice = createSlice({
         state.error = action.error.message;
         state.status = "failed";
         //console.log(state.error);
+      })
+      .addCase(deleteDetail.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        deleteDetail.fulfilled,
+        (state, action: PayloadAction<PatientDetails["id"]>) => {
+          console.log("action.payload" + JSON.stringify(action.payload));
+          //console.log("add detail to patient fulfilled");
+          console.log("in delete detail");
+          if (state && state.patient) {
+            //console.log("inside if");
+            const visits = state?.patient?.visits.map((visit) => {
+              if (visit.id === state.currentVisitId) {
+                visit.patientDetails = visit.patientDetails.filter(
+                  (detail) => detail.id !== action.payload
+                );
+                console.log(visit.patientDetails);
+              }
+              return visit;
+            });
+            state.patient.visits = visits;
+            // console.log(state.patient.visits);
+          }
+        }
+      )
+      .addCase(deleteDetail.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+        // console.log(state.error);
       });
   },
 });

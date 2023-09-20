@@ -1,11 +1,19 @@
 import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
 import { PatientDetails } from "@/components/interfaces/databaseInterfaces";
+import { Patient } from "@prisma/client";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
 import { da } from "date-fns/locale";
 
 // import { format } from 'date-fns';
 // Function to create a new patient
+
+function formatDateString(date: string) {
+  const parsedDate = parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", new Date());
+  // Format the parsed date into the desired format
+  const formattedDate = format(parsedDate, "hh:mm:ss a dd/MM/yyyy");
+  return formattedDate;
+}
 
 export async function createPatient(name: string, age: number, gender: string) {
   try {
@@ -85,7 +93,20 @@ export async function getPatientsWithLastVisit() {
         },
       },
     });
-    return patients;
+
+    const formattedPatients: Patient[] = patients.map((patient) => {
+      const formattedVisits = patient.visits.map((visit) => ({
+        ...visit,
+        date: formatDateString(visit.date.toISOString()), // Format the date using your formatting function
+      }));
+      return {
+        ...patient,
+        visits: formattedVisits,
+      };
+    });
+    // console.log(JSON.stringify(formattedPatients));
+
+    return formattedPatients;
   } catch (error) {
     throw error;
   } finally {
@@ -307,6 +328,33 @@ export async function updateDetail(
     return updatedPatientDetail;
   } catch (error) {
     console.error("Error adding new visit:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteDetail(detail_Id: number) {
+  try {
+    const detail = await prisma.patientDetails.findUnique({
+      where: {
+        id: detail_Id,
+      },
+    });
+
+    if (!detail) {
+      throw new Error("Detail not found");
+    }
+
+    await prisma.patientDetails.delete({
+      where: {
+        id: detail.id,
+      },
+    });
+    // //console.log("patient deleted");
+    return detail.id;
+  } catch (error) {
+    //console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();

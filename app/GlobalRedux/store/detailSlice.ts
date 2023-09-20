@@ -109,6 +109,12 @@ export const { addDetailInfoWithHeading, setNewDetailsOrder, deleteDetail } =
   detailsLayoutSlice.actions;
 
 export const getDetailsLayout = (state: RootState) => state.detailsLayout;
+export const getDetailsLayoutArray = (state: RootState) =>
+  state.detailsLayout.detailsInfo
+    ? state.detailsLayout.detailsInfo.map(
+        (detailInfo) => detailInfo.detailHeading
+      )
+    : [];
 
 // function sortDetailsByPosition(details: DetailsLayout["detailsInfo"]) {
 //   const detailsInfo = details?.slice().sort((a, b) => a.id - b.id);

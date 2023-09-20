@@ -22,13 +22,15 @@ import {
 } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
 import DetailsMenu from "./detailsMenu";
+import React from "react";
 
 export const detailContext = createContext<undefined | PatientDetails>(
   undefined
 );
 const Detail = ({ detail }: { detail: PatientDetails | undefined }) => {
+  const [contextData, setContextData] = React.useState(detail);
   return (
-    <detailContext.Provider value={detail}>
+    <detailContext.Provider value={contextData}>
       <Card variant="outlined" className="flex">
         <CardContent className="px-4 py-2 flex-grow">
           <Typography variant="h6" gutterBottom className="">
