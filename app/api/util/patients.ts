@@ -148,7 +148,7 @@ export async function getUniquePatientWithDetails(patientId: number) {
         },
       },
     });
-    // //console.log(patient);
+    console.log(patient);
     // //console.log(patient);
     return patient;
   } catch (error) {

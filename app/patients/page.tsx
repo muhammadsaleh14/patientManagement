@@ -58,6 +58,7 @@ const Page: React.FC = () => {
   } | null>(null);
   async function getCompletePatientForStore(id: number) {
     try {
+      console.log(id);
       await store.dispatch(setPatient(id));
     } catch (error) {
       console.error("Error fetching patient:", error);

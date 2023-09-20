@@ -93,7 +93,11 @@ export function areArraysOfPatientDetailsEqual(
   arrayA: PatientDetails[],
   arrayB: PatientDetails[]
 ): boolean {
+  // console.log("array A", arrayA);
+  // console.log("array B", arrayB);
   // Check if the arrays have the same length
+  if (!arrayA || !arrayB) return false;
+
   if (arrayA.length !== arrayB.length) {
     return false;
   }

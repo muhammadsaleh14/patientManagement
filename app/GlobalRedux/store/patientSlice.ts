@@ -30,13 +30,12 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number, { getState, dispatch }) => {
-    // //console.log("running setPatient AsyncThunk");
+    console.log("here");
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
     const state = getState() as RootState;
     const sortedDetails = setDetailsOrder(state);
     dispatch(updateDetailsOrder(sortedDetails));
-    // //console.log("set patient async thunk: ");
     return patient;
   }
 );
@@ -216,6 +215,7 @@ const patientSlice = createSlice({
 
     setPatientFromApi: (state, action: PayloadAction<Patient>) => {
       state.patient = action.payload;
+      console.log(state.patient);
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
     setVisitId: (state, action: PayloadAction<number>) => {
@@ -293,7 +293,7 @@ const patientSlice = createSlice({
       .addCase(setPatient.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-        //console.log(state.error);
+        console.log("in rejected", state.error);
       })
 
       //? For setVisit
