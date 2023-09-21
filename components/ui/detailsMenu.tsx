@@ -25,6 +25,7 @@ const ITEM_HEIGHT = 48;
 export default function DetailsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isEditOpen, setEditOpen] = useState(false);
+  // const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const detail = React.useContext(detailContext);
   // const open = Boolean(anchorEl);
@@ -41,7 +42,11 @@ export default function DetailsMenu() {
     if (optionString === Options.Edit) {
       setEditOpen(true);
     }
+
     if (optionString === Options.Delete) {
+      // setDeleteOpen(true);
+      const deleteDialog = document.getElementById("clickDeleteEvent");
+      deleteDialog?.click();
     }
   };
 
@@ -81,33 +86,32 @@ export default function DetailsMenu() {
         >
           {Options.Edit}
         </MenuItem>
-        <div className="visible">
-          <DeleteDialog
-            title={`Are you sure you want to delete detail`}
-            text={"The detail will be removed"}
-            onDelete={() => {
-              try {
-                if (detail?.id) {
-                  console.log("deleting detail");
-                  store.dispatch(deleteDetail(detail.id));
-                }
-              } catch (error) {
-                //console.log(error);
-              }
-            }}
-          >
-            <MenuItem
-              key={Options.Delete}
-              // selected={optionString === Options.Edit}
-              onClick={() => handleClose(Options.Delete)}
-              className="hover:bg-slate-500"
-            >
-              {Options.Delete}
-            </MenuItem>
-          </DeleteDialog>
-        </div>
+        <MenuItem
+          key={Options.Delete}
+          // selected={optionString === Options.Edit}
+          onClick={(e) => handleClose(Options.Delete)}
+          className="hover:bg-slate-500"
+        >
+          {Options.Delete}
+        </MenuItem>
       </Menu>
       <DetailsEditDialog open={isEditOpen} setOpen={setEditOpen} />
+      <DeleteDialog
+        title={`Are you sure you want to delete detail`}
+        text={"The detail will be removed"}
+        onDelete={() => {
+          try {
+            if (detail?.id) {
+              console.log("deleting detail");
+              store.dispatch(deleteDetail(detail.id));
+            }
+          } catch (error) {
+            //console.log(error);
+          }
+        }}
+      >
+        <div id="clickDeleteEvent"></div>
+      </DeleteDialog>
     </div>
   );
 }

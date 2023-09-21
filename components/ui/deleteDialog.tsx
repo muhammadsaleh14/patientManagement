@@ -15,15 +15,22 @@ interface DeleteDialogProps {
   title: string;
   text: string;
   onDelete: () => void;
+  // openProp: boolean;
 }
 
 const DeleteDialog: React.FC<DeleteDialogProps> = ({
+  // openProp,
   children,
   title,
   text,
   onDelete,
 }) => {
   const [open, setOpen] = React.useState(false);
+  // const [firstLoad, setFirstLoad] = React.useState(true);
+  // React.useEffect(() => {
+  //   handleClickOpen();
+  // }, []);
+
   console.log("in delete:", open);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -37,8 +44,10 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
       onDelete();
     }
     console.log("setopen to false");
-
+    console.log("running");
+    // if (!firstLoad) {
     setOpen(false);
+    // }
   };
 
   return (

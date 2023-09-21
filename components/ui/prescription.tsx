@@ -13,6 +13,7 @@ import {
   getPatientState,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
+import DeleteDialog from "./deleteDialog";
 
 // ... Import statements ...
 
