@@ -10,18 +10,21 @@ import { useTheme } from "@mui/material/styles";
 import { store } from "@/app/GlobalRedux/store/store";
 import { deleteDetail } from "@/app/GlobalRedux/store/detailSlice";
 
-export default function DeleteDialog({
-  children,
-  title,
-  text,
-  onDelete,
-}: {
+interface DeleteDialogProps {
   children: React.ReactNode;
   title: string;
   text: string;
   onDelete: () => void;
-}) {
+}
+
+const DeleteDialog: React.FC<DeleteDialogProps> = ({
+  children,
+  title,
+  text,
+  onDelete,
+}) => {
   const [open, setOpen] = React.useState(false);
+  console.log("in delete:", open);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -33,12 +36,15 @@ export default function DeleteDialog({
     if (!isPersist) {
       onDelete();
     }
+    console.log("setopen to false");
+
     setOpen(false);
   };
 
   return (
     <div>
       <div onClick={handleClickOpen}>{children}</div>
+
       <Dialog
         fullScreen={fullScreen}
         open={open}
@@ -70,4 +76,6 @@ export default function DeleteDialog({
       </Dialog>
     </div>
   );
-}
+};
+
+export default DeleteDialog;
