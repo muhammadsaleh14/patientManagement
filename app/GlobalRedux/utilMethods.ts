@@ -163,3 +163,36 @@ export const isEmpty = (obj: Object) => {
   }
   return true; // If no properties are found, it's empty
 };
+
+export function sortVisitsByDate(
+  patient: Patient | undefined
+): undefined | Patient {
+  if (!patient) return;
+
+  const sortedVisits = [...patient.visits].sort((a, b) => {
+    // Convert the date strings to Date objects for comparison
+
+    const dateA = parse(a.date, "hh:mm:ss a dd/MM/yyyy", new Date());
+    const dateB = parse(b.date, "hh:mm:ss a dd/MM/yyyy", new Date());
+    // console.log(dateA, dateB);
+
+    // Compare the dates in descending order
+    if (dateA > dateB) {
+      return -1;
+    } else if (dateA < dateB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  console.log(sortedVisits);
+
+  // Create a new patient object with sorted visits
+  const sortedPatient: Patient = {
+    ...patient,
+    visits: sortedVisits,
+  };
+
+  return sortedPatient;
+}

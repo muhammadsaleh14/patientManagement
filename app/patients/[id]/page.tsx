@@ -39,6 +39,7 @@ import { useSelector } from "react-redux";
 import { AppDispatch, store } from "@/app/GlobalRedux/store/store";
 import { useDispatch } from "react-redux";
 import Sidebar from "@/components/ui/sidebar";
+import SidebarContainer from "@/components/ui/sidebarContainer";
 // { params }: { params: { id: string } }
 const Page = ({ params }: { params: { id: string } }) => {
   const { patient, currentVisitId } = useSelector(getPatientState);
@@ -65,13 +66,16 @@ const Page = ({ params }: { params: { id: string } }) => {
     domLoaded && (
       <Stack direction="row" spacing={0} className="h-full">
         {/* Sidebar */}
-        <Box
-          className="bg-gray-300 overflow-y-auto h-screen"
-          style={{ minWidth: "200px", maxWidth: "200px" }}
-        >
-          {/* Sidebar content */}
-          <Sidebar />
-        </Box>
+        <SidebarContainer>
+          <Box
+            className="bg-gray-300 overflow-y-auto h-screen flex-grow w-full"
+            // style={{ minWidth: "200px", maxWidth: "200px" }}
+          >
+            {/* Sidebar content */}
+
+            <Sidebar />
+          </Box>
+        </SidebarContainer>
         {/* Main content */}
         <Box className="h-full w-full">
           <Stack spacing={2} className="h-full">

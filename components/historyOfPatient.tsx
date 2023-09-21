@@ -1,4 +1,7 @@
-import { getPatientState } from "@/app/GlobalRedux/store/patientSlice";
+import {
+  getPatientState,
+  getPatientStateWithSortedVisitDates,
+} from "@/app/GlobalRedux/store/patientSlice";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -8,7 +11,7 @@ import { useSelector } from "react-redux";
 function HistoryOfPatient() {
   // const [patient, setPatient] = useState(patientContext);
   // console.count("HistoryOfPatient");
-  const { patient, status } = useSelector(getPatientState);
+  const { patient, status } = useSelector(getPatientStateWithSortedVisitDates);
   const router = useRouter();
   // //console.log(patient);
 

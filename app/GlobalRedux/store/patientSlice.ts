@@ -1,4 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  createSelector,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 import {
   Patient,
@@ -8,7 +13,11 @@ import {
 } from "@/components/interfaces/databaseInterfaces";
 import { RootState, store } from "./store";
 import { getPatientApi } from "../apiCalls";
-import { formatDateString, setDetailsOrder } from "../utilMethods";
+import {
+  formatDateString,
+  setDetailsOrder,
+  sortVisitsByDate,
+} from "../utilMethods";
 import { Detail, setNewDetailsOrder } from "./detailSlice";
 
 export interface PatientState {
@@ -482,6 +491,22 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
     (visit) => visit.id === state.patient.currentVisitId
   );
 };
+
+// export const getPatientStateWithSortedVisitDates = createSelector(
+//   (state) => state.patient, // Input selector 1
+//   (state) => state.visits, // Input selector 2
+//   (patients, visits) => {
+//     // Your selector logic here
+//     // You can access patients and visits here to compute the result
+//     // Make sure this function returns a new reference only when necessary
+//     return computedResult;
+//   }
+// );
+export const getPatientStateWithSortedVisitDates = (state: RootState) => {
+  const patient = sortVisitsByDate(state?.patient.patient);
+  return { ...state.patient, patient };
+};
+
 export const getCurrentVisitWithPatientState = (
   state: PatientState
 ): Visit | undefined => {
