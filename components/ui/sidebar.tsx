@@ -77,7 +77,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="p-3" style={{ width: "100%" }}>
+    <div className="p-3 z-10" style={{ width: "100%" }}>
       <h2>Patient Details</h2>
       <div className="max-w-md mx-auto border rounded-md shadow-md p-2">
         <h2 className="text-lg font-semibold text-center mb-1">
@@ -154,6 +154,7 @@ export default function Sidebar() {
                 value={detail.detailText}
                 onChange={(e) => handleInputChange(e)}
                 required
+                className="border border-gray-300 rounded-md py-1 px-2 w-full"
                 // label="Add Prescription"
               />
             </div>

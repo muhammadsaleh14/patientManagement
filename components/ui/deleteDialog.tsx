@@ -10,7 +10,17 @@ import { useTheme } from "@mui/material/styles";
 import { store } from "@/app/GlobalRedux/store/store";
 import { deleteDetail } from "@/app/GlobalRedux/store/detailSlice";
 
-export default function DeleteDetailDialog({ detailId }: { detailId: number }) {
+export default function DeleteDialog({
+  children,
+  title,
+  text,
+  onDelete,
+}: {
+  children: React.ReactNode;
+  title: string;
+  text: string;
+  onDelete: () => void;
+}) {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -21,35 +31,23 @@ export default function DeleteDetailDialog({ detailId }: { detailId: number }) {
 
   const handleClose = (isPersist: boolean) => {
     if (!isPersist) {
-      try {
-        store.dispatch(deleteDetail(detailId));
-        // //console.log(details);
-      } catch (error) {
-        //console.log(error);
-      }
+      onDelete();
     }
     setOpen(false);
   };
 
   return (
     <div>
-      <Button variant="text" onClick={handleClickOpen}>
-        Delete
-      </Button>
+      <div onClick={handleClickOpen}>{children}</div>
       <Dialog
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {"Are you sure you want to delete this detail?"}
-        </DialogTitle>
+        <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            The details grouped with this heading will not be deleted, but will
-            appear in the end of the details list
-          </DialogContentText>
+          <DialogContentText>{text}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -60,7 +58,9 @@ export default function DeleteDetailDialog({ detailId }: { detailId: number }) {
             Disagree
           </Button>
           <Button
-            onClick={() => handleClose(false)}
+            onClick={() => {
+              handleClose(false);
+            }}
             autoFocus
             className="text-red-400 hover:text-red-700"
           >

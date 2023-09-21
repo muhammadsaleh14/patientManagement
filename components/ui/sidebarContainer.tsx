@@ -43,12 +43,12 @@ export default function SidebarContainer({
   }, [resize, stopResizing]);
 
   return (
-    <div className="app-container z-10">
+    <div className="app-container ">
       <div
         ref={sidebarRef}
         className="app-sidebar"
         style={{ width: sidebarWidth }}
-        onMouseDown={(e) => e.preventDefault()}
+        // onMouseDown={(e) => e.preventDefault()}
       >
         <div className="app-sidebar-content" />
         {children}

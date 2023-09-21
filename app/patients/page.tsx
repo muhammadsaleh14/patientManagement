@@ -30,6 +30,8 @@ import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "../GlobalRedux/store/store";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { formatDateString } from "../GlobalRedux/utilMethods";
+import deleteAlert from "@/components/ui/confirmDelete";
+import DeleteDialog from "@/components/ui/deleteDialog";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -201,13 +203,24 @@ const Page: React.FC = () => {
                     >
                       <HistoryOfPatientModal />
                     </Button>
-                    <Button
-                      onClick={() => deletePatient(patient.id)}
-                      variant="outlined"
-                      color="warning"
+                    <DeleteDialog
+                      title={`Are you sure you want to delete info of ${patient.name}`}
+                      text={
+                        "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
+                      }
+                      onDelete={() => {
+                        try {
+                          deletePatient(patient.id);
+                          // //console.log(details);
+                        } catch (error) {
+                          //console.log(error);
+                        }
+                      }}
                     >
-                      <DeleteIcon />
-                    </Button>
+                      <Button variant="outlined" color="warning">
+                        <DeleteIcon />
+                      </Button>
+                    </DeleteDialog>
                   </Box>
                 </TableCell>
               </TableRow>

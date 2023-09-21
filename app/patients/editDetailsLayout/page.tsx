@@ -30,7 +30,7 @@ import {
 } from "@/app/GlobalRedux/store/detailSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
-import DeleteDetailDialog from "@/components/ui/deleteDetailDialog";
+import DeleteDialog from "@/components/ui/deleteDialog";
 // function sortDetailsByPosition(details: DetailsLayoutSlice["detailsInfo"]) {
 //   const detailsInfo = details?.slice().sort((a, b) => a.id - b.id);
 //   return detailsInfo;
@@ -107,7 +107,22 @@ const SortableDetails = ({
               <UnfoldMoreIcon />
             </button>
             <div className="px-4 py-2 text-sm bg-red-300 rounded text-red-500 hover:text-red-900 ml-2 ">
-              <DeleteDetailDialog detailId={detail.id} />
+              <DeleteDialog
+                title={"Are you sure you want to delete detail"}
+                text={
+                  "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
+                }
+                onDelete={() => {
+                  try {
+                    store.dispatch(deleteDetail(detail.id));
+                    // //console.log(details);
+                  } catch (error) {
+                    //console.log(error);
+                  }
+                }}
+              >
+                Delete
+              </DeleteDialog>
             </div>
           </div>
         </div>
