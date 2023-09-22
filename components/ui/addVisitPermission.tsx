@@ -42,8 +42,7 @@ const AddVisitPermission: React.FC<AddVisitProps> = ({
     if (!isPersist) {
       onAdd();
     }
-    console.log("setopen to false");
-    console.log("running");
+
     // if (!firstLoad) {
     setOpen(false);
     // }

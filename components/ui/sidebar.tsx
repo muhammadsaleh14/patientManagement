@@ -23,20 +23,19 @@ import { getDetailsLayoutArray } from "@/app/GlobalRedux/store/detailSlice";
 export default function Sidebar() {
   const visit = useSelector(getCurrentVisit) as Visit;
   const detailOptions = useSelector(getDetailsLayoutArray);
-  // console.log(detailOptions);
+
   const [detail, setDetail] = useState<{
     detailHeading: string;
     detailText: string;
   }>({ detailHeading: "", detailText: "" });
   const [addDetail, setAddDetail] = useState(false);
-  // //console.log("rendering dnd kit wrapper");
 
   const handleInputChange = (
     e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
     // Get the name and value from the input element
-    // //console.log(newValue);
+
     if (newValue) {
       setDetail((prevDetail) => ({
         ...prevDetail,
@@ -45,7 +44,7 @@ export default function Sidebar() {
     } else {
       if (e) {
         const { name, value } = e.target;
-        // //console.log(name);
+
         // Update the detail state based on the input element's name
         setDetail((prevDetail) => ({
           ...prevDetail,
@@ -53,15 +52,13 @@ export default function Sidebar() {
         }));
       }
     }
-    // //console.log(detail);
   };
 
   const handleSubmit = (event: FormEvent) => {
     try {
       event.preventDefault();
-      // //console.log("handle submit details");
+
       if (detail.detailText && detail.detailHeading && visit) {
-        // //console.log("handle submit details inside if");
         store.dispatch(
           addDetailToPatient({
             detailHeading: detail.detailHeading,
@@ -71,9 +68,7 @@ export default function Sidebar() {
         );
         setDetail({ detailHeading: "", detailText: "" });
       }
-    } catch (error) {
-      //console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

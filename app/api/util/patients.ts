@@ -52,10 +52,9 @@ export async function deletePatient(patientId: number) {
         id: patientId,
       },
     });
-    // //console.log("patient deleted");
+
     return { message: `Patient with ID ${patientId} deleted successfully.` };
   } catch (error) {
-    //console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -104,7 +103,6 @@ export async function getPatientsWithLastVisit() {
         visits: formattedVisits,
       };
     });
-    // console.log(JSON.stringify(formattedPatients));
 
     return formattedPatients;
   } catch (error) {
@@ -148,8 +146,7 @@ export async function getUniquePatientWithDetails(patientId: number) {
         },
       },
     });
-    console.log(patient);
-    // //console.log(patient);
+
     return patient;
   } catch (error) {
     console.error("Error fetching patient:", error);
@@ -171,7 +168,7 @@ export async function addPrescription(
         visitId: visitIdProp,
       },
     });
-    // //console.log("Prescription added:", prescription);
+
     return prescription;
   } catch (error) {
     console.error("Error adding prescription:", error);
@@ -188,7 +185,7 @@ export async function deletePrescription(prescriptionId: number) {
         id: prescriptionId,
       },
     });
-    // //console.log("Prescription added:", prescription);
+
     return prescription;
   } catch (error) {
     console.error("Error Deleting prescription:", error);
@@ -267,7 +264,7 @@ export async function addNewVisit(patientId: number, dateString: string) {
         },
       },
     });
-    // //console.log("New visit added:", newVisit);
+
     return newVisit;
   } catch (error) {
     console.error("Error adding new visit:", error);
@@ -283,7 +280,6 @@ export async function addPatientDetail(
   visitIdArg: number
 ) {
   try {
-    //console.log(detailHeadingArg, detailArg, visitIdArg);
     const patientDetail = await prisma.patientDetails.create({
       data: {
         detailHeading: detailHeadingArg,
@@ -291,7 +287,7 @@ export async function addPatientDetail(
         visitId: visitIdArg,
       },
     });
-    // //console.log("New visit added:", newVisit);
+
     return patientDetail;
   } catch (error) {
     console.error("Error adding new visit:", error);
@@ -351,10 +347,9 @@ export async function deleteDetail(detail_Id: number) {
         id: detail.id,
       },
     });
-    // //console.log("patient deleted");
+
     return detail.id;
   } catch (error) {
-    //console.log(error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -373,7 +368,7 @@ export async function deleteDetail(detail_Id: number) {
 //         visitId: visitIdArg,
 //       },
 //     });
-//     // //console.log("New visit added:", newVisit);
+
 //     return patientDetail;
 //   } catch (error) {
 //     console.error("Error adding new visit:", error);

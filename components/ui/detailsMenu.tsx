@@ -18,8 +18,6 @@ enum Options {
 
 const optionsArray: string[] = Object.values(Options);
 
-//console.log(optionsArray);
-
 const ITEM_HEIGHT = 48;
 
 export default function DetailsMenu() {
@@ -37,7 +35,7 @@ export default function DetailsMenu() {
   };
   const handleClose = (optionString: string) => {
     // setAnchorEl(null);
-    // console.log("in handle close");
+
     setIsVisible(false);
     if (optionString === Options.Edit) {
       setEditOpen(true);
@@ -102,12 +100,9 @@ export default function DetailsMenu() {
         onDelete={() => {
           try {
             if (detail?.id) {
-              console.log("deleting detail");
               store.dispatch(deleteDetail(detail.id));
             }
-          } catch (error) {
-            //console.log(error);
-          }
+          } catch (error) {}
         }}
       >
         <div id="clickDeleteEvent"></div>

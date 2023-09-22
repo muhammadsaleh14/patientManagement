@@ -30,7 +30,6 @@ export default function DetailsEditDialog({
   }>({ detailHeading: detail?.detailHeading, detailText: detail?.details });
 
   const handleClickOpen = () => {
-    //console.log("running handle click open");
     setOpen(true);
   };
 
@@ -58,7 +57,7 @@ export default function DetailsEditDialog({
         ...prevDetail,
         [name]: value,
       }));
-      // //console.log(name);
+
       // Update the detail state based on the input element's name
     }
   };
@@ -67,7 +66,6 @@ export default function DetailsEditDialog({
       detailHeading: detail?.detailHeading,
       detailText: detail?.details,
     });
-    //console.log(input);
   };
   useEffect(() => {
     resetInput();

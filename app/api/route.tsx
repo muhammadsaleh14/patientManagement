@@ -7,7 +7,6 @@ export async function GET(NextRequest: Request) {
   });
 }
 export async function DELETE() {
-  // return //console.log("running delete");
   // const { name, age, gender } = request;
   // return NextResponse.json(await deletePatient(name, parseInt(age), gender));
 }

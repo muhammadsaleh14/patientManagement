@@ -38,7 +38,6 @@ const DetailComponent = ({
   bold: boolean;
 }) => {
   const [contextData, setContextData] = React.useState(detail);
-  // console.log(bold);
 
   return (
     <detailContext.Provider value={contextData}>
@@ -76,15 +75,13 @@ export default function Details({ visit }: { visit: Visit }) {
   }
   const orderedDetails = ls ? (JSON.parse(ls) as Detail[]) : null;
   const detailHeadings = orderedDetails?.map((detail) => detail.detailHeading);
-  // console.log(detailHeadings);
 
   const checkHeading = (detail: PatientDetails) => {
     if (detailHeadings && detailHeadings.includes(detail.detailHeading)) {
-      // console.log("bold true");
       // Wrap the detail in a bold tag
       return true;
     }
-    // console.log("bold false");
+
     return false;
   };
 

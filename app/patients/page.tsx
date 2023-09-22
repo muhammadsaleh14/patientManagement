@@ -53,7 +53,6 @@ const Page: React.FC = () => {
   const patient = useSelector(getPatient);
   //? setPatient imported from redux
 
-  // //console.log("patients/page");
   const [alert, setAlert] = useState<{
     title: string;
     severity: "success" | "error";
@@ -61,7 +60,6 @@ const Page: React.FC = () => {
   } | null>(null);
   async function getCompletePatientForStore(id: number) {
     try {
-      console.log(id);
       await store.dispatch(setPatient(id));
     } catch (error) {
       console.error("Error fetching patient:", error);
@@ -95,7 +93,6 @@ const Page: React.FC = () => {
       patient.gender.toLowerCase().includes(searchTerm.toLowerCase())
   );
   // const filteredPatients = patients;
-  // console.log(filteredPatients);
 
   useEffect(() => {
     fetchPatients();
@@ -115,7 +112,6 @@ const Page: React.FC = () => {
         });
       })
       .catch(() => {
-        //console.log("delete patient failed");
         setAlert({
           title: "Deleting patient failed",
           severity: "error",
@@ -213,10 +209,7 @@ const Page: React.FC = () => {
                         onDelete={() => {
                           try {
                             deletePatient(patient.id);
-                            // //console.log(details);
-                          } catch (error) {
-                            //console.log(error);
-                          }
+                          } catch (error) {}
                         }}
                       >
                         <Button variant="outlined" color="warning">

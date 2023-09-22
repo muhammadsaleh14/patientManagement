@@ -47,7 +47,7 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
 
   // Create a map to store the index of each detailHeading in currentLayout
   const detailIndexMap = new Map();
-  // //console.log("unique details: " + JSON.stringify(patientDetails));
+
   currentLayout.forEach((currentDetail, index) => {
     detailIndexMap.set(currentDetail.detailHeading, index);
   });
@@ -84,9 +84,9 @@ export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   orderedPatientDetails.push(...nonMatchingPatientDetails);
 
   // orderedDetails.map((detail) => {
-  //   //console.log("ordered detail: " + detail.detailHeading);
+
   // });
-  // //console.log("set details order:", setDetailsOrder);
+
   return orderedPatientDetails;
 };
 
@@ -94,8 +94,6 @@ export function areArraysOfPatientDetailsEqual(
   arrayA: PatientDetails[],
   arrayB: PatientDetails[]
 ): boolean {
-  // console.log("array A", arrayA);
-  // console.log("array B", arrayB);
   // Check if the arrays have the same length
   if (!arrayA || !arrayB) return false;
 
@@ -175,7 +173,6 @@ export function sortVisitsByDate(
 
     const dateA = parse(a.date, "hh:mm:ss a dd/MM/yyyy", new Date());
     const dateB = parse(b.date, "hh:mm:ss a dd/MM/yyyy", new Date());
-    // console.log(dateA, dateB);
 
     // Compare the dates in descending order
     if (dateA > dateB) {
@@ -186,8 +183,6 @@ export function sortVisitsByDate(
       return 0;
     }
   });
-
-  console.log(sortedVisits);
 
   // Create a new patient object with sorted visits
   const sortedPatient: Patient = {

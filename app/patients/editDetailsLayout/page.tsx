@@ -40,7 +40,6 @@ const SortableDetails = ({
 }: {
   detail: { detailHeading: string; id: number };
 }) => {
-  // //console.log("rendering sortable Detail");
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: detail.id });
   const style = {
@@ -57,10 +56,7 @@ const SortableDetails = ({
   const handleDeleteClick = () => {
     try {
       store.dispatch(deleteDetail(detail.id));
-      // //console.log(details);
-    } catch (error) {
-      //console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (
@@ -115,10 +111,7 @@ const SortableDetails = ({
                 onDelete={() => {
                   try {
                     store.dispatch(deleteDetail(detail.id));
-                    // //console.log(details);
-                  } catch (error) {
-                    //console.log(error);
-                  }
+                  } catch (error) {}
                 }}
               >
                 Delete
@@ -132,18 +125,16 @@ const SortableDetails = ({
 };
 
 const Page: React.FC = () => {
-  //console.log("rendering Details");
   const details = useSelector(getDetailsLayout);
   const [detailOrder, setDetailOrder] = useState(details.detailsInfo);
   const [detailInput, setDetailInput] = useState("");
   const [domLoaded, setDomLoaded] = useState(false);
   // const [saveBtnDisabled, setSaveBtnDisabled] = useState(true);
   const status = details.status;
-  //console.log(status);
+
   const error = details.error;
 
   const onDragEnd = (event: DragEndEvent) => {
-    //console.log("running on drag end");
     const { active, over } = event;
     if (active.id === over?.id) {
       return;

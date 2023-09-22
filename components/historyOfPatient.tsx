@@ -13,7 +13,6 @@ function HistoryOfPatient() {
   // console.count("HistoryOfPatient");
   const { patient, status } = useSelector(getPatientStateWithSortedVisitDates);
   const router = useRouter();
-  // //console.log(patient);
 
   useEffect(() => {}, [patient]);
   return (

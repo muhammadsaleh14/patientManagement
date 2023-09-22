@@ -54,7 +54,7 @@ const detailsLayoutSlice = createSlice({
         id: uniqueId,
       };
       state?.detailsInfo?.unshift(newDetail);
-      // //console.log(JSON.stringify(state.detailsInfo));
+
       state.status = "succeeded";
     },
     setNewDetailsOrder: (
@@ -78,14 +78,13 @@ const detailsLayoutSlice = createSlice({
         throw new Error("Detail id is not defined");
       }
       if (!state || !state.detailsInfo) {
-        //console.log("state is not defined");
         throw new Error("state is not defined");
       }
-      // //console.log("deleting detail");
+
       const updatedDetailsInfo = state.detailsInfo.filter(
         (detail) => detail.id !== action.payload
       );
-      // //console.log(updatedDetailsInfo);
+
       state.detailsInfo = updatedDetailsInfo;
       state.status = "succeeded";
     },

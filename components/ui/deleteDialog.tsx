@@ -42,8 +42,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
     if (!isPersist) {
       onDelete();
     }
-    console.log("setopen to false");
-    console.log("running");
+
     // if (!firstLoad) {
     setOpen(false);
     // }
