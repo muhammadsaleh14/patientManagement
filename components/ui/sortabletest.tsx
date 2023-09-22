@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useEffect, useState } from "react";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -70,7 +71,9 @@ export default function Details({ visit }: { visit: Visit }) {
       setDetailOrder(visit.patientDetails);
     }
   }, [visit?.patientDetails]);
-  ls = localStorage.getItem("detailData");
+  if (typeof localStorage !== "undefined") {
+    ls = localStorage.getItem("detailData");
+  }
   const orderedDetails = ls ? (JSON.parse(ls) as Detail[]) : null;
   const detailHeadings = orderedDetails?.map((detail) => detail.detailHeading);
   // console.log(detailHeadings);

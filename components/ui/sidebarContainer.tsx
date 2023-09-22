@@ -7,7 +7,10 @@ export default function SidebarContainer({
 }) {
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const [isResizing, setIsResizing] = useState<boolean>(false);
-  const width = localStorage.getItem("sidebarWidth");
+  let width;
+  if (typeof localStorage !== "undefined") {
+    width = localStorage.getItem("sidebarWidth");
+  }
   const [sidebarWidth, setSidebarWidth] = useState<number>(
     width ? parseInt(width) : 268
   );

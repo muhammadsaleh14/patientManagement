@@ -29,7 +29,7 @@ export function formatDateString(date: string): string {
 export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   const currentLayout = state.detailsLayout.detailsInfo;
   const allDetailsInVisit = getCurrentVisit(state)?.patientDetails;
-  if (!allDetailsInVisit || []) {
+  if (!allDetailsInVisit) {
     return [];
   }
 
