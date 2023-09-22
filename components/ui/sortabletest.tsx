@@ -38,7 +38,7 @@ const DetailComponent = ({
   bold: boolean;
 }) => {
   const [contextData, setContextData] = React.useState(detail);
-  console.log(bold);
+  // console.log(bold);
 
   return (
     <detailContext.Provider value={contextData}>

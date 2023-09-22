@@ -39,12 +39,12 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number, { getState, dispatch }) => {
-    console.log("here");
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
-    const state = getState() as RootState;
-    const sortedDetails = setDetailsOrder(state);
-    dispatch(updateDetailsOrder(sortedDetails));
+    // const state = getState() as RootState;
+    // const sortedDetails = setDetailsOrder(state);
+    // dispatch(updateDetailsOrder(sortedDetails));
+    console.log(patient.visits);
     return patient;
   }
 );
@@ -224,7 +224,6 @@ const patientSlice = createSlice({
 
     setPatientFromApi: (state, action: PayloadAction<Patient>) => {
       state.patient = action.payload;
-      console.log(state.patient);
       // setToLocalStorage(state.patient, state.currentVisitId);
     },
     setVisitId: (state, action: PayloadAction<number>) => {
@@ -235,7 +234,6 @@ const patientSlice = createSlice({
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
       //console.log("update details order");
       // Update the order of details in the Redux state using the action
-      console.log(action.payload);
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
           // Clone the visit object and update its patientDetails property

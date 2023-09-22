@@ -28,7 +28,7 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
       const patientState = newState.patient; // Get the updated 'patient' state
       if (currentVisit && oldVisit) {
         console.log("updating LS");
-        console.log(oldVisit, currentVisit);
+        // console.log(oldVisit, currentVisit);
         // //console.log("current visit", currentVisit, " oldVisit", oldVisit);
         if (
           !oldVisit ||

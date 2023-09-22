@@ -31,7 +31,6 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   //   handleClickOpen();
   // }, []);
 
-  console.log("in delete:", open);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
