@@ -28,11 +28,12 @@ export function formatDateString(date: string): string {
 // Define a function to set the order of patient visit details
 export const setDetailsOrder = (state: RootState): Visit["patientDetails"] => {
   const currentLayout = state.detailsLayout.detailsInfo;
-  const _ = getCurrentVisit(state)?.patientDetails;
-  if (!_) {
+  const allDetailsInVisit = getCurrentVisit(state)?.patientDetails;
+  if (!allDetailsInVisit || []) {
     return [];
   }
-  const patientDetails = _.reduce((acc, current) => {
+
+  const patientDetails = allDetailsInVisit.reduce((acc, current) => {
     if (!acc.find((detail) => detail.detailHeading === current.detailHeading)) {
       acc.push(current);
     }

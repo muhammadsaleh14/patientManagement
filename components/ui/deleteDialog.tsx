@@ -33,7 +33,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 
   console.log("in delete:", open);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,39 +51,45 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   };
 
   return (
-    <div>
-      <div onClick={handleClickOpen}>{children}</div>
-
-      <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
+    <>
+      <div
+        className="h-full text-center justify-center flex items-center hover:cursor-pointer"
+        onClick={handleClickOpen}
       >
-        <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{text}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            onClick={() => handleClose(true)}
-            className="text-blue-400 hover:text-blue-700"
-          >
-            Disagree
-          </Button>
-          <Button
-            onClick={() => {
-              handleClose(false);
-            }}
-            autoFocus
-            className="text-red-400 hover:text-red-700"
-          >
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+        {children}
+      </div>
+      <div>
+        <Dialog
+          fullScreen={fullScreen}
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{text}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              autoFocus
+              onClick={() => handleClose(true)}
+              className="text-blue-400 hover:text-blue-700"
+            >
+              Disagree
+            </Button>
+            <Button
+              onClick={() => {
+                handleClose(false);
+              }}
+              autoFocus
+              className="text-red-400 hover:text-red-700"
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </>
   );
 };
 

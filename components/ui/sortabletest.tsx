@@ -23,17 +23,32 @@ import {
 import { store } from "@/app/GlobalRedux/store/store";
 import DetailsMenu from "./detailsMenu";
 import React from "react";
+import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 
 export const detailContext = createContext<undefined | PatientDetails>(
   undefined
 );
-const Detail = ({ detail }: { detail: PatientDetails | undefined }) => {
+
+const DetailComponent = ({
+  detail,
+  bold,
+}: {
+  detail: PatientDetails | undefined;
+  bold: boolean;
+}) => {
   const [contextData, setContextData] = React.useState(detail);
+  console.log(bold);
+
   return (
     <detailContext.Provider value={contextData}>
       <Card variant="outlined" className="flex">
         <CardContent className="px-4 py-2 flex-grow">
-          <Typography variant="h6" gutterBottom className="">
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={bold ? { fontWeight: 700 } : {}}
+            // className={bold ? "font-extrabold" : ""}
+          >
             {detail?.detailHeading}
           </Typography>
           <Typography variant="body2" className="whitespace-pre-wrap">
@@ -47,22 +62,35 @@ const Detail = ({ detail }: { detail: PatientDetails | undefined }) => {
 };
 
 export default function Details({ visit }: { visit: Visit }) {
-  // //console.log("rendering Details");
   const [detailOrder, setDetailOrder] = useState(visit?.patientDetails);
-  // useEffect(() => {
-  // }, [visit.patientDetails.length]);
-  // //console.log("rendering details");
+  let ls;
+  // useEffect(() => {}, detailOrder);
   useEffect(() => {
     if (visit?.patientDetails) {
       setDetailOrder(visit.patientDetails);
     }
-    //console.log(visit.patientDetails);
   }, [visit?.patientDetails]);
+  ls = localStorage.getItem("detailData");
+  const orderedDetails = ls ? (JSON.parse(ls) as Detail[]) : null;
+  const detailHeadings = orderedDetails?.map((detail) => detail.detailHeading);
+  // console.log(detailHeadings);
+
+  const checkHeading = (detail: PatientDetails) => {
+    if (detailHeadings && detailHeadings.includes(detail.detailHeading)) {
+      // console.log("bold true");
+      // Wrap the detail in a bold tag
+      return true;
+    }
+    // console.log("bold false");
+    return false;
+  };
+
   return (
     <div className="details">
-      {detailOrder?.map((detail) => (
-        <Detail key={detail?.id} detail={detail} />
-      ))}
+      {detailOrder?.map((detail) => {
+        const bold = checkHeading(detail);
+        return <DetailComponent key={detail?.id} detail={detail} bold={bold} />;
+      })}
     </div>
   );
 }

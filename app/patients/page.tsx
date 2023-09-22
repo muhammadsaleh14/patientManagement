@@ -32,6 +32,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { formatDateString } from "../GlobalRedux/utilMethods";
 import deleteAlert from "@/components/ui/confirmDelete";
 import DeleteDialog from "@/components/ui/deleteDialog";
+import AddVisitPermission from "@/components/ui/addVisitPermission";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -47,7 +48,7 @@ import DeleteDialog from "@/components/ui/deleteDialog";
 const Page: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
   const [patientId, setPatientId] = useState<null | number>(null);
   const patient = useSelector(getPatient);
   //? setPatient imported from redux
@@ -161,15 +162,13 @@ const Page: React.FC = () => {
             {filteredPatients.map((patient) => (
               <TableRow
                 key={patient.id}
-                className=""
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                className="bg-slate-500"
+                // onMouseEnter={() => setIsHovered(true)}
+                // onMouseLeave={() => setIsHovered(false)}
                 // onClick={() => axios.get(`/patients/${patient.id}`)}
               >
                 <TableCell
-                  className={`font-medium w-80 hover:cursor-pointer ${
-                    isHovered ? "bg-blue-300 text-blue-600 text-xl" : ""
-                  }`}
+                  className={`font-medium w-80 hover:cursor-pointer`}
                   onClick={() => router.push(`/patients/${patient.id}`)}
                 >
                   {patient.name}
@@ -179,49 +178,53 @@ const Page: React.FC = () => {
                 <TableCell className="">
                   {patient?.visits[0]?.date ?? "Not available"}
                 </TableCell>
-                <TableCell className="bg-blue-300">
-                  <Box className="w-full h-full flex justify-around">
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      onClick={() => {
-                        router.push(
-                          `/patients/${patient.id}?visitDate=` +
-                            getCurrentDate()
-                        );
-                      }}
-                    >
-                      <AddBox />
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      className="inline-block"
-                      onClick={() => {
-                        getCompletePatientForStore(patient.id);
-                      }}
-                    >
-                      <HistoryOfPatientModal />
-                    </Button>
-                    <DeleteDialog
-                      title={`Are you sure you want to delete info of ${patient.name}`}
-                      text={
-                        "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
-                      }
-                      onDelete={() => {
-                        try {
-                          deletePatient(patient.id);
-                          // //console.log(details);
-                        } catch (error) {
-                          //console.log(error);
-                        }
-                      }}
-                    >
-                      <Button variant="outlined" color="warning">
-                        <DeleteIcon />
+                <TableCell className="bg-slate-200 p-2  ">
+                  <div className="shadow-md rounded-md h-full flex justify-between">
+                    <Box className="flex justify-around w-full">
+                      <AddVisitPermission
+                        onAdd={() => {
+                          router.push(
+                            `/patients/${patient.id}?visitDate=` +
+                              getCurrentDate()
+                          );
+                        }}
+                        title="Adding Visit"
+                        text={"Are you sure you want to add a new Visit"}
+                      >
+                        <Button variant="outlined" color="info">
+                          <AddBox />
+                        </Button>
+                      </AddVisitPermission>
+                      <Button
+                        variant="outlined"
+                        color="info"
+                        className="inline-block"
+                        onClick={() => {
+                          getCompletePatientForStore(patient.id);
+                        }}
+                      >
+                        <HistoryOfPatientModal />
                       </Button>
-                    </DeleteDialog>
-                  </Box>
+                      <DeleteDialog
+                        title={`Are you sure you want to delete info of ${patient.name}`}
+                        text={
+                          "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
+                        }
+                        onDelete={() => {
+                          try {
+                            deletePatient(patient.id);
+                            // //console.log(details);
+                          } catch (error) {
+                            //console.log(error);
+                          }
+                        }}
+                      >
+                        <Button variant="outlined" color="warning">
+                          <DeleteIcon />
+                        </Button>
+                      </DeleteDialog>
+                    </Box>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

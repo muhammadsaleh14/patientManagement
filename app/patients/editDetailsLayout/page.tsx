@@ -106,7 +106,7 @@ const SortableDetails = ({
             >
               <UnfoldMoreIcon />
             </button>
-            <div className="px-4 py-2 text-sm bg-red-300 rounded text-red-500 hover:text-red-900 ml-2 ">
+            <div className=" w-20 ml-4 text-sm bg-red-300 rounded text-red-500 hover:text-red-900">
               <DeleteDialog
                 title={"Are you sure you want to delete detail"}
                 text={
