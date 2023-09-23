@@ -49,8 +49,8 @@ const Page: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   // const [isHovered, setIsHovered] = useState(false);
-  const [patientId, setPatientId] = useState<null | number>(null);
-  const patient = useSelector(getPatient);
+  // const [patientId, setPatientId] = useState<null | number>(null);
+  // const patient = useSelector(getPatient);
   //? setPatient imported from redux
 
   const [alert, setAlert] = useState<{

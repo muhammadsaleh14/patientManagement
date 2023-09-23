@@ -40,6 +40,7 @@ import { AppDispatch, store } from "@/app/GlobalRedux/store/store";
 import { useDispatch } from "react-redux";
 import Sidebar from "@/components/ui/sidebar";
 import SidebarContainer from "@/components/ui/sidebarContainer";
+import LoadingState from "@/components/ui/loadingState";
 // { params }: { params: { id: string } }
 const Page = ({ params }: { params: { id: string } }) => {
   const { patient, currentVisitId } = useSelector(getPatientState);
@@ -62,79 +63,77 @@ const Page = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     setDomLoaded(true);
   }, []);
-  return (
-    domLoaded && (
-      <Stack direction="row" spacing={0} className="h-full">
-        {/* Sidebar */}
-        <SidebarContainer>
-          <Box
-            className="bg-gray-300 overflow-y-auto h-screen flex-grow w-full"
-            // style={{ minWidth: "200px", maxWidth: "200px" }}
-          >
-            {/* Sidebar content */}
+  return domLoaded ? (
+    <Stack direction="row" spacing={0} className="h-full">
+      {/* Sidebar */}
+      <SidebarContainer>
+        <Box
+          className="bg-gray-300 overflow-y-auto h-screen flex-grow w-full"
+          // style={{ minWidth: "200px", maxWidth: "200px" }}
+        >
+          {/* Sidebar content */}
 
-            <Sidebar />
-          </Box>
-        </SidebarContainer>
-        {/* Main content */}
-        <Box className="h-full w-full">
-          <Stack spacing={2} className="h-full">
-            {/* {Box here} */}
-            <Box className="p-5 bg-yellow-700 flex justify-center ">
-              {/* Patient details */}
-              {patient && (
-                <>
-                  <TextField
-                    id="name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Name:</InputAdornment>
-                      ),
-                    }}
-                    value={patient?.name}
-                  />
-                  <TextField
-                    className="w-24"
-                    id="age"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">age:</InputAdornment>
-                      ),
-                    }}
-                    value={patient?.age}
-                  />
-                  <TextField
-                    className="w-36"
-                    id="gender"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          gender:
-                        </InputAdornment>
-                      ),
-                    }}
-                    value={patient?.gender}
-                  />
-                  <TextField
-                    id="date"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Date:</InputAdornment>
-                      ),
-                    }}
-                    value={date ? date : "Not available"}
-                  />
-                </>
-              )}
-            </Box>
-            <Box className="bg-slate-400 p-7 w-full h-full">
-              <Prescription />
-              {/* id={patient?.id}  */}
-            </Box>
-          </Stack>
+          <Sidebar />
         </Box>
-      </Stack>
-    )
+      </SidebarContainer>
+      {/* Main content */}
+      <Box className="h-full w-full">
+        <Stack spacing={2} className="h-full">
+          {/* {Box here} */}
+          <Box className="p-5 bg-yellow-700 flex justify-center ">
+            {/* Patient details */}
+            {patient && (
+              <>
+                <TextField
+                  id="name"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">Name:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.name}
+                />
+                <TextField
+                  className="w-24"
+                  id="age"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">age:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.age}
+                />
+                <TextField
+                  className="w-36"
+                  id="gender"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">gender:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.gender}
+                />
+                <TextField
+                  id="date"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">Date:</InputAdornment>
+                    ),
+                  }}
+                  value={date ? date : "Not available"}
+                />
+              </>
+            )}
+          </Box>
+          <Box className="bg-slate-400 p-7 w-full h-full">
+            <Prescription />
+            {/* id={patient?.id}  */}
+          </Box>
+        </Stack>
+      </Box>
+    </Stack>
+  ) : (
+    <LoadingState />
   );
 };
 

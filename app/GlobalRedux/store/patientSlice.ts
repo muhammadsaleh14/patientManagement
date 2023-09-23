@@ -39,6 +39,7 @@ const initialState: PatientState = {
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
   async (patientId: number, { getState, dispatch }) => {
+    dispatch(clearPatientState());
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
     // const state = getState() as RootState;
@@ -217,7 +218,10 @@ const patientSlice = createSlice({
 
     //   // setToLocalStorage(state.patient, state.currentVisitId);
     // },
-
+    clearPatientState: (state) => {
+      state.patient = undefined;
+      // setToLocalStorage(state.patient, state.currentVisitId);
+    },
     setPatientFromApi: (state, action: PayloadAction<Patient>) => {
       state.patient = action.payload;
       // setToLocalStorage(state.patient, state.currentVisitId);
@@ -492,5 +496,9 @@ export const getCurrentVisitWithPatientState = (
   );
 };
 
-export const { setVisitId, updateDetailsOrder, setPatientFromApi } =
-  patientSlice.actions;
+export const {
+  setVisitId,
+  updateDetailsOrder,
+  setPatientFromApi,
+  clearPatientState,
+} = patientSlice.actions;
