@@ -66,10 +66,14 @@ export default function Details({ visit }: { visit: Visit }) {
   let ls;
   // useEffect(() => {}, detailOrder);
   useEffect(() => {
+    // console.log(visit.patientDetails);
     if (visit?.patientDetails) {
       setDetailOrder(visit.patientDetails);
+    } else {
+      setDetailOrder([]);
     }
   }, [visit?.patientDetails]);
+
   if (typeof localStorage !== "undefined") {
     ls = localStorage.getItem("detailData");
   }
