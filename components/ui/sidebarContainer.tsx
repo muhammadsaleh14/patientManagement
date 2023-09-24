@@ -2,14 +2,16 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 
 export default function SidebarContainer({
   children,
+  itemInLS,
 }: {
   children: React.ReactNode;
+  itemInLS: string;
 }) {
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   let width;
   if (typeof localStorage !== "undefined") {
-    width = localStorage.getItem("sidebarWidth");
+    width = localStorage.getItem(itemInLS);
   }
   const [sidebarWidth, setSidebarWidth] = useState<number>(
     width ? parseInt(width) : 268
@@ -30,7 +32,7 @@ export default function SidebarContainer({
           mouseMoveEvent.clientX -
           sidebarRef.current.getBoundingClientRect().left;
         setSidebarWidth(width);
-        localStorage.setItem("sidebarWidth", width.toString());
+        localStorage.setItem(itemInLS, width.toString());
       }
     },
     [isResizing]
@@ -57,7 +59,7 @@ export default function SidebarContainer({
         {children}
         <div className="app-sidebar-resizer" onMouseDown={startResizing} />
       </div>
-      <div className="app-frame" />
+      {/* <div className="app-frame" /> */}
     </div>
   );
 }

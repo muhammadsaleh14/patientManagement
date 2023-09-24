@@ -69,7 +69,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     (loading && <LoadingState />) || (
       <Stack direction="row" spacing={0} className="h-full">
         {/* Sidebar */}
-        <SidebarContainer>
+        <SidebarContainer itemInLS="sidebarWidth">
           <Box
             className="bg-gray-300 overflow-y-auto h-screen flex-grow w-full"
             // style={{ minWidth: "200px", maxWidth: "200px" }}
@@ -130,10 +130,18 @@ const Page = ({ params }: { params: { id: string } }) => {
                 </>
               )}
             </Box>
-            <Box className="bg-slate-400 p-7 w-full h-full">
-              <Prescription />
-              {/* id={patient?.id}  */}
-            </Box>
+            <div className="flex flex-row">
+              <SidebarContainer itemInLS="miniSidebarWidth">
+                <Box
+                  className="bg-gray-300 overflow-y-auto h-max flex-grow w-full"
+                  // style={{ minWidth: "200px", maxWidth: "200px" }}
+                ></Box>
+              </SidebarContainer>
+              <Box className="bg-slate-400 p-7 w-full h-full">
+                <Prescription />
+                {/* id={patient?.id}  */}
+              </Box>
+            </div>
           </Stack>
         </Box>
       </Stack>

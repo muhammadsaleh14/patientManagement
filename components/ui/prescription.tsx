@@ -1,5 +1,12 @@
 "use client";
-import { Autocomplete, Button, Chip, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  Stack,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Patient, Prescription } from "../interfaces/databaseInterfaces";
@@ -14,6 +21,7 @@ import {
 } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import DeleteDialog from "./deleteDialog";
+import SidebarContainer from "./sidebarContainer";
 
 // ... Import statements ...
 
@@ -74,71 +82,82 @@ export default function Prescription() {
   return (
     domMounted && (
       <div>
-        <form className="flex align-baseline">
-          <Autocomplete
-            className="w-3/4"
-            // {...allPrescriptionProps}
-            {...flatProps}
-            id="free-solo-demo"
-            clearOnEscape
-            freeSolo
-            inputValue={prescription}
-            onInputChange={(event, newInputValue) => {
-              setPrescription(newInputValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                id="outlined-multiline-flexible"
-                label="Add Prescription"
-                required
-                onChange={(e) => setPrescription(e.target.value)}
+        <div className="flex flex-row">
+          {/* Sidebar */}
+          <div className="min-h-fit w-full">
+            <form className="flex align-baseline">
+              <Autocomplete
+                className="w-3/4"
+                // {...allPrescriptionProps}
+                {...flatProps}
+                id="free-solo-demo"
+                clearOnEscape
+                freeSolo
+                inputValue={prescription}
+                onInputChange={(event, newInputValue) => {
+                  setPrescription(newInputValue);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    id="outlined-multiline-flexible"
+                    label="Add Prescription"
+                    required
+                    onChange={(e) => setPrescription(e.target.value)}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <li {...props} key={option}>
+                    {option}
+                  </li>
+                )}
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => (
+                    <Chip
+                      {...getTagProps({ index })}
+                      key={option}
+                      label={option}
+                    />
+                  ))
+                }
               />
-            )}
-            renderOption={(props, option) => (
-              <li {...props} key={option}>
-                {option}
-              </li>
-            )}
-            renderTags={(tagValue, getTagProps) =>
-              tagValue.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option} label={option} />
-              ))
-            }
-          />
 
-          <Button type="submit" onClick={handleSubmit} className="">
-            Submit
-          </Button>
-        </form>
-        {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
-        {visit?.prescriptions ? (
-          visit.prescriptions.map((value, index) => {
-            return (
-              <div key={value.id} className="flex items-baseline">
-                <TextField
-                  id="outlined-multiline-flexible"
-                  multiline
-                  className="w-3/4"
-                  required
-                  margin="dense"
-                  value={value.prescription}
-                  onChange={() => {}}
-                />
-                <Button
-                  onClick={() => store.dispatch(deletePrescription(value.id))}
-                  variant="outlined"
-                  color="warning"
-                  className="m-auto ml-2"
-                >
-                  <DeleteIcon />
-                </Button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>No Prescriptions yet</h2>
-        )}
+              <Button type="submit" onClick={handleSubmit} className="">
+                Submit
+              </Button>
+            </form>
+            {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
+            {visit?.prescriptions ? (
+              visit.prescriptions.map((value, index) => {
+                return (
+                  <div key={value.id} className="flex items-baseline">
+                    <TextField
+                      id="outlined-multiline-flexible"
+                      multiline
+                      className="w-3/4"
+                      required
+                      margin="dense"
+                      value={value.prescription}
+                      onChange={() => {}}
+                    />
+                    <Button
+                      onClick={() =>
+                        store.dispatch(deletePrescription(value.id))
+                      }
+                      variant="outlined"
+                      color="warning"
+                      className="m-auto ml-2"
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </div>
+                );
+              })
+            ) : (
+              <h2>No Prescriptions yet</h2>
+            )}
+          </div>
+        </div>
       </div>
     )
   );
