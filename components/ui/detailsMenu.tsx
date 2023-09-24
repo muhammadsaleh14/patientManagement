@@ -26,6 +26,8 @@ export default function DetailsMenu() {
   // const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const detail = React.useContext(detailContext);
+  console.log(detail?.detailHeading);
+
   // const open = Boolean(anchorEl);
   const open = Boolean(isVisible);
 
@@ -43,7 +45,12 @@ export default function DetailsMenu() {
 
     if (optionString === Options.Delete) {
       // setDeleteOpen(true);
-      const deleteDialog = document.getElementById("clickDeleteEvent");
+      const deleteDialog = document.getElementById(
+        detail?.id.toString() ?? "-1"
+      );
+      if (!deleteDialog) {
+        throw new Error("The detail to be deleted is not availible");
+      }
       deleteDialog?.click();
     }
   };
@@ -100,12 +107,13 @@ export default function DetailsMenu() {
         onDelete={() => {
           try {
             if (detail?.id) {
+              console.log("deleting", detail?.detailHeading);
               store.dispatch(deleteDetail(detail.id));
             }
           } catch (error) {}
         }}
       >
-        <div id="clickDeleteEvent"></div>
+        <div id={detail?.id.toString()}></div>
       </DeleteDialog>
     </div>
   );

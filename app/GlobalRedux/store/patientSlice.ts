@@ -49,9 +49,9 @@ export const setPatient = createAsyncThunk(
     dispatch(clearPatientState());
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
-    const state = getState() as RootState;
-    if(date){
+    if (date) {
       await dispatch(setVisit(date));
+      const state = getState() as RootState;
       const sortedDetails = setDetailsOrder(state);
       dispatch(updateDetailsOrder(sortedDetails));
     }
