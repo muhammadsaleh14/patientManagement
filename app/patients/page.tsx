@@ -20,8 +20,7 @@ import RegisterPatient from "@/components/registerPatient";
 import AutoCloseAlert from "@/components/ui/autoCloseAlert";
 import { useRouter } from "next/navigation";
 import AddBox from "@mui/icons-material/AddBox";
-import HistoryOfPatient from "@/components/historyOfPatientModal";
-import HistoryOfPatientModal from "@/components/historyOfPatientModal";
+import HistoryOfPatient from "@/components/historyOfPatient";
 import { Patient } from "@/components/interfaces/databaseInterfaces";
 import { format, parse } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +32,7 @@ import { formatDateString } from "../GlobalRedux/utilMethods";
 import deleteAlert from "@/components/ui/confirmDelete";
 import DeleteDialog from "@/components/ui/deleteDialog";
 import AddVisitPermission from "@/components/ui/addVisitPermission";
+import HistoryOfPatientDialog from "@/components/ui/historyOfPatientDialog";
 // export interface Patient {
 //   id: number;
 //   name: string;
@@ -60,7 +60,7 @@ const Page: React.FC = () => {
   } | null>(null);
   async function getCompletePatientForStore(id: number) {
     try {
-      await store.dispatch(setPatient(id));
+      await store.dispatch(setPatient({ patientId: id, date: undefined }));
     } catch (error) {
       console.error("Error fetching patient:", error);
     }
@@ -191,16 +191,20 @@ const Page: React.FC = () => {
                           <AddBox />
                         </Button>
                       </AddVisitPermission>
-                      <Button
-                        variant="outlined"
-                        color="info"
-                        className="inline-block"
+                      <div
+                        className="border border-blue-500 text-blue-500 rounded-md p-2 flex items-center hover:bg-blue-100 hover:border-blue-600 hover:text-blue-600 cursor-pointer"
+                        // variant="outlined"
+                        // color="info"
+                        // className="inline-block"
                         onClick={() => {
+                          console.log(patient.id);
                           getCompletePatientForStore(patient.id);
                         }}
                       >
-                        <HistoryOfPatientModal />
-                      </Button>
+                        <HistoryOfPatientDialog>
+                          <HistoryOfPatient />
+                        </HistoryOfPatientDialog>
+                      </div>
                       <DeleteDialog
                         title={`Are you sure you want to delete info of ${patient.name}`}
                         text={

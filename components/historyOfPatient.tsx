@@ -19,10 +19,10 @@ function HistoryOfPatient() {
     <>
       {status === "loading" ? (
         // Display loading content
-        <p>Loading...</p>
+        <div>Loading...</div>
       ) : status === "succeeded" ? (
         // Display success content
-        <div className="w-full h-full">
+        <div className="m-auto items-center max-h-80">
           <h1>History of Patient: {patient?.name}</h1>
           <ul>
             {patient ? (

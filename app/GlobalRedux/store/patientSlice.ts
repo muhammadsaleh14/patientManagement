@@ -38,13 +38,23 @@ const initialState: PatientState = {
 
 export const setPatient = createAsyncThunk(
   "patient/setPatient",
-  async (patientId: number, { getState, dispatch }) => {
+  async (
+    {
+      patientId,
+      date = undefined,
+    }: { patientId: number; date: undefined | string },
+    { getState, dispatch }
+  ) => {
+    console.log("running set patient");
     dispatch(clearPatientState());
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
-    // const state = getState() as RootState;
-    // const sortedDetails = setDetailsOrder(state);
-    // dispatch(updateDetailsOrder(sortedDetails));
+    const state = getState() as RootState;
+    if(date){
+      await dispatch(setVisit(date));
+      const sortedDetails = setDetailsOrder(state);
+      dispatch(updateDetailsOrder(sortedDetails));
+    }
 
     return patient;
   }
@@ -210,76 +220,35 @@ const patientSlice = createSlice({
   name: "patient",
   initialState,
   reducers: {
-    //to make the middleware run
-    // initialisePatientStateWithSortedDetails: (
-    //   state,
-    //   action: PayloadAction<PatientDetails>
-    // ) => {
-
-    //   // setToLocalStorage(state.patient, state.currentVisitId);
-    // },
     clearPatientState: (state) => {
       state.patient = undefined;
-      // setToLocalStorage(state.patient, state.currentVisitId);
     },
     setPatientFromApi: (state, action: PayloadAction<Patient>) => {
       state.patient = action.payload;
-      // setToLocalStorage(state.patient, state.currentVisitId);
     },
     setVisitId: (state, action: PayloadAction<number>) => {
       state.currentVisitId = action.payload;
-      // setToLocalStorage(state.patient, state.currentVisitId);
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
-      // Update the order of details in the Redux state using the action
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
         if (visit.id === state.currentVisitId) {
-          // Clone the visit object and update its patientDetails property
           return {
             ...visit,
             patientDetails: action.payload,
           };
         }
-        // For other visits, return them as they are (no changes)
         return visit;
       });
-      // Update the state with the new array of visits
       if (state.patient) {
         state.patient.visits = updatedVisits;
       }
-
-      // Update the state with the new array of visits
     },
   },
   extraReducers(builder) {
-    builder;
+    // builder;
     //? For Initialize state
     //? updateDetail
     builder
-      // .addCase(initializeState.pending, (state) => {
-      //   state.status = "loading";
-
-      // })
-      // .addCase(initializeState.fulfilled, (state, action) => {
-      //   state.status = "succeeded";
-
-      //   //   "initializeState fulfiulled: " + action.payload.updatedPatient
-      //   // );
-      //   if (action.payload) {
-      //     if (action.payload.updatedPatient) {
-      //       state.patient = action.payload.updatedPatient;
-      //       state.currentVisitId = action.payload.visitId;
-      //     } else {
-
-      //     }
-      //   }
-      // })
-      // .addCase(initializeState.rejected, (state, action) => {
-      //   state.status = "failed";
-      //   state.error = action.error.message;
-
-      // })
-
       //? For setPatient
       .addCase(setPatient.pending, (state) => {
         state.status = "loading";
@@ -287,10 +256,6 @@ const patientSlice = createSlice({
       .addCase(
         setPatient.fulfilled,
         (state, action: PayloadAction<Patient>) => {
-          // const sortedDetails = setDetailsOrder(store.getState());
-          // store.dispatch(updateDetailsOrder(sortedDetails));
-
-          // setToLocalStorage(state.patient, state.currentVisitId);
           state.status = "succeeded";
         }
       )
@@ -321,6 +286,7 @@ const patientSlice = createSlice({
       .addCase(setVisit.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+        console.error(action.error.message);
       })
 
       //? For addPrescription
@@ -341,7 +307,7 @@ const patientSlice = createSlice({
               // Use concat to create a new array with the updated prescriptions
               return {
                 ...visit,
-                prescriptions: [...visit.prescriptions, action.payload],
+                prescriptions: [...(visit.prescriptions ?? []), action.payload],
               };
             }
             return visit;
@@ -354,6 +320,7 @@ const patientSlice = createSlice({
       .addCase(addPrescription.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
+        console.error(action.error.message);
       })
 
       //? For deletePrescription
@@ -379,6 +346,7 @@ const patientSlice = createSlice({
       .addCase(deletePrescription.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
+        console.error(action.error.message);
       })
 
       //? For addDetailToPatient
@@ -431,6 +399,7 @@ const patientSlice = createSlice({
       .addCase(updateDetail.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
+        console.error(action.error.message);
       })
       .addCase(deleteDetail.pending, (state) => {
         state.status = "loading";
@@ -454,6 +423,7 @@ const patientSlice = createSlice({
       .addCase(deleteDetail.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
+        console.error(action.error.message);
       });
   },
 });

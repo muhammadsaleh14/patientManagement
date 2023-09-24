@@ -32,8 +32,9 @@ const HistoryOfPatientModal = () => {
       height: "80%", // Adjust the height as needed
       border: "black",
       borderRadius: "8px",
-      padding: 0,
-      overflow: "auto",
+      // padding: "10px",
+      // marginTop: "100px",
+      overflow: "scroll",
     },
   };
 
@@ -50,7 +51,7 @@ const HistoryOfPatientModal = () => {
         onRequestClose={() => setIsOpen(false)}
         style={customStyles}
       >
-        <div className="rounded-lg p-6">
+        <div className="rounded-lg p-6 mt-auto">
           <HistoryOfPatient />
           <Button
             onClick={() => setIsOpen(false)}
@@ -66,4 +67,4 @@ const HistoryOfPatientModal = () => {
   );
 };
 
-export default HistoryOfPatientModal;
+// export default HistoryOfPatientModal;

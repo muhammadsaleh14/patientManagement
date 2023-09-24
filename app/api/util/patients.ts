@@ -254,7 +254,12 @@ export async function getAllPrescriptions() {
 
 export async function addNewVisit(patientId: number, dateString: string) {
   try {
+    const selectedDetails = await getUniquePatientDetails(patientId);
     const newVisit = await prisma.visit.create({
+      include: {
+        patientDetails: true, // Include patientDetails in the returned object
+        prescriptions: true, // Include prescriptions in the returned object
+      },
       data: {
         date: parse(dateString, "hh:mm:ss a dd/MM/yyyy", new Date()),
         patient: {
@@ -262,8 +267,15 @@ export async function addNewVisit(patientId: number, dateString: string) {
             id: patientId,
           },
         },
+        patientDetails: {
+          create: selectedDetails.map((detail) => ({
+            detailHeading: detail.heading,
+            details: detail.detail,
+          })),
+        },
       },
     });
+    // console.log(newVisit);
 
     return newVisit;
   } catch (error) {
@@ -272,6 +284,61 @@ export async function addNewVisit(patientId: number, dateString: string) {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+interface SelectedDetail {
+  heading: string;
+  detail: string;
+}
+async function getUniquePatientDetails(
+  patientId: number
+): Promise<SelectedDetail[]> {
+  const patient = await prisma.patient.findUnique({
+    where: {
+      id: patientId,
+    },
+    include: {
+      visits: {
+        orderBy: {
+          date: "asc", // Order visits by date in ascending order
+        },
+        include: {
+          patientDetails: {
+            select: {
+              id: true,
+              details: true,
+              detailHeading: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!patient) {
+    console.log("Patient not found");
+    return [];
+  }
+
+  const selectedHeadings: Set<string> = new Set();
+  const selectedDetails: SelectedDetail[] = [];
+
+  for (const visit of patient.visits) {
+    // console.log(`Visit Date: ${visit.date}`);
+    for (const detail of visit.patientDetails) {
+      if (!selectedHeadings.has(detail.detailHeading)) {
+        selectedHeadings.add(detail.detailHeading);
+        selectedDetails.push({
+          heading: detail.detailHeading,
+          detail: detail.details,
+        });
+      }
+    }
+  }
+
+  await prisma.$disconnect();
+
+  return selectedDetails;
 }
 
 export async function addPatientDetail(
