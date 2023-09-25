@@ -194,28 +194,6 @@ export const deleteDetail = createAsyncThunk(
   }
 );
 
-// export const updateDetailsOrder = createAsyncThunk(
-//   "patient/updateDetailsOrder",
-//   async (_, { getState, dispatch }) => {
-
-//     const state = getState() as RootState;
-//     const currentLayout = state.detailsLayout.detailsInfo;
-//     const visit = getCurrentVisit(state);
-
-//     if (!currentLayout || !visit) {
-//       throw new Error(
-//         "detail layout template or current details is not defined"
-//       );
-//     }
-
-//     const orderedDetails = setDetailsOrder(currentLayout, visit.patientDetails);
-//     // Dispatch an action to update the order of details in Redux state
-//     dispatch(updateDetailsOrderAsync(orderedDetails));
-
-//     return orderedDetails;
-//   }
-// );
-
 const patientSlice = createSlice({
   name: "patient",
   initialState,

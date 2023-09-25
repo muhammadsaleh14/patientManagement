@@ -88,11 +88,11 @@ div#__next > div {
 } */
 
 .app-container {
-  min-height: 100vh;
+  min-height: auto;
   /* padding: 1em 1em; */
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: auto;
 }
 
 .app-sidebar {

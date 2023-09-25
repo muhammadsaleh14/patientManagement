@@ -82,7 +82,7 @@ export default function Prescription() {
   return (
     domMounted && (
       <div>
-        <div className="flex flex-row">
+        <div className="flex flex-row flex-grow">
           {/* Sidebar */}
           <div className="min-h-fit w-full">
             <form className="flex align-baseline">

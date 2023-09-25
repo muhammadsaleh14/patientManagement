@@ -36,8 +36,9 @@ model visit{
   date DateTime @unique
   patientId Int
   patient   Patient   @relation(fields:[patientId],references: [id], onDelete: Cascade)
-  patientDetails PatientDetails[] 
+  patientDetails PatientDetails[]
   prescriptions Prescriptions[]
+  visitDetailsDescription  VisitDetailsDescription[]
 }
 model PatientDetails {
   id            Int             @id @default(autoincrement())
@@ -55,5 +56,23 @@ model Prescriptions {
   visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
   // @@index([id], name: "prescriptionId")
 }
+
+
+model VisitDetailTitle {
+  id     Int        @id @default(autoincrement())
+  title  String     @unique
+  descriptions VisitDetailsDescription[]
+}
+
+model VisitDetailsDescription {
+  id                 Int       @id @default(autoincrement())
+  titleId            Int
+  description        String
+  visitId            Int
+
+  visitDetailTitle   VisitDetailTitle @relation(fields: [titleId], references: [id], onDelete: Cascade)
+  visit              visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
+}
+
 
 

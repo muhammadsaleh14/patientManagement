@@ -67,11 +67,12 @@ const Page = ({ params }: { params: { id: string } }) => {
   }, []);
   return (
     (loading && <LoadingState />) || (
-      <Stack direction="row" spacing={0} className="h-full">
+      // direction="row" spacing={0}
+      <div className="h-full flex flex-row">
         {/* Sidebar */}
         <SidebarContainer itemInLS="sidebarWidth">
           <Box
-            className="bg-gray-300 overflow-y-auto h-screen flex-grow w-full"
+            className="bg-gray-300 overflow-y-auto h-auto flex-grow w-full"
             // style={{ minWidth: "200px", maxWidth: "200px" }}
           >
             {/* Sidebar content */}
@@ -80,71 +81,69 @@ const Page = ({ params }: { params: { id: string } }) => {
           </Box>
         </SidebarContainer>
         {/* Main content */}
-        <Box className="h-full w-full">
-          <Stack spacing={2} className="h-full">
-            {/* {Box here} */}
-            <Box className="p-5 bg-yellow-700 flex justify-center ">
-              {/* Patient details */}
-              {patient && (
-                <>
-                  <TextField
-                    id="name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Name:</InputAdornment>
-                      ),
-                    }}
-                    value={patient?.name}
-                  />
-                  <TextField
-                    className="w-24"
-                    id="age"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">age:</InputAdornment>
-                      ),
-                    }}
-                    value={patient?.age}
-                  />
-                  <TextField
-                    className="w-36"
-                    id="gender"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          gender:
-                        </InputAdornment>
-                      ),
-                    }}
-                    value={patient?.gender}
-                  />
-                  <TextField
-                    id="date"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Date:</InputAdornment>
-                      ),
-                    }}
-                    value={date ? date : "Not available"}
-                  />
-                </>
-              )}
+        <Box className="h-full w-full flex flex-col">
+          {/* spacing={2} */}
+          {/* {Box here} */}
+          <Box className="p-5 bg-yellow-700 flex justify-center ">
+            {/* Patient details */}
+            {patient && (
+              <>
+                <TextField
+                  id="name"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">Name:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.name}
+                />
+                <TextField
+                  className="w-24"
+                  id="age"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">age:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.age}
+                />
+                <TextField
+                  className="w-36"
+                  id="gender"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">gender:</InputAdornment>
+                    ),
+                  }}
+                  value={patient?.gender}
+                />
+                <TextField
+                  id="date"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">Date:</InputAdornment>
+                    ),
+                  }}
+                  value={date ? date : "Not available"}
+                />
+              </>
+            )}
+          </Box>
+          <div className="flex flex-row flex-grow">
+            {/* small sidebar */}
+            <SidebarContainer itemInLS="miniSidebarWidth">
+              <Box
+                className="bg-gray-300 overflow-y-auto h-full flex-grow w-full"
+                // style={{ minWidth: "200px", maxWidth: "200px" }}
+              ></Box>
+            </SidebarContainer>
+            <Box className="bg-slate-400 p-7 w-full h-full flex flex-col">
+              <Prescription />
+              {/* id={patient?.id}  */}
             </Box>
-            <div className="flex flex-row">
-              <SidebarContainer itemInLS="miniSidebarWidth">
-                <Box
-                  className="bg-gray-300 overflow-y-auto h-max flex-grow w-full"
-                  // style={{ minWidth: "200px", maxWidth: "200px" }}
-                ></Box>
-              </SidebarContainer>
-              <Box className="bg-slate-400 p-7 w-full h-full">
-                <Prescription />
-                {/* id={patient?.id}  */}
-              </Box>
-            </div>
-          </Stack>
+          </div>
         </Box>
-      </Stack>
+      </div>
     )
   );
 };

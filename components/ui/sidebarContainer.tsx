@@ -48,7 +48,7 @@ export default function SidebarContainer({
   }, [resize, stopResizing]);
 
   return (
-    <div className="app-container ">
+    <div className="app-container h-auto">
       <div
         ref={sidebarRef}
         className="app-sidebar"
