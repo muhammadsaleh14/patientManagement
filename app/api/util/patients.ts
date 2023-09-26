@@ -142,6 +142,17 @@ export async function getUniquePatientWithDetails(patientId: number) {
           include: {
             patientDetails: true,
             prescriptions: true,
+            visitDetailsDescription: {
+              select: {
+                id: true,
+                description: true,
+                visitDetailTitle: {
+                  select: {
+                    title: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -166,6 +177,10 @@ export async function addPrescription(
       data: {
         prescription: prescriptionText,
         visitId: visitIdProp,
+      },
+      select: {
+        id: true,
+        prescription: true,
       },
     });
 
@@ -259,6 +274,7 @@ export async function addNewVisit(patientId: number, dateString: string) {
       include: {
         patientDetails: true, // Include patientDetails in the returned object
         prescriptions: true, // Include prescriptions in the returned object
+        visitDetailsDescription: true,
       },
       data: {
         date: parse(dateString, "hh:mm:ss a dd/MM/yyyy", new Date()),
@@ -353,6 +369,11 @@ export async function addPatientDetail(
         details: detailArg,
         visitId: visitIdArg,
       },
+      select: {
+        id: true,
+        detailHeading: true,
+        details: true,
+      },
     });
 
     return patientDetail;
@@ -385,6 +406,10 @@ export async function updateDetail(
       data: {
         detailHeading: detailHeadingProp,
         details: detailText,
+      },
+      select: {
+        detailHeading: true,
+        details: true,
       },
     });
 
@@ -421,6 +446,20 @@ export async function deleteDetail(detail_Id: number) {
   } finally {
     await prisma.$disconnect();
   }
+}
+interface VisitDetail {
+  id: number;
+  title: string;
+  description: string;
+}
+export async function getVisitDetailDescriptions(visitIdArg: number) {
+  const visitDetails = await prisma.$queryRaw`
+  SELECT vd.id, vd.description, vt.title
+  FROM VisitDetailsDescription AS vd
+  INNER JOIN VisitDetailTitle AS vt ON vd.titleId = vt.id
+  WHERE vd.visitId = ${visitIdArg}`;
+
+  return visitDetails as VisitDetail[];
 }
 
 // export async function setOrderedDetails(

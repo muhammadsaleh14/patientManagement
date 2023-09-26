@@ -13,7 +13,7 @@ const dotsStyle = {
 const dotStyle = {
   width: "75%",
   height: "75%",
-  backgroundColor: "#3cefff",
+  backgroundColor: "#3A2B52",
   animation: "fadeRotate 2s alternate ease-in-out infinite",
 };
 

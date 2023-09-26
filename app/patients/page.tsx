@@ -197,7 +197,6 @@ const Page: React.FC = () => {
                         // color="info"
                         // className="inline-block"
                         onClick={() => {
-                          console.log(patient.id);
                           getCompletePatientForStore(patient.id);
                         }}
                       >

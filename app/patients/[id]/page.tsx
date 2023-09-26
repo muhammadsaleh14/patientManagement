@@ -41,6 +41,7 @@ import { useDispatch } from "react-redux";
 import Sidebar from "@/components/ui/sidebar";
 import SidebarContainer from "@/components/ui/sidebarContainer";
 import LoadingState from "@/components/ui/loadingState";
+import MiniSidebarContent from "@/components/miniSidebarContent";
 // { params }: { params: { id: string } }
 const Page = ({ params }: { params: { id: string } }) => {
   const { patient, currentVisitId } = useSelector(getPatientState);
@@ -132,10 +133,12 @@ const Page = ({ params }: { params: { id: string } }) => {
           <div className="flex flex-row flex-grow">
             {/* small sidebar */}
             <SidebarContainer itemInLS="miniSidebarWidth">
-              <Box
-                className="bg-gray-300 overflow-y-auto h-full flex-grow w-full"
+              {/* <Box
+                
                 // style={{ minWidth: "200px", maxWidth: "200px" }}
-              ></Box>
+              > */}
+              <MiniSidebarContent />
+              {/* </Box> */}
             </SidebarContainer>
             <Box className="bg-slate-400 p-7 w-full h-full flex flex-col">
               <Prescription />

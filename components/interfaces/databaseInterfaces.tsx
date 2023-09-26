@@ -26,7 +26,7 @@ export interface Visit {
   patientId: Patient["id"];
   patientDetails: PatientDetails[];
   prescriptions: Prescription[];
-  visitDetailsDescription: VisitDetailsDescription[];
+  visitDetailsDescription: VisitDetail[];
 }
 
 export interface PatientDetails {
@@ -43,15 +43,14 @@ export interface Prescription {
   visitId: Visit["id"];
 }
 
-export interface VisitDetailTitle {
+interface VisitDetailTitle {
   id: number;
   title: string;
-  descriptions: VisitDetailsDescription[];
+  descriptions: VisitDetail[];
 }
 
-export interface VisitDetailsDescription {
+export interface VisitDetail {
   id: number;
-  titleId: number;
+  title: string;
   description: string;
-  visitId: number;
 }

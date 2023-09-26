@@ -26,7 +26,6 @@ export default function DetailsMenu() {
   // const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const detail = React.useContext(detailContext);
-  console.log(detail?.detailHeading);
 
   // const open = Boolean(anchorEl);
   const open = Boolean(isVisible);
@@ -107,7 +106,6 @@ export default function DetailsMenu() {
         onDelete={() => {
           try {
             if (detail?.id) {
-              console.log("deleting", detail?.detailHeading);
               store.dispatch(deleteDetail(detail.id));
             }
           } catch (error) {}

@@ -18,6 +18,7 @@ export default function SidebarContainer({
   );
 
   const startResizing = useCallback((mouseDownEvent: React.MouseEvent) => {
+    mouseDownEvent.preventDefault();
     setIsResizing(true);
   }, []);
 
@@ -55,8 +56,8 @@ export default function SidebarContainer({
         style={{ width: sidebarWidth }}
         // onMouseDown={(e) => e.preventDefault()}
       >
-        <div className="app-sidebar-content" />
         {children}
+        {/* <div className="app-sidebar-content" /> */}
         <div className="app-sidebar-resizer" onMouseDown={startResizing} />
       </div>
       {/* <div className="app-frame" /> */}

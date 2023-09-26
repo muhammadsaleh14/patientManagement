@@ -45,7 +45,6 @@ export const setPatient = createAsyncThunk(
     }: { patientId: number; date: undefined | string },
     { getState, dispatch }
   ) => {
-    console.log("running set patient");
     dispatch(clearPatientState());
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
@@ -191,6 +190,18 @@ export const deleteDetail = createAsyncThunk(
     const response = await axios.delete("/api/patients/detail/" + detailID);
     const { detailId } = response.data;
     return detailId;
+  }
+);
+
+export const getVisitDetails = createAsyncThunk(
+  "patient/getVisitDetails",
+  async ({}, { getState }) => {
+    const rootState = getState() as RootState;
+    const response = await axios.get(
+      "/api/patients/visitDetailDescription/" + rootState.patient.currentVisitId
+    );
+    // const  = response.data;
+    // return detailId;
   }
 );
 
@@ -442,6 +453,11 @@ export const getCurrentVisitWithPatientState = (
   return state.patient?.visits.find(
     (visit) => visit.id === state.currentVisitId
   );
+};
+
+export const getVisitDetailDescriptionsFromStore = (state: RootState) => {
+  const visit = getCurrentVisit(state);
+  return visit?.visitDetailsDescription;
 };
 
 export const {
