@@ -12,21 +12,31 @@ import {
   Typography,
 } from "@mui/material";
 import { Edit, Delete, PaddingSharp } from "@mui/icons-material";
-import { getVisitDetailDescriptionsFromStore } from "@/app/GlobalRedux/store/patientSlice";
 import { VisitDetail } from "./interfaces/databaseInterfaces";
-import { VisitDetailTitle } from "@prisma/client";
+import { getVisitDetailsFromStore } from "@/app/GlobalRedux/store/patientSlice";
 
 export default function MiniSidebarContent() {
-  const [temp, setTemp] = useState<VisitDetailTitle[]>([
-    { id: 1, title: "Title 1", description: "Description 1" },
+  const [temp, setTemp] = useState([
+    {
+      id: 1,
+      visitDetailTitle: { title: "Title 1" },
+      description: "Description 1",
+    },
     { id: 2, title: "Title 2", description: "Description 2" },
     // Add more initial data as needed
   ]);
-  const initialValue = useSelector(getVisitDetailDescriptionsFromStore);
+  const initialValue = useSelector(getVisitDetailsFromStore);
+  console.log(initialValue ?? "no initial value");
   const [visitDetails, setVisitDetails] = useState<VisitDetail[]>(
     initialValue ?? []
   );
-  console.log(visitDetails);
+
+  console.log("hello");
+  visitDetails.map((visit) => {
+    console.log(visit.id);
+    console.log(visit.visitDetailTitle.title);
+    console.log(visit.description);
+  });
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

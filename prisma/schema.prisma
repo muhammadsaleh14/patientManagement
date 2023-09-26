@@ -38,7 +38,7 @@ model visit{
   patient   Patient   @relation(fields:[patientId],references: [id], onDelete: Cascade)
   patientDetails PatientDetails[]
   prescriptions Prescriptions[]
-  visitDetailsDescription  VisitDetailsDescription[]
+  visitDetails  VisitDetail[]
 }
 model PatientDetails {
   id            Int             @id @default(autoincrement())
@@ -58,13 +58,7 @@ model Prescriptions {
 }
 
 
-model VisitDetailTitle {
-  id     Int        @id @default(autoincrement())
-  title  String     @unique
-  descriptions VisitDetailsDescription[]
-}
-
-model VisitDetailsDescription {
+model VisitDetail {
   id                 Int       @id @default(autoincrement())
   titleId            Int
   description        String

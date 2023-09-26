@@ -49,18 +49,20 @@ export default function SidebarContainer({
   }, [resize, stopResizing]);
 
   return (
-    <div className="app-container h-auto">
+    <>
+      {/* <div className="app-container h-auto"> */}
       <div
         ref={sidebarRef}
         className="app-sidebar"
         style={{ width: sidebarWidth }}
         // onMouseDown={(e) => e.preventDefault()}
       >
-        {children}
+        <div className="w-full">{children}</div>
         {/* <div className="app-sidebar-content" /> */}
         <div className="app-sidebar-resizer" onMouseDown={startResizing} />
       </div>
       {/* <div className="app-frame" /> */}
-    </div>
+      {/* </div> */}
+    </>
   );
 }

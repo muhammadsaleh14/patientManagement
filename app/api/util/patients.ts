@@ -142,7 +142,7 @@ export async function getUniquePatientWithDetails(patientId: number) {
           include: {
             patientDetails: true,
             prescriptions: true,
-            visitDetailsDescription: {
+            visitDetails: {
               select: {
                 id: true,
                 description: true,
@@ -274,7 +274,7 @@ export async function addNewVisit(patientId: number, dateString: string) {
       include: {
         patientDetails: true, // Include patientDetails in the returned object
         prescriptions: true, // Include prescriptions in the returned object
-        visitDetailsDescription: true,
+        visitDetails: true,
       },
       data: {
         date: parse(dateString, "hh:mm:ss a dd/MM/yyyy", new Date()),
