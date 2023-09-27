@@ -7,6 +7,8 @@ import { Box } from "@mui/material";
 import Provider from "./GlobalRedux/store/Provider";
 import { store } from "./GlobalRedux/store/store";
 import Link from "next/link";
+import { Suspense } from "react";
+import LoadingState from "@/components/ui/loadingState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,15 +24,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="h-screen">
-        <Provider>
-          <Button>Edit your details</Button>
-          <Button>Patients</Button>
-          <Link href="/patients/editDetailsLayout">Edit Details Layout</Link>
+      <Suspense fallback={<LoadingState />}>
+        <body className="h-screen">
+          <Provider>
+            <Button>Edit your details</Button>
+            <Button>Patients</Button>
+            <Link href="/patients/editDetailsLayout">Edit Details Layout</Link>
 
-          <Box className="h-full">{children}</Box>
-        </Provider>
-      </body>
+            <Box className="h-full">{children}</Box>
+          </Provider>
+        </body>
+      </Suspense>
     </html>
   );
 }

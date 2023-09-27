@@ -117,7 +117,7 @@ export default function EditVisitDetails() {
           </div>
           <div>
             <DeleteDialog
-              title={`Are you sure you want to delete title`}
+              title={`Are you sure you want to delete title: ${visitDetail.title}`}
               text=""
               onDelete={() => {
                 try {
@@ -132,7 +132,6 @@ export default function EditVisitDetails() {
                 size="small"
                 color="warning"
                 className=" hover:bg-indigo-600"
-                onClick={() => handleDelete(visitDetail.id)}
               >
                 <DeleteIcon />
               </Button>
