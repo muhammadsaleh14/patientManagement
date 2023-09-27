@@ -1,6 +1,10 @@
 import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
-import { PatientDetails } from "@/components/interfaces/databaseInterfaces";
+import {
+  PatientDetails,
+  VisitDetail,
+  VisitDetailTitle,
+} from "@/components/interfaces/databaseInterfaces";
 import { Patient } from "@prisma/client";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
 import { da } from "date-fns/locale";
@@ -65,12 +69,18 @@ export async function updatePatient(
   patientId: number,
   updates: Partial<{ name: string; gender: string; age: number }>
 ) {
-  return prisma.patient.update({
-    where: {
-      id: patientId,
-    },
-    data: updates,
-  });
+  try {
+    return prisma.patient.update({
+      where: {
+        id: patientId,
+      },
+      data: updates,
+    });
+  } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function getPatientsWithLastVisit() {
@@ -309,52 +319,58 @@ interface SelectedDetail {
 async function getUniquePatientDetails(
   patientId: number
 ): Promise<SelectedDetail[]> {
-  const patient = await prisma.patient.findUnique({
-    where: {
-      id: patientId,
-    },
-    include: {
-      visits: {
-        orderBy: {
-          date: "asc", // Order visits by date in ascending order
-        },
-        include: {
-          patientDetails: {
-            select: {
-              id: true,
-              details: true,
-              detailHeading: true,
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: {
+        id: patientId,
+      },
+      include: {
+        visits: {
+          orderBy: {
+            date: "asc", // Order visits by date in ascending order
+          },
+          include: {
+            patientDetails: {
+              select: {
+                id: true,
+                details: true,
+                detailHeading: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
 
-  if (!patient) {
-    console.log("Patient not found");
-    return [];
-  }
+    if (!patient) {
+      console.log("Patient not found");
+      return [];
+    }
 
-  const selectedHeadings: Set<string> = new Set();
-  const selectedDetails: SelectedDetail[] = [];
+    const selectedHeadings: Set<string> = new Set();
+    const selectedDetails: SelectedDetail[] = [];
 
-  for (const visit of patient.visits) {
-    // console.log(`Visit Date: ${visit.date}`);
-    for (const detail of visit.patientDetails) {
-      if (!selectedHeadings.has(detail.detailHeading)) {
-        selectedHeadings.add(detail.detailHeading);
-        selectedDetails.push({
-          heading: detail.detailHeading,
-          detail: detail.details,
-        });
+    for (const visit of patient.visits) {
+      // console.log(`Visit Date: ${visit.date}`);
+      for (const detail of visit.patientDetails) {
+        if (!selectedHeadings.has(detail.detailHeading)) {
+          selectedHeadings.add(detail.detailHeading);
+          selectedDetails.push({
+            heading: detail.detailHeading,
+            detail: detail.details,
+          });
+        }
       }
     }
+
+    await prisma.$disconnect();
+
+    return selectedDetails;
+  } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
   }
-
-  await prisma.$disconnect();
-
-  return selectedDetails;
 }
 
 export async function addPatientDetail(
@@ -447,21 +463,104 @@ export async function deleteDetail(detail_Id: number) {
     await prisma.$disconnect();
   }
 }
-interface VisitDetail {
-  id: number;
-  title: string;
-  description: string;
-}
-export async function getVisitDetailDescriptions(visitIdArg: number) {
-  const visitDetails = await prisma.$queryRaw`
-  SELECT vd.id, vd.description, vt.title
-  FROM VisitDetailsDescription AS vd
-  INNER JOIN VisitDetailTitle AS vt ON vd.titleId = vt.id
-  WHERE vd.visitId = ${visitIdArg}`;
 
-  return visitDetails as VisitDetail[];
+// export async function getVisitDetailDescriptions(visitIdArg: number) {
+//   const visitDetails = await prisma.$queryRaw`
+//   SELECT vd.id, vd.description, vt.title
+//   FROM VisitDetailsDescription AS vd
+//   INNER JOIN VisitDetailTitle AS vt ON vd.titleId = vt.id
+//   WHERE vd.visitId = ${visitIdArg}`;
+
+//   return visitDetails as VisitDetail[];
+// }
+
+// interface visitDetailTitles {
+//   id: number;
+//   title: string;
+//   visitDetails: {
+//     id: number;
+//     description: string | null;
+//   }[];
+//   _count: {
+//     visitDetails: number;
+//   };
+// }
+// [];
+export async function getAllVisitDetailTitles() {
+  try {
+    const visitDetailTitles = await prisma.visitDetailTitle.findMany({
+      select: {
+        id: true,
+        title: true,
+        _count: true,
+        visitDetails: {
+          select: {
+            id: true,
+            description: true,
+          },
+        },
+      },
+    });
+
+    return visitDetailTitles as VisitDetailTitle[];
+  } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
+export async function addVisitDetailTitle(detailTitle: string) {
+  try {
+    const newVisitDetailTitle = await prisma.visitDetailTitle.create({
+      data: {
+        title: detailTitle,
+      },
+    });
+
+    const visitDetailTitle = await prisma.visitDetailTitle.findUnique({
+      where: {
+        id: newVisitDetailTitle.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        _count: true,
+        visitDetails: {
+          select: {
+            id: true,
+            description: true,
+          },
+        },
+      },
+    });
+    console.log("Created VisitDetailTitle:", newVisitDetailTitle);
+    return visitDetailTitle;
+  } catch (error) {
+    console.error("Error creating VisitDetailTitle:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteVisitDetailTitle(visitDetailTitleId: number) {
+  try {
+    let isDeleted = false;
+    const a = await prisma.visitDetailTitle.delete({
+      where: {
+        id: visitDetailTitleId,
+      },
+    });
+    isDeleted = true;
+
+    return { message: `Visit detail title deleted successfully.` };
+  } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 // export async function setOrderedDetails(
 //   details: PatientDetails[],
 //   visitIdArg: number

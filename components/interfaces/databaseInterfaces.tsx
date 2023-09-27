@@ -44,8 +44,15 @@ export interface Prescription {
 }
 
 export interface VisitDetailTitle {
+  id: number;
   title: string;
-  visitDetails: VisitDetail[];
+  _count: {
+    visitDetails: number;
+  };
+  visitDetails: {
+    id: number;
+    description: string | null;
+  }[];
 }
 
 export interface VisitDetail {

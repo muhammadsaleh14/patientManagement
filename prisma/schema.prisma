@@ -58,6 +58,12 @@ model Prescriptions {
 }
 
 
+model VisitDetailTitle {
+  id     Int        @id @default(autoincrement())
+  title  String     @unique
+  visitDetails VisitDetail[]
+}
+
 model VisitDetail {
   id                 Int       @id @default(autoincrement())
   titleId            Int

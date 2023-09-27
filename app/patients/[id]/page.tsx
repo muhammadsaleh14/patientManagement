@@ -82,7 +82,7 @@ const Page = ({ params }: { params: { id: string } }) => {
           </Box>
         </SidebarContainer>
         {/* Main content */}
-        <Box className="h-full w-full flex flex-col">
+        <Box className="h-full w-full flex flex-col overflow-y-scroll">
           {/* spacing={2} */}
           {/* {Box here} */}
           <Box className="p-5 bg-yellow-700 flex justify-center ">

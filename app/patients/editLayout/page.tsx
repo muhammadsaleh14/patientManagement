@@ -24,17 +24,16 @@ const Page = () => {
         >
           {/* Sidebar content */}
           {/* <Sidebar /> */}
-          sidebar content
           <EditDetailsLayout />
         </Box>
         {/* </SidebarContainer> */}
         {/* Main content */}
-        <Box className="h-full w-full flex flex-col">
+        <Box className="h-full w-full flex flex-col overflow-y-scroll">
           {/* spacing={2} */}
           {/* {Box here} */}
           <Box className="p-5 bg-yellow-700 flex justify-center ">
             {/* Patient details */}
-            hello
+            You can edit your layout here
           </Box>
           <div className="flex flex-row flex-grow">
             {/* small sidebar */}
@@ -52,7 +51,13 @@ const Page = () => {
             </SidebarContainer>
             <Box className="bg-slate-400 p-7 w-full h-full flex flex-col">
               {/* <Prescription /> */}
-              prescription
+              <ul className="list-disc">
+                <li>
+                  Drag and drop the detail headings to change the order in which
+                  they will appear
+                </li>
+                <li>Add or delete detail headings</li>
+              </ul>
               {/* id={patient?.id}  */}
             </Box>
           </div>

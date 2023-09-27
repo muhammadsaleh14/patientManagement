@@ -457,7 +457,7 @@ export const getCurrentVisitWithPatientState = (
 
 export const getVisitDetailsFromStore = (state: RootState) => {
   const visit = getCurrentVisit(state);
-  return visit?.visitDetails;
+  return visit?.visitDetails ?? [];
 };
 
 // export const getVisitDetailTitlesFromStore = (state: RootState) => {
