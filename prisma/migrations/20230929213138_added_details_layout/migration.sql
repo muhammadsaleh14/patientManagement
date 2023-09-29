@@ -4,6 +4,12 @@
   - Made the column `description` on table `VisitDetail` required. This step will fail if there are existing NULL values in that column.
 
 */
+-- CreateTable
+CREATE TABLE "detailsLayout" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "layout" TEXT NOT NULL
+);
+
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_VisitDetail" (

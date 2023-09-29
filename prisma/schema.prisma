@@ -74,5 +74,10 @@ model VisitDetail {
   visit              visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
 }
 
+model detailsLayout {
+  id                Int       @id @default(autoincrement())
+  layout            String
+} 
+
 
 

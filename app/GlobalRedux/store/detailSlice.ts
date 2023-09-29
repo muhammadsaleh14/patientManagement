@@ -88,18 +88,6 @@ const detailsLayoutSlice = createSlice({
       state.detailsInfo = updatedDetailsInfo;
       state.status = "succeeded";
     },
-    // updateDetail: (
-    //   state,
-    //   action: PayloadAction<DetailsLayoutSlice["detailsInfo"]>
-    // ) => {
-    //   state.status = "loading";
-    //   if (!action.payload) {
-    //     state.status = "failed";
-    //     state.error = "details list is not defined";
-    //   }
-    //   state.detailsInfo = action.payload;
-    //   state.status = "succeeded";
-    // },
   },
 });
 
