@@ -7,11 +7,13 @@ import { PersistGate } from "redux-persist/integration/react";
 import { getPatientState, updateDetailsOrder } from "./patientSlice";
 import { useSelector } from "react-redux";
 import { setDetailsOrder } from "../utilMethods";
+import { initialiseDetailsLayout } from "./detailSlice";
 
 function UseStore() {
   const rootState = store.getState();
 
   useEffect(() => {
+    store.dispatch(initialiseDetailsLayout);
     // const sortedDetails = setDetailsOrder(rootState);
     // store.dispatch(updateDetailsOrder(sortedDetails));
   }, []);

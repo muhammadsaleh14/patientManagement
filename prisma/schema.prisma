@@ -76,7 +76,7 @@ model VisitDetail {
 
 model detailsLayout {
   id                Int       @id @default(autoincrement())
-  layout            String
+  layout            String 
 } 
 
 

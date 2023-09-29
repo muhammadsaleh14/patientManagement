@@ -8,6 +8,7 @@ import {
   arePatientDetailsEqual,
   setDetailsOrder,
 } from "../utilMethods";
+import axios from "axios";
 // Define the shape of your state here
 // interface RootState {
 //   patient: typeof patientReducer; // Replace 'any' with the actual type of your 'patient' state slice
@@ -50,9 +51,12 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
     ) {
       const detailInfo = newState.detailsLayout.detailsInfo; // Get the updated 'detail' state
       // Save the 'detail' state to local storage
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem("detailData", JSON.stringify(detailInfo));
-      }
+      axios.post("/api/patient/datilsLayout", {
+        detailsLayoutString: JSON.stringify(detailInfo),
+      });
+      // if (typeof localStorage !== "undefined") {
+      //   localStorage.setItem("detailData", JSON.stringify(detailInfo));
+      // }
     }
   };
 

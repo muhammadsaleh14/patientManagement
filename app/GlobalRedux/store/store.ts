@@ -11,30 +11,37 @@ import detailsLayoutReducer, {
 import { customLocalStorageMiddleware } from "@/app/GlobalRedux/store/middleware"; // Replace with the actual path to your customLocalStorageMiddleware
 import { Patient } from "@/components/interfaces/databaseInterfaces";
 import { getVisitDetailTitlesState } from "./visitDetailSlice";
+import axios from "axios";
 
 let storedPatientData;
 let detailSort;
-let uniqueDetails;
 let visitDetailTitles;
 if (typeof localStorage !== "undefined") {
   storedPatientData = localStorage.getItem("patientData");
-  detailSort = localStorage.getItem("detailData");
   visitDetailTitles = localStorage.getItem("visitDetailTitles");
-
-  const detailsInfo = detailSort
-    ? (JSON.parse(detailSort) as DetailsLayoutSlice["detailsInfo"])
-    : [];
-  if (detailsInfo) {
-    uniqueDetails = detailsInfo.reduce((acc, current) => {
-      if (
-        !acc.find((detail) => detail.detailHeading === current.detailHeading)
-      ) {
-        acc.push(current);
-      }
-      return acc;
-    }, [] as Array<Detail>);
-  }
 }
+
+//get from database
+axios.get("/api/patients/detailsLayout").then((res) => {
+  detailSort = res.data;
+});
+console.log("running axios get for details layout");
+// detailSort = localStorage.getItem("detailData");
+
+//   const detailsInfo = detailSort
+//     ? (JSON.parse(detailSort) as DetailsLayoutSlice["detailsInfo"])
+//     : [];
+//   if (detailsInfo) {
+//     uniqueDetails = detailsInfo.reduce((acc, current) => {
+//       if (
+//         !acc.find((detail) => detail.detailHeading === current.detailHeading)
+//       ) {
+//         acc.push(current);
+//       }
+//       return acc;
+//     }, [] as Array<Detail>);
+//   }
+// }
 
 type InitialState = {
   patient: PatientState; // Replace with the actual type for 'patient'
@@ -50,7 +57,7 @@ const initialState: InitialState = {
   // Initialize the 'patient' state with data from local storage, or null if not found
   patient: initialPatient,
   detailsLayout: {
-    detailsInfo: uniqueDetails || [],
+    detailsInfo: [],
     status: "idle",
     error: undefined,
   },

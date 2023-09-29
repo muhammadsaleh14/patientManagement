@@ -8,6 +8,8 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { error } from "console";
+import axios from "axios";
+import build from "next/dist/build";
 
 export interface Detail {
   detailHeading: string;
@@ -20,6 +22,15 @@ export interface DetailsLayoutSlice {
 }
 
 // const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+export const initialiseDetailsLayout = createAsyncThunk(
+  "detailSlice/initialiseDetailsLayout",
+  async () => {
+    const response = await axios.get("/api/patients/detailsLayout");
+    console.log("initialising layout");
+    return response.data as string;
+  }
+);
 
 const initialState: DetailsLayoutSlice = {
   detailsInfo: undefined,
@@ -88,6 +99,24 @@ const detailsLayoutSlice = createSlice({
       state.detailsInfo = updatedDetailsInfo;
       state.status = "succeeded";
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(initialiseDetailsLayout.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        initialiseDetailsLayout.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          const parse = JSON.parse(action.payload);
+          state.detailsInfo = parse ?? [];
+        }
+      )
+      .addCase(initialiseDetailsLayout.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+        console.error(action.error.message);
+      });
   },
 });
 
