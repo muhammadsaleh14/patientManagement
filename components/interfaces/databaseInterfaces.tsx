@@ -26,7 +26,6 @@ export interface Visit {
   patientId: Patient["id"];
   patientDetails: PatientDetails[];
   prescriptions: Prescription[];
-  visitDetails: VisitDetail[];
 }
 
 export interface PatientDetails {
@@ -49,10 +48,7 @@ export interface VisitDetailTitle {
   _count: {
     visitDetails: number;
   };
-  visitDetails: {
-    id: number;
-    description: string | null;
-  }[];
+  visitDetails: VisitDetail[];
 }
 
 export interface VisitDetail {
@@ -60,4 +56,5 @@ export interface VisitDetail {
   // titleId: number;
   description: string;
   visitDetailTitle: VisitDetailTitle;
+  visitId: number;
 }

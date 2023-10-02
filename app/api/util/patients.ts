@@ -497,6 +497,7 @@ export async function getAllVisitDetailTitles() {
           select: {
             id: true,
             description: true,
+            visitId: true,
           },
         },
       },
@@ -556,6 +557,54 @@ export async function deleteVisitDetailTitle(visitDetailTitleId: number) {
 
     return { message: `Visit detail title deleted successfully.` };
   } catch (error) {
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export interface simpleVisitDetail {
+  id: number | undefined; // id of description
+  title: string;
+  description: string;
+  titleId: number;
+  visitId: number;
+}
+
+export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
+  let updatedRowCount = 0;
+  try {
+    await prisma.$transaction(async () => {
+      for (const visitDetail of visitDetails) {
+        // Update the description in the 'visitDetail' table
+        // console.log("visit detail", visitDetail);
+        if (visitDetail.id === undefined) {
+          console.log("undefined id", visitDetail);
+          await prisma.visitDetail.create({
+            data: {
+              titleId: visitDetail.titleId,
+              description: visitDetail.description || "",
+              visitId: visitDetail.visitId,
+            },
+          });
+          continue;
+        }
+
+        await prisma.visitDetail.update({
+          where: {
+            id: visitDetail.id,
+          },
+          data: {
+            description: visitDetail.description,
+          },
+        });
+
+        updatedRowCount++;
+      }
+      // const updatedVisitDetails = prisma.
+    });
+    return getAllVisitDetailTitles();
+  } catch (error) {
+    console.error("Error updating rows:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

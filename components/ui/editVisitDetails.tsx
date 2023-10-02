@@ -37,7 +37,7 @@ export default function EditVisitDetails() {
   useEffect(() => {
     const initialItemOpenState = Array(detailTitles?.length ?? 0).fill(false);
     setItemOpenState(initialItemOpenState);
-    store.dispatch(setVisitDetailTitles());
+    // store.dispatch(setVisitDetailTitles());
   }, []);
 
   useEffect(() => {
@@ -156,7 +156,7 @@ export default function EditVisitDetails() {
                     key={visitDetail.id}
                     className="text-center border-black mb-1 border-2 rounded-lg"
                   >
-                    {visitDetail.description}
+                    {visitDetail.description || ""}
                   </div>
                 );
               }

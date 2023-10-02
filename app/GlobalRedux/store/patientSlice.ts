@@ -10,6 +10,7 @@ import {
   PatientDetails,
   Prescription,
   Visit,
+  VisitDetailTitle,
 } from "@/components/interfaces/databaseInterfaces";
 import { RootState, store } from "./store";
 import { getPatientApi } from "../apiCalls";
@@ -19,9 +20,19 @@ import {
   sortVisitsByDate,
 } from "../utilMethods";
 import { Detail, setNewDetailsOrder } from "./detailSlice";
+import { setVisitDetailTitles } from "./visitDetailSlice";
+import { VisitDetail } from "@prisma/client";
 
+export interface simpleVisitDetail {
+  id: number | undefined; // id of description
+  title: string;
+  description: string;
+  titleId: number;
+  visitId: number;
+}
 export interface PatientState {
   patient: Patient | undefined;
+  visitDetails: simpleVisitDetail[] | undefined;
   currentVisitId: number | undefined;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: undefined | string;
@@ -31,6 +42,7 @@ export interface PatientState {
 
 const initialState: PatientState = {
   patient: undefined,
+  visitDetails: undefined,
   currentVisitId: undefined,
   status: "idle",
   error: undefined,
@@ -49,12 +61,12 @@ export const setPatient = createAsyncThunk(
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
     if (date) {
-      await dispatch(setVisit(date));
       const state = getState() as RootState;
+      dispatch(setVisitDetails(state.visitDetailTitles.visitDetailTitles));
+      await dispatch(setVisit(date));
       const sortedDetails = setDetailsOrder(state);
       dispatch(updateDetailsOrder(sortedDetails));
     }
-
     return patient;
   }
 );
@@ -108,6 +120,7 @@ export const setVisit = createAsyncThunk(
       // Logging the 'visitResponse' object and its properties
 
       dispatch(setVisitId(visitResponse.id));
+      dispatch(setVisitDetails(rootState.visitDetailTitles.visitDetailTitles));
       return response.data;
     }
   }
@@ -193,13 +206,27 @@ export const deleteDetail = createAsyncThunk(
   }
 );
 
-export const getVisitDetails = createAsyncThunk(
-  "patient/getVisitDetails",
-  async ({}, { getState }) => {
-    const rootState = getState() as RootState;
-    const response = await axios.get(
-      "/api/patients/visitDetailDescription/" + rootState.patient.currentVisitId
-    );
+// export const getVisitDetails = createAsyncThunk(
+//   "patient/getVisitDetails",
+//   async ({}, { getState }) => {
+//     const rootState = getState() as RootState;
+//     const response = await axios.get(
+//       "/api/patients/visitDetailDescription/" + rootState.patient.currentVisitId
+//     );
+//     // const  = response.data;
+//     // return detailId;
+//   }
+// );
+
+export const saveVisitDetails = createAsyncThunk(
+  "patient/saveVisitDetails",
+  async (visitDetails: simpleVisitDetail[], { getState, dispatch }) => {
+    const response = await axios.put("/api/patients/visitDetailDescription/", {
+      visitDetails,
+    });
+    const visitDetailTitles = response.data as VisitDetailTitle[];
+    // console.error(visitDetailTitles);
+    dispatch(setVisitDetails(visitDetailTitles));
     // const  = response.data;
     // return detailId;
   }
@@ -217,6 +244,37 @@ const patientSlice = createSlice({
     },
     setVisitId: (state, action: PayloadAction<number>) => {
       state.currentVisitId = action.payload;
+    },
+    setVisitDetails: (
+      state,
+      action: PayloadAction<VisitDetailTitle[] | undefined>
+    ) => {
+      console.log("inside setVisitDetails");
+      if (!state.currentVisitId) return;
+      if (!action.payload) return;
+      const result: simpleVisitDetail[] = [];
+      console.log("1", action.payload);
+
+      for (const visitDetail of action.payload) {
+        const detail = visitDetail.visitDetails.find(
+          (detail) => detail.visitId === state.currentVisitId
+        );
+        console.log("2", detail);
+        const description = detail?.description ?? "";
+        const visitId = state.currentVisitId ?? 0;
+
+        console.log("3 pushing in result");
+        result.push({
+          id: detail?.id,
+          title: visitDetail.title,
+          description: description,
+          // If description is empty, set it to an empty string
+          titleId: visitDetail.id,
+          visitId: visitId,
+        });
+      }
+      console.error(result);
+      state.visitDetails = result;
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
       const updatedVisits = (state.patient?.visits ?? []).map((visit) => {
@@ -413,6 +471,20 @@ const patientSlice = createSlice({
         state.error = action.error.message;
         state.status = "failed";
         console.error(action.error.message);
+      })
+      .addCase(saveVisitDetails.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        saveVisitDetails.fulfilled,
+        (state, action: PayloadAction<void>) => {
+          state.status = "succeeded";
+        }
+      )
+      .addCase(saveVisitDetails.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.status = "failed";
+        console.error(action.error.message);
       });
   },
 });
@@ -456,8 +528,7 @@ export const getCurrentVisitWithPatientState = (
 };
 
 export const getVisitDetailsFromStore = (state: RootState) => {
-  const visit = getCurrentVisit(state);
-  return visit?.visitDetails ?? [];
+  return state.patient.visitDetails;
 };
 
 // export const getVisitDetailTitlesFromStore = (state: RootState) => {
@@ -470,4 +541,5 @@ export const {
   updateDetailsOrder,
   setPatientFromApi,
   clearPatientState,
+  setVisitDetails,
 } = patientSlice.actions;

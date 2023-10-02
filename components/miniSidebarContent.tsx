@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -14,26 +14,53 @@ import {
 } from "@mui/material";
 import { Edit, Delete, PaddingSharp } from "@mui/icons-material";
 import { VisitDetail } from "./interfaces/databaseInterfaces";
-import { getVisitDetailsFromStore } from "@/app/GlobalRedux/store/patientSlice";
+import {
+  getVisitDetailsFromStore,
+  saveVisitDetails,
+  simpleVisitDetail,
+} from "@/app/GlobalRedux/store/patientSlice";
+import { store } from "@/app/GlobalRedux/store/store";
 
 export default function MiniSidebarContent() {
   const initialValue = useSelector(getVisitDetailsFromStore);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   console.log(initialValue ?? "no initial value");
-  const [visitDetails, setVisitDetails] = useState<VisitDetail[]>(
+  const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>(
     initialValue ?? []
   );
 
-  console.log("hello");
-  visitDetails.map((visit) => {
-    console.log(visit.id);
-    console.log(visit.visitDetailTitle.title);
-    console.log(visit.description);
-  });
+  useEffect(() => {
+    const saveTimer = setTimeout(() => {
+      store.dispatch(saveVisitDetails(visitDetails));
+      setUnsavedChanges(false); // Mark changes as saved
+    }, 1000); // Delay for 1 second (adjust as needed)
+
+    // Clear the timer when the component unmounts or when data changes
+    return () => clearTimeout(saveTimer);
+  }, [visitDetails]);
+
+  // Prompt user before leaving the page if there are unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (unsavedChanges) {
+        event.preventDefault();
+        event.returnValue =
+          "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [unsavedChanges]);
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number
   ) => {
+    setUnsavedChanges(true);
     setVisitDetails((prev) => {
       const updatedVisitDetails = [...prev];
       updatedVisitDetails[index] = {
@@ -50,13 +77,14 @@ export default function MiniSidebarContent() {
       {visitDetails.map((visitDetail, index: number) => (
         <div
           className="border rounded-lg pl-1 pt-1 border-slate-600 shadow-md"
-          key={visitDetail.id}
+          key={index}
         >
           <h6 className="text-lg font-semibold text-center">
-            {visitDetail.visitDetailTitle.title}
+            {visitDetail.title}
           </h6>
           <TextField
             id="outlined-multiline-flexible"
+            spellCheck="false"
             multiline
             fullWidth
             size="small"

@@ -72,6 +72,8 @@ model VisitDetail {
 
   visitDetailTitle   VisitDetailTitle @relation(fields: [titleId], references: [id], onDelete: Cascade)
   visit              visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
+
+  @@unique([titleId,visitId])
 }
 
 model detailsLayout {

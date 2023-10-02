@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { updateVisitDetails } from "../../util/patients";
 
-// export async function GET() {
-//   try {
-//     const prescriptions = await getVisitDetailDescriptions();
-//     return NextResponse.json(prescriptions, { status: 200 });
-//   } catch (error) {
-//     return new NextResponse("Error occured", {
-//       status: 500, // Internal Server Error
-//     });
-//   }
-// }
+export async function PUT(request: NextRequest) {
+  try {
+    const { visitDetails } = await request.json();
+    let newVisitDetailTitleResponse = await updateVisitDetails(visitDetails);
+    return NextResponse.json(newVisitDetailTitleResponse, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}

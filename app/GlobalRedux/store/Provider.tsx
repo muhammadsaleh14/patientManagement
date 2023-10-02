@@ -8,15 +8,21 @@ import { getPatientState, updateDetailsOrder } from "./patientSlice";
 import { useSelector } from "react-redux";
 import { setDetailsOrder } from "../utilMethods";
 import { initialiseDetailsLayout } from "./detailSlice";
+import {
+  getVisitDetailTitlesState,
+  setVisitDetailTitles,
+} from "./visitDetailSlice";
 
 function UseStore() {
-  const rootState = store.getState();
+  const visitDetailTitlesState = useSelector(getVisitDetailTitlesState);
+
   // console.log("loading use Store");
   useEffect(() => {
     // console.log("in use effect");
     // const sortedDetails = setDetailsOrder(rootState);
     // store.dispatch(updateDetailsOrder(sortedDetails));
     store.dispatch(initialiseDetailsLayout());
+    store.dispatch(setVisitDetailTitles());
   }, []);
   return <></>;
 }
