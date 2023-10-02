@@ -24,7 +24,7 @@ import { store } from "@/app/GlobalRedux/store/store";
 export default function MiniSidebarContent() {
   const initialValue = useSelector(getVisitDetailsFromStore);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  console.log(initialValue ?? "no initial value");
+
   const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>(
     initialValue ?? []
   );
@@ -69,7 +69,6 @@ export default function MiniSidebarContent() {
       };
       return updatedVisitDetails;
     });
-    console.log(visitDetails);
   };
 
   return (

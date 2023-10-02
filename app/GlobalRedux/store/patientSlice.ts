@@ -194,7 +194,8 @@ export const updateDetail = createAsyncThunk(
       detailHeading,
       detailText,
     });
-    return response.data;
+    console.log("response", response.data);
+    return response.data as PatientDetails;
   }
 );
 export const deleteDetail = createAsyncThunk(
@@ -249,21 +250,18 @@ const patientSlice = createSlice({
       state,
       action: PayloadAction<VisitDetailTitle[] | undefined>
     ) => {
-      console.log("inside setVisitDetails");
       if (!state.currentVisitId) return;
       if (!action.payload) return;
       const result: simpleVisitDetail[] = [];
-      console.log("1", action.payload);
 
       for (const visitDetail of action.payload) {
         const detail = visitDetail.visitDetails.find(
           (detail) => detail.visitId === state.currentVisitId
         );
-        console.log("2", detail);
+
         const description = detail?.description ?? "";
         const visitId = state.currentVisitId ?? 0;
 
-        console.log("3 pushing in result");
         result.push({
           id: detail?.id,
           title: visitDetail.title,
@@ -273,7 +271,6 @@ const patientSlice = createSlice({
           visitId: visitId,
         });
       }
-      console.error(result);
       state.visitDetails = result;
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
@@ -430,8 +427,10 @@ const patientSlice = createSlice({
           if (state && state.patient) {
             const visits = state?.patient?.visits.map((visit) => {
               if (visit.id === state.currentVisitId) {
+                // console.log("visitID", visit.id);
                 visit.patientDetails = visit.patientDetails.map((detail) => {
                   if (detail.id === action.payload.id) {
+                    console.log("action.payload", action.payload);
                     return action.payload;
                   }
                   return detail;
@@ -439,6 +438,7 @@ const patientSlice = createSlice({
               }
               return visit;
             });
+            console.log("updated visits", visits);
             state.patient.visits = visits;
           }
         }

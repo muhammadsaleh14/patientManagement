@@ -25,7 +25,7 @@ if (typeof localStorage !== "undefined") {
 // axios.get("/api/patients/detailsLayout").then((res) => {
 //   detailSort = res.data;
 // });
-// console.log("running axios get for details layout");
+
 // detailSort = localStorage.getItem("detailData");
 
 //   const detailsInfo = detailSort

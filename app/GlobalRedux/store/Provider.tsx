@@ -16,9 +16,7 @@ import {
 function UseStore() {
   const visitDetailTitlesState = useSelector(getVisitDetailTitlesState);
 
-  // console.log("loading use Store");
   useEffect(() => {
-    // console.log("in use effect");
     // const sortedDetails = setDetailsOrder(rootState);
     // store.dispatch(updateDetailsOrder(sortedDetails));
     store.dispatch(initialiseDetailsLayout());
@@ -34,7 +32,7 @@ export default function StoreProvider({
 }) {
   // const persistor = persistStore(store);
   // useEffect(() => {
-  //   console.log("in use effect");
+
   //   store.dispatch(initialiseDetailsLayout);
   // }, []);
   return (

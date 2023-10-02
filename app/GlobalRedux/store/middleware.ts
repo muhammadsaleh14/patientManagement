@@ -24,7 +24,7 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
     const newState = store.getState(); // Get the new state after the action has been processed
 
     const currentVisit = getCurrentVisit(newState);
-    // console.log("current visit in middleware", currentVisit);
+
     // Check if the 'patient' state has changed
     if (prevState.patient !== newState.patient) {
       const patientState = newState.patient; // Get the updated 'patient' state

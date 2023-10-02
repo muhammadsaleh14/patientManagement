@@ -25,11 +25,8 @@ export default function EditVisitDetails() {
   const [detailTitles, setDetailTitles] = useState<
     VisitDetailTitle[] | undefined
   >(visitDetailTitles);
-  // console.log(visitDetailTitles);
-  // console.log(detailTitles);
 
   const [visitDetailInput, setVisitDetailInput] = useState("");
-  // console.log(visitDetailInput);
 
   const [itemOpenState, setItemOpenState] = useState<boolean[]>([]);
 

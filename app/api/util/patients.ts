@@ -1,7 +1,6 @@
 import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
 import {
-  PatientDetails,
   VisitDetail,
   VisitDetailTitle,
 } from "@/components/interfaces/databaseInterfaces";
@@ -284,7 +283,6 @@ export async function addNewVisit(patientId: number, dateString: string) {
       include: {
         patientDetails: true, // Include patientDetails in the returned object
         prescriptions: true, // Include prescriptions in the returned object
-        visitDetails: true,
       },
       data: {
         date: parse(dateString, "hh:mm:ss a dd/MM/yyyy", new Date()),
@@ -301,7 +299,6 @@ export async function addNewVisit(patientId: number, dateString: string) {
         },
       },
     });
-    // console.log(newVisit);
 
     return newVisit;
   } catch (error) {
@@ -343,7 +340,6 @@ async function getUniquePatientDetails(
     });
 
     if (!patient) {
-      console.log("Patient not found");
       return [];
     }
 
@@ -351,7 +347,6 @@ async function getUniquePatientDetails(
     const selectedDetails: SelectedDetail[] = [];
 
     for (const visit of patient.visits) {
-      // console.log(`Visit Date: ${visit.date}`);
       for (const detail of visit.patientDetails) {
         if (!selectedHeadings.has(detail.detailHeading)) {
           selectedHeadings.add(detail.detailHeading);
@@ -401,6 +396,13 @@ export async function addPatientDetail(
   }
 }
 
+export interface PatientDetails {
+  id: number;
+  details: string;
+  detailHeading: string;
+  visitId: number;
+}
+
 export async function updateDetail(
   detailId: PatientDetails["id"],
   detailHeadingProp: PatientDetails["detailHeading"],
@@ -426,6 +428,8 @@ export async function updateDetail(
       select: {
         detailHeading: true,
         details: true,
+        visitId: true,
+        id: true,
       },
     });
 
@@ -535,7 +539,7 @@ export async function addVisitDetailTitle(detailTitle: string) {
         },
       },
     });
-    console.log("Created VisitDetailTitle:", newVisitDetailTitle);
+
     return visitDetailTitle;
   } catch (error) {
     console.error("Error creating VisitDetailTitle:", error);
@@ -576,9 +580,8 @@ export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
     await prisma.$transaction(async () => {
       for (const visitDetail of visitDetails) {
         // Update the description in the 'visitDetail' table
-        // console.log("visit detail", visitDetail);
+
         if (visitDetail.id === undefined) {
-          console.log("undefined id", visitDetail);
           await prisma.visitDetail.create({
             data: {
               titleId: visitDetail.titleId,

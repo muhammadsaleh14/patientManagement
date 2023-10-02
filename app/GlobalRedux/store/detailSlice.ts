@@ -26,7 +26,6 @@ export interface DetailsLayoutSlice {
 export const initialiseDetailsLayout = createAsyncThunk(
   "detailsLayout/initialiseDetailsLayout",
   async () => {
-    console.log("initialising layout");
     const response = await axios.get("/api/patients/detailsLayout");
     return response.data as string;
   }
