@@ -24,10 +24,10 @@ export interface DetailsLayoutSlice {
 // const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 export const initialiseDetailsLayout = createAsyncThunk(
-  "detailSlice/initialiseDetailsLayout",
+  "detailsLayout/initialiseDetailsLayout",
   async () => {
-    const response = await axios.get("/api/patients/detailsLayout");
     console.log("initialising layout");
+    const response = await axios.get("/api/patients/detailsLayout");
     return response.data as string;
   }
 );

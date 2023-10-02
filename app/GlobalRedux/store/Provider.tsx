@@ -11,11 +11,12 @@ import { initialiseDetailsLayout } from "./detailSlice";
 
 function UseStore() {
   const rootState = store.getState();
-
+  // console.log("loading use Store");
   useEffect(() => {
-    store.dispatch(initialiseDetailsLayout);
+    // console.log("in use effect");
     // const sortedDetails = setDetailsOrder(rootState);
     // store.dispatch(updateDetailsOrder(sortedDetails));
+    store.dispatch(initialiseDetailsLayout());
   }, []);
   return <></>;
 }
@@ -26,6 +27,10 @@ export default function StoreProvider({
   children: React.ReactNode;
 }) {
   // const persistor = persistStore(store);
+  // useEffect(() => {
+  //   console.log("in use effect");
+  //   store.dispatch(initialiseDetailsLayout);
+  // }, []);
   return (
     <Provider store={store}>
       <UseStore />

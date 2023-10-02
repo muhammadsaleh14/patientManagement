@@ -73,7 +73,7 @@ const Page = ({ params }: { params: { id: string } }) => {
         {/* Sidebar */}
         <SidebarContainer itemInLS="sidebarWidth">
           <Box
-            className="bg-gray-300 overflow-y-auto h-auto flex-grow w-full"
+            className="bg-gray-300 overflow-y-auto h-full flex-grow w-full"
             // style={{ minWidth: "200px", maxWidth: "200px" }}
           >
             {/* Sidebar content */}

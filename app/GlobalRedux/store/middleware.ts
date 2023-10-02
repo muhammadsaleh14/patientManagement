@@ -51,7 +51,7 @@ export const customLocalStorageMiddleware: Middleware<{}, RootState> =
     ) {
       const detailInfo = newState.detailsLayout.detailsInfo; // Get the updated 'detail' state
       // Save the 'detail' state to local storage
-      axios.post("/api/patient/datilsLayout", {
+      axios.post("/api/patients/detailsLayout", {
         detailsLayoutString: JSON.stringify(detailInfo),
       });
       // if (typeof localStorage !== "undefined") {

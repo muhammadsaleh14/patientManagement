@@ -95,6 +95,7 @@ const visitDetailTitlesSlice = createSlice({
         (state, action: PayloadAction<VisitDetailTitle[]>) => {
           state.visitDetailTitles = action.payload;
           state.status = "succeeded";
+          console.log(state.visitDetailTitles);
         }
       )
       .addCase(setVisitDetailTitles.rejected, (state, action) => {
