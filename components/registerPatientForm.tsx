@@ -1,4 +1,10 @@
-import React, { FormEvent, useContext, useState } from "react";
+import React, {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -11,7 +17,13 @@ import AutoCloseAlert from "./ui/autoCloseAlert";
 import { error } from "console";
 import { useRouter } from "next/navigation";
 
-const RegisterPatientForm: React.FC = () => {
+const RegisterPatientForm = ({
+  setSearchTerm,
+  setIsOpen,
+}: {
+  setSearchTerm: Dispatch<SetStateAction<string>>;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
@@ -24,6 +36,8 @@ const RegisterPatientForm: React.FC = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    setSearchTerm(name);
+    setIsOpen(false);
     axios
       .post("/api/patients", { name, age, gender })
       .then((response) => {
@@ -35,13 +49,12 @@ const RegisterPatientForm: React.FC = () => {
           severity: "success",
           message: "",
         });
-        router.push("/patients");
       })
       .catch((error) => {
         setAlert({
           title: "Error Creating patient",
           severity: "error",
-          message: "",
+          message: error,
         });
       });
   };

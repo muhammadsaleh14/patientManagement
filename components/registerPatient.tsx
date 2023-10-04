@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import Modal, { Props } from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
-const RegisterPatient = () => {
+const RegisterPatient = ({
+  setSearchTerm,
+}: {
+  setSearchTerm: Dispatch<SetStateAction<string>>;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
@@ -51,7 +55,7 @@ const RegisterPatient = () => {
           style={customStyles}
         >
           <div className="rounded-lg p-6">
-            <RegisterPatientForm />
+            <RegisterPatientForm setSearchTerm={setSearchTerm} setIsOpen={setIsOpen} />
             <Button
               onClick={() => setIsOpen(false)}
               variant="outlined"

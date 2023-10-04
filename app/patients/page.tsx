@@ -96,7 +96,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchPatients();
-  }, []);
+  }, [searchTerm]);
 
   const deletePatient = (patientId: number) => {
     axios
@@ -132,7 +132,7 @@ const Page: React.FC = () => {
       )}
 
       <h1 className="text-center font-semibold text-xl">Patients</h1>
-      <RegisterPatient />
+      <RegisterPatient setSearchTerm={setSearchTerm} />
       {/* Add your RegisterPatient component here */}
       <TextField
         id="standard-search"
@@ -141,7 +141,7 @@ const Page: React.FC = () => {
         variant="standard"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-4"
+        className="mb-4 mt-4"
       />
       <TableContainer component={Paper}>
         <Table>
