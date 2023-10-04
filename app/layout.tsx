@@ -25,15 +25,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Suspense fallback={<LoadingState />}>
-        <body className="h-screen">
+        <body className="h-screen bg-gray-100">
           <Provider>
-            {/* <Button>Edit your details</Button> */}
-            <nav>
-              <Link href="/patients">Patients</Link>
-              <Link href="/patients/editLayout">Edit Layout</Link>
+            <nav className="bg-blue-400 p-4">
+              <div className="container mx-auto flex justify-end items-center">
+                <Link
+                  href="/patients"
+                  className="text-white hover:text-gray-300 mr-4"
+                >
+                  Patients
+                </Link>
+                <Link
+                  href="/patients/editLayout"
+                  className="text-white hover:text-gray-300"
+                >
+                  Edit Layout
+                </Link>
+              </div>
             </nav>
 
-            <Box className="h-full">{children}</Box>
+            <div className="h-full">{children}</div>
           </Provider>
         </body>
       </Suspense>

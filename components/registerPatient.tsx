@@ -36,13 +36,13 @@ const RegisterPatient = () => {
   };
 
   return (
-    <div className="m-10">
+    <div>
       <div
         id="addNewPatient"
         className="inline-block"
         onClick={() => setIsOpen(true)}
       >
-        <Button>Add new Patient +</Button>
+        <Button className="bg-indigo-300">Add new Patient +</Button>
       </div>
       {isClient && (
         <Modal

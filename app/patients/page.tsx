@@ -131,7 +131,7 @@ const Page: React.FC = () => {
         />
       )}
 
-      <h1>Patients</h1>
+      <h1 className="text-center font-semibold text-xl">Patients</h1>
       <RegisterPatient />
       {/* Add your RegisterPatient component here */}
       <TextField
@@ -158,7 +158,7 @@ const Page: React.FC = () => {
             {filteredPatients.map((patient) => (
               <TableRow
                 key={patient.id}
-                className="bg-slate-500"
+                className="bg-blue-400"
                 // onMouseEnter={() => setIsHovered(true)}
                 // onMouseLeave={() => setIsHovered(false)}
                 // onClick={() => axios.get(`/patients/${patient.id}`)}

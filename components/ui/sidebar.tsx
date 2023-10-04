@@ -73,7 +73,8 @@ export default function Sidebar() {
 
   return (
     <div className="p-3 z-10" style={{ width: "100%" }}>
-      <h2>Patient Details</h2>
+      {/* Patient details as chronic details */}
+      <h2 className="text-center font-semibold text-lg">Chronic Details</h2>
       <div className="max-w-md mx-auto border rounded-md shadow-md p-2">
         <h2 className="text-lg font-semibold text-center mb-1">
           <Button onClick={() => setAddDetail((prev) => !prev)} size="small">
