@@ -101,24 +101,28 @@ export default function EditVisitDetails() {
         status === "loading" && <div className="text-black">Loading...</div>
       )}
 
-      {detailTitles?.map((visitDetail, index) => (
+      {detailTitles?.map((visitDetailTitle, index) => (
         <div
           className="border rounded-lg pl-1 pt-1 border-slate-500 shadow-md my-1 flex flex-col"
-          key={visitDetail.id}
+          key={visitDetailTitle.id}
         >
           <div className="text-lg font-semibold text-center">
-            Title: {visitDetail.title}
+            Title: {visitDetailTitle.title}
           </div>
-          <div className="text-lg font-semibold text-center">
-            Times used: {visitDetail._count.visitDetails}
-          </div>
+          {/* <div className="text-lg font-semibold text-center">
+            Times used:{" "}
+            {visitDetailTitle._count.visitDetails -
+              visitDetailTitle.visitDetails.filter(
+                (element) => typeof element.description === ("undefined" || "")
+              ).length}
+          </div> */}
           <div>
             <DeleteDialog
-              title={`Are you sure you want to delete title: ${visitDetail.title}`}
+              title={`Are you sure you want to delete title: ${visitDetailTitle.title}`}
               text=""
               onDelete={() => {
                 try {
-                  handleDelete(visitDetail.id);
+                  handleDelete(visitDetailTitle.id);
                 } catch (error) {
                   throw error;
                 }
@@ -134,7 +138,7 @@ export default function EditVisitDetails() {
               </Button>
             </DeleteDialog>
           </div>
-          {!visitDetail._count.visitDetails ? (
+          {!visitDetailTitle._count.visitDetails ? (
             <></>
           ) : (
             <Button
@@ -145,18 +149,21 @@ export default function EditVisitDetails() {
               {!itemOpenState[index] ? <div>View Uses</div> : <div>Close</div>}
             </Button>
           )}
+
           {itemOpenState[index] &&
-            visitDetail.visitDetails.map((visitDetail) => {
+            visitDetailTitle.visitDetails.map((visitDetail) => {
+              // if (visitDetail.description) {
               if (visitDetail.description) {
                 return (
                   <div
                     key={visitDetail.id}
                     className="text-center border-black mb-1 border-2 rounded-lg"
                   >
-                    {visitDetail.description || ""}
+                    {visitDetail.description}
                   </div>
                 );
               }
+              // }
             })}
         </div>
       ))}

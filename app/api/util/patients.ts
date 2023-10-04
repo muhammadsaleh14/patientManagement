@@ -151,17 +151,17 @@ export async function getUniquePatientWithDetails(patientId: number) {
           include: {
             patientDetails: true,
             prescriptions: true,
-            visitDetails: {
-              select: {
-                id: true,
-                description: true,
-                visitDetailTitle: {
-                  select: {
-                    title: true,
-                  },
-                },
-              },
-            },
+            // visitDetails: {
+            //   select: {
+            //     id: true,
+            //     description: true,
+            //     visitDetailTitle: {
+            //       select: {
+            //         title: true,
+            //       },
+            //     },
+            //   },
+            // },
           },
         },
       },
@@ -582,6 +582,7 @@ export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
         // Update the description in the 'visitDetail' table
 
         if (visitDetail.id === undefined) {
+          console.log(visitDetail);
           await prisma.visitDetail.create({
             data: {
               titleId: visitDetail.titleId,

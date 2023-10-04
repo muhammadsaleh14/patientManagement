@@ -23,17 +23,24 @@ import { store } from "@/app/GlobalRedux/store/store";
 
 export default function MiniSidebarContent() {
   const initialValue = useSelector(getVisitDetailsFromStore);
+
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>(
-    initialValue ?? []
-  );
+  const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>([]);
+
+  useEffect(() => {
+    console.log("setvisitdetails");
+    setVisitDetails(initialValue ?? []);
+  }, [initialValue]);
 
   useEffect(() => {
     const saveTimer = setTimeout(() => {
-      store.dispatch(saveVisitDetails(visitDetails));
-      setUnsavedChanges(false); // Mark changes as saved
-    }, 1000); // Delay for 1 second (adjust as needed)
+      if (visitDetails.length > 0) {
+        console.log("running save");
+        store.dispatch(saveVisitDetails(visitDetails));
+        setUnsavedChanges(false); // Mark changes as saved
+      }
+    }, 1500); // Delay for 1 second (adjust as needed)
 
     // Clear the timer when the component unmounts or when data changes
     return () => clearTimeout(saveTimer);
@@ -79,7 +86,7 @@ export default function MiniSidebarContent() {
           key={index}
         >
           <h6 className="text-lg font-semibold text-center">
-            {visitDetail.title}
+            {visitDetail.title + " " + visitDetail.id}
           </h6>
           <TextField
             id="outlined-multiline-flexible"

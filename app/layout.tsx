@@ -27,9 +27,11 @@ export default function RootLayout({
       <Suspense fallback={<LoadingState />}>
         <body className="h-screen">
           <Provider>
-            <Button>Edit your details</Button>
-            <Button>Patients</Button>
-            <Link href="/patients/editDetailsLayout">Edit Details Layout</Link>
+            {/* <Button>Edit your details</Button> */}
+            <nav>
+              <Link href="/patients">Patients</Link>
+              <Link href="/patients/editLayout">Edit Layout</Link>
+            </nav>
 
             <Box className="h-full">{children}</Box>
           </Provider>

@@ -61,9 +61,9 @@ export const setPatient = createAsyncThunk(
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
     if (date) {
+      await dispatch(setVisit(date));
       const state = getState() as RootState;
       dispatch(setVisitDetails(state.visitDetailTitles.visitDetailTitles));
-      await dispatch(setVisit(date));
       const sortedDetails = setDetailsOrder(state);
       dispatch(updateDetailsOrder(sortedDetails));
     }
@@ -117,10 +117,9 @@ export const setVisit = createAsyncThunk(
         visitDate,
       });
       const visitResponse = response.data as Visit;
-      // Logging the 'visitResponse' object and its properties
 
       dispatch(setVisitId(visitResponse.id));
-      dispatch(setVisitDetails(rootState.visitDetailTitles.visitDetailTitles));
+      // dispatch(setVisitDetails(rootState.visitDetailTitles.visitDetailTitles));
       return response.data;
     }
   }
@@ -227,6 +226,7 @@ export const saveVisitDetails = createAsyncThunk(
     });
     const visitDetailTitles = response.data as VisitDetailTitle[];
     // console.error(visitDetailTitles);
+    console.log(visitDetailTitles);
     dispatch(setVisitDetails(visitDetailTitles));
     // const  = response.data;
     // return detailId;
@@ -250,27 +250,35 @@ const patientSlice = createSlice({
       state,
       action: PayloadAction<VisitDetailTitle[] | undefined>
     ) => {
-      if (!state.currentVisitId) return;
-      if (!action.payload) return;
+      if (!state.currentVisitId) {
+        console.log("current visit id is undefined");
+        return;
+      }
+      if (!action.payload) {
+        console.log("action payload is undefined");
+        return;
+      }
+      console.log();
       const result: simpleVisitDetail[] = [];
 
-      for (const visitDetail of action.payload) {
-        const detail = visitDetail.visitDetails.find(
+      for (const visitDetailTitle of action.payload) {
+        const detail = visitDetailTitle.visitDetails.find(
           (detail) => detail.visitId === state.currentVisitId
         );
 
         const description = detail?.description ?? "";
         const visitId = state.currentVisitId ?? 0;
-
-        result.push({
+        const toPush = {
           id: detail?.id,
-          title: visitDetail.title,
+          title: visitDetailTitle.title,
           description: description,
           // If description is empty, set it to an empty string
-          titleId: visitDetail.id,
+          titleId: visitDetailTitle.id,
           visitId: visitId,
-        });
+        };
+        result.push(toPush);
       }
+      console.log(result);
       state.visitDetails = result;
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
