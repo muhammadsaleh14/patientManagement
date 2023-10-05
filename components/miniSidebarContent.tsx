@@ -26,21 +26,28 @@ export default function MiniSidebarContent() {
 
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>([]);
+  const [visitDetails, setVisitDetails] = useState<simpleVisitDetail[]>(
+    initialValue ?? []
+  );
 
   useEffect(() => {
-    console.log("setvisitdetails");
+    // console.log("setvisitdetails to ", initialValue);
     setVisitDetails(initialValue ?? []);
   }, [initialValue]);
 
   useEffect(() => {
     const saveTimer = setTimeout(() => {
       if (visitDetails.length > 0) {
-        console.log("running save");
-        store.dispatch(saveVisitDetails(visitDetails));
-        setUnsavedChanges(false); // Mark changes as saved
+        if (unsavedChanges) {
+          console.log("running save");
+          store.dispatch(saveVisitDetails(visitDetails));
+          setUnsavedChanges(false); // Mark changes as saved
+        }
+        if (visitDetails.some((detail) => typeof detail.id === "undefined")) {
+          store.dispatch(saveVisitDetails(visitDetails));
+        }
       }
-    }, 1500); // Delay for 1 second (adjust as needed)
+    }, 2000); // Delay for 2 second (adjust as needed)
 
     // Clear the timer when the component unmounts or when data changes
     return () => clearTimeout(saveTimer);
@@ -80,30 +87,63 @@ export default function MiniSidebarContent() {
 
   return (
     <div className="w-full h-full bg-slate-400 border-2 rounded-lg border-gray-400 shadow-md">
-      {visitDetails.map((visitDetail, index: number) => (
-        <div
-          className="border rounded-lg pl-1 pt-1 border-slate-600 shadow-md"
-          key={index}
-        >
-          <h6 className="text-lg font-semibold text-center">
-            {visitDetail.title + " " + visitDetail.id}
-          </h6>
-          <TextField
-            id="outlined-multiline-flexible"
-            spellCheck="false"
-            multiline
-            fullWidth
-            size="small"
-            required
-            minRows={2}
-            maxRows={4}
-            value={visitDetail.description}
-            onChange={(event) => handleInputChange(event, index)}
-            margin="none"
-            className="p-0"
-          />
-        </div>
-      ))}
+      <div className="text-center font-extrabold">
+        {unsavedChanges ? (
+          <div className="text-orange-600">Saving ...</div>
+        ) : (
+          <div className="text-blue-900">Saved</div>
+        )}
+      </div>
+
+      {visitDetails.map((visitDetail, index: number) =>
+        !visitDetail.id ? (
+          <div
+            className="border rounded-lg pl-1 pt-1 border-slate-600 shadow-md"
+            key={index}
+          >
+            <h6 className="text-lg font-semibold text-center">Loading...</h6>
+            {/* <TextField
+              id="outlined-multiline-flexible"
+              spellCheck="false"
+              multiline
+              fullWidth
+              size="small"
+              required
+              minRows={2}
+              maxRows={4}
+              disabled
+              value={visitDetail.description}
+              color="info"
+              // onChange={(event) => handleInputChange(event, index)}
+              margin="none"
+              className="p-0"
+            /> */}
+          </div>
+        ) : (
+          <div
+            className="border rounded-lg pl-1 pt-1 border-slate-600 shadow-md"
+            key={index}
+          >
+            <h6 className="text-lg font-semibold text-center">
+              {visitDetail.title}
+            </h6>
+            <TextField
+              id="outlined-multiline-flexible"
+              spellCheck="false"
+              multiline
+              fullWidth
+              size="small"
+              required
+              minRows={2}
+              maxRows={4}
+              value={visitDetail.description}
+              onChange={(event) => handleInputChange(event, index)}
+              margin="none"
+              className="p-0"
+            />
+          </div>
+        )
+      )}
     </div>
   );
 }

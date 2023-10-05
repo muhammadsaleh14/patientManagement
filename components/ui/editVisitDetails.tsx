@@ -157,7 +157,7 @@ export default function EditVisitDetails() {
                 return (
                   <div
                     key={visitDetail.id}
-                    className="text-center border-black mb-1 border-2 rounded-lg"
+                    className="text-center border-black mb-1 border-2 rounded-lg p-2 max-w-sm break-words"
                   >
                     {visitDetail.description}
                   </div>

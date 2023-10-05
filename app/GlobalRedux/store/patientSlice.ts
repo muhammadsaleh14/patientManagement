@@ -1,3 +1,4 @@
+"use client";
 import {
   createSlice,
   createAsyncThunk,
@@ -61,8 +62,21 @@ export const setPatient = createAsyncThunk(
     const patient = await getPatientApi(patientId);
     dispatch(setPatientFromApi(patient));
     if (date) {
-      await dispatch(setVisit(date));
+      console.log("in if date");
+      await Promise.all([
+        dispatch(setVisit(date)),
+        dispatch(setVisitDetailTitles()),
+      ]);
       const state = getState() as RootState;
+      // state.visitDetailTitles.visitDetailTitles?.map((title) => {
+      //   console.log(title.title);
+      //   title.visitDetails.map((detail) => {
+      //     if (detail.visitId == state.patient.currentVisitId) {
+      //       console.log(detail.description);
+      //       console.log("");
+      //     }
+      //   });
+      // });
       dispatch(setVisitDetails(state.visitDetailTitles.visitDetailTitles));
       const sortedDetails = setDetailsOrder(state);
       dispatch(updateDetailsOrder(sortedDetails));
@@ -193,7 +207,6 @@ export const updateDetail = createAsyncThunk(
       detailHeading,
       detailText,
     });
-    console.log("response", response.data);
     return response.data as PatientDetails;
   }
 );
@@ -226,7 +239,6 @@ export const saveVisitDetails = createAsyncThunk(
     });
     const visitDetailTitles = response.data as VisitDetailTitle[];
     // console.error(visitDetailTitles);
-    console.log(visitDetailTitles);
     dispatch(setVisitDetails(visitDetailTitles));
     // const  = response.data;
     // return detailId;
@@ -278,7 +290,7 @@ const patientSlice = createSlice({
         };
         result.push(toPush);
       }
-      console.log(result);
+      console.log("to push", result);
       state.visitDetails = result;
     },
     updateDetailsOrder: (state, action: PayloadAction<PatientDetails[]>) => {
@@ -438,7 +450,6 @@ const patientSlice = createSlice({
                 // console.log("visitID", visit.id);
                 visit.patientDetails = visit.patientDetails.map((detail) => {
                   if (detail.id === action.payload.id) {
-                    console.log("action.payload", action.payload);
                     return action.payload;
                   }
                   return detail;
@@ -446,7 +457,6 @@ const patientSlice = createSlice({
               }
               return visit;
             });
-            console.log("updated visits", visits);
             state.patient.visits = visits;
           }
         }
@@ -521,10 +531,14 @@ export const getCurrentVisit = (state: RootState): Visit | undefined => {
 //     return computedResult;
 //   }
 // );
-export const getPatientStateWithSortedVisitDates = (state: RootState) => {
-  const patient = sortVisitsByDate(state?.patient.patient);
-  return { ...state.patient, patient };
-};
+
+const selectPatient = (state: RootState) => state?.patient;
+export const getPatientStateWithSortedVisitDates = createSelector(
+  [selectPatient],
+  (patient) => {
+    return { ...patient, patient: sortVisitsByDate(patient.patient) };
+  }
+);
 
 export const getCurrentVisitWithPatientState = (
   state: PatientState

@@ -85,7 +85,7 @@ const Page = ({ params }: { params: { id: string } }) => {
         <Box className="h-full w-full flex flex-col overflow-y-scroll">
           {/* spacing={2} */}
           {/* {Box here} */}
-          <Box className="p-5 bg-yellow-700 flex justify-center ">
+          <Box className=" p-2 bg-orange-700 flex justify-center ">
             {/* Patient details */}
             {patient && (
               <>
