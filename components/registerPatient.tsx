@@ -55,7 +55,10 @@ const RegisterPatient = ({
           style={customStyles}
         >
           <div className="rounded-lg p-6">
-            <RegisterPatientForm setSearchTerm={setSearchTerm} setIsOpen={setIsOpen} />
+            <RegisterPatientForm
+              setSearchTerm={setSearchTerm}
+              setIsOpen={setIsOpen}
+            />
             <Button
               onClick={() => setIsOpen(false)}
               variant="outlined"
