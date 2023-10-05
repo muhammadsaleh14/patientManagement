@@ -93,6 +93,7 @@ const visitDetailTitlesSlice = createSlice({
       .addCase(
         setVisitDetailTitles.fulfilled,
         (state, action: PayloadAction<VisitDetailTitle[]>) => {
+          console.log("setting visit details:", action.payload);
           state.visitDetailTitles = action.payload;
           state.status = "succeeded";
         }

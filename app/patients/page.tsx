@@ -92,6 +92,7 @@ const Page: React.FC = () => {
       patient.age.toString().includes(searchTerm) ||
       patient.gender.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   // const filteredPatients = patients;
 
   useEffect(() => {
@@ -155,7 +156,7 @@ const Page: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredPatients.map((patient) => (
+            {filteredPatients.reverse().map((patient) => (
               <TableRow
                 key={patient.id}
                 className="bg-blue-400"

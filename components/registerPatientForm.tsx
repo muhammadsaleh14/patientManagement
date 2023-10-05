@@ -34,11 +34,11 @@ const RegisterPatientForm = ({
   } | null>(null);
   const router = useRouter();
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setSearchTerm(name);
+    const tempName = name;
     setIsOpen(false);
-    axios
+    await axios
       .post("/api/patients", { name, age, gender })
       .then((response) => {
         setName("");
@@ -49,6 +49,7 @@ const RegisterPatientForm = ({
           severity: "success",
           message: "",
         });
+        setSearchTerm(tempName);
       })
       .catch((error) => {
         setAlert({

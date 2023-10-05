@@ -582,7 +582,6 @@ export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
         // Update the description in the 'visitDetail' table
 
         if (visitDetail.id === undefined) {
-          console.log(visitDetail);
           await prisma.visitDetail.create({
             data: {
               titleId: visitDetail.titleId,
