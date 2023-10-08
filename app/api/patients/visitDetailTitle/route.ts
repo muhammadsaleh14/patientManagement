@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { newVisitDetailTitle } = await request.json();
-    let newVisitDetailTitleResponse = await addVisitDetailTitle(
+    const newVisitDetailTitleResponse = await addVisitDetailTitle(
       newVisitDetailTitle
     );
     return NextResponse.json(newVisitDetailTitleResponse, { status: 201 });

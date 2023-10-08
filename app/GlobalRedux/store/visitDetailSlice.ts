@@ -1,13 +1,5 @@
-import {
-  createSlice,
-  nanoid,
-  createAsyncThunk,
-  PayloadAction,
-  AsyncThunk,
-  createSelector,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import { error } from "console";
 import { VisitDetailTitle } from "@/components/interfaces/databaseInterfaces";
 import axios from "axios";
 

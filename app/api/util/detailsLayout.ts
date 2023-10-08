@@ -11,8 +11,6 @@ export async function getDetailsLayout(idArg: number = 1) {
       },
     });
     return result?.layout;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -34,8 +32,6 @@ export async function updateDetailsLayout(
       },
     });
     return result;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }

@@ -22,9 +22,8 @@ module.exports = {
             }
         }
     ],
-    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest",
+        "ecmaVersion": 2021,
         "sourceType": "module"
     },
     "plugins": [
@@ -32,5 +31,11 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off",
+    },
+    "settings": {
+        "react": {
+            "version": "detect" // Replace with your React version
+        }
     }
 }

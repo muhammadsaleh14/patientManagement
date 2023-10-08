@@ -1,20 +1,15 @@
 import { configureStore, Middleware, Reducer } from "@reduxjs/toolkit";
-import patientSlice, { setPatient } from "@/app/GlobalRedux/store/patientSlice";
+import patientSlice from "@/app/GlobalRedux/store/patientSlice";
 import { PatientState } from "@/app/GlobalRedux/store/patientSlice";
 import visitDetailTitlesReducer, {
   VisitDetailTitlesSlice,
 } from "@/app/GlobalRedux/store/visitDetailSlice";
 import detailsLayoutReducer, {
-  Detail,
   DetailsLayoutSlice,
 } from "@/app/GlobalRedux/store/detailSlice";
 import { customLocalStorageMiddleware } from "@/app/GlobalRedux/store/middleware"; // Replace with the actual path to your customLocalStorageMiddleware
-import { Patient } from "@/components/interfaces/databaseInterfaces";
-import { getVisitDetailTitlesState } from "./visitDetailSlice";
-import axios from "axios";
 
 let storedPatientData;
-let detailSort;
 let visitDetailTitles;
 if (typeof localStorage !== "undefined") {
   storedPatientData = localStorage.getItem("patientData");

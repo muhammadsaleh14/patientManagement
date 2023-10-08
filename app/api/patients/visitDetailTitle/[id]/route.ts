@@ -7,12 +7,12 @@ export async function DELETE(
 ) {
   try {
     const visitDetailTitleId = parseInt(params.id);
-    let isDeleted = await deleteVisitDetailTitle(visitDetailTitleId);
+    const isDeleted = await deleteVisitDetailTitle(visitDetailTitleId);
 
     return NextResponse.json(isDeleted, { status: 200 });
-  } catch (error: any) {
-    return new NextResponse(error, {
-      status: 500, // Internal Server Error
-    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 }

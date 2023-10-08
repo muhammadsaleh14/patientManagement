@@ -6,13 +6,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    let patientId = parseInt(params.id);
+    const patientId = parseInt(params.id);
 
     return NextResponse.json(
       { detailId: await deleteDetail(patientId) },
       { status: 201 }
     );
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 }

@@ -1,27 +1,7 @@
 "use client";
 import { createContext, useEffect, useState } from "react";
-import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { PatientDetails, Visit } from "../interfaces/databaseInterfaces";
-import { useSelector } from "react-redux";
-import {
-  getCurrentVisit,
-  updateDetailsOrder,
-} from "@/app/GlobalRedux/store/patientSlice";
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { store } from "@/app/GlobalRedux/store/store";
+import { Card, CardContent, Typography } from "@mui/material";
 import DetailsMenu from "./detailsMenu";
 import React from "react";
 import { Detail } from "@/app/GlobalRedux/store/detailSlice";

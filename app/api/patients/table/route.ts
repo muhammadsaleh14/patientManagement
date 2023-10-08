@@ -1,8 +1,8 @@
-import prisma from "@/app/api/util/db";
-import { NextRequest, NextResponse } from "next/server";
+// import prisma from "@/app/api/util/db";
+import { NextResponse } from "next/server";
 import { getPatientsWithLastVisit } from "@/app/api/util/patients";
 
-export async function GET(request: NextRequest) {
-  let a = NextResponse.json(await getPatientsWithLastVisit());
+export async function GET() {
+  const a = NextResponse.json(await getPatientsWithLastVisit());
   return a;
 }

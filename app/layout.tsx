@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -33,10 +33,10 @@ export default function RootLayout({
               <div className="container mx-auto flex justify-start items-center">
                 {" "}
                 {/* Change justify-end to justify-start */}
-                <CachedIcon
+                {/* <CachedIcon
                   className="text-white hover:text-gray-300 mr-4 cursor-pointer"
                   onClick={() => window.location.reload()}
-                />{" "}
+                />{" "} */}
                 {/* Reload icon */}
                 <Link
                   href="/patients"

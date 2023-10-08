@@ -1,11 +1,9 @@
 "use client";
 import { Middleware } from "@reduxjs/toolkit";
-import detailsLayoutReducer from "@/app/GlobalRedux/store/detailSlice";
 import { RootState } from "./store";
 import { getCurrentVisit, updateDetailsOrder } from "./patientSlice";
 import {
   areArraysOfPatientDetailsEqual,
-  arePatientDetailsEqual,
   setDetailsOrder,
 } from "../utilMethods";
 import axios from "axios";
@@ -14,8 +12,8 @@ import axios from "axios";
 //   patient: typeof patientReducer; // Replace 'any' with the actual type of your 'patient' state slice
 //   detailsLayout: typeof detailsLayoutReducer;
 // }
-
-export const customLocalStorageMiddleware: Middleware<{}, RootState> =
+// export const customLocalStorageMiddleware: Middleware<{}, RootState> //! before
+export const customLocalStorageMiddleware: Middleware<object, RootState> =
   (store) => (next) => (action) => {
     const prevState = store.getState(); // Get the previous state before the action is dispatched
     const oldVisit = getCurrentVisit(prevState);

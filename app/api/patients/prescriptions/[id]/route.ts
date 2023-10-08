@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addPrescription, deletePrescription } from "../../../util/patients";
-import format from "date-fns/format";
-import prisma from "@/app/api/util/db";
+// import format from "date-fns/format";
+// import prisma from "@/app/api/util/db";
 
 export async function POST(request: NextRequest) {
   try {
     const { visitId, prescription } = await request.json();
 
-    let prescriptionCreated = await addPrescription(visitId, prescription);
+    const prescriptionCreated = await addPrescription(visitId, prescription);
 
     return NextResponse.json(prescriptionCreated, { status: 200 });
   } catch (error) {
@@ -65,7 +65,7 @@ export async function DELETE(
 ) {
   try {
     const prescriptionId = parseInt(params.id);
-    let deletedPrescription = await deletePrescription(prescriptionId);
+    const deletedPrescription = await deletePrescription(prescriptionId);
 
     return NextResponse.json(deletedPrescription, { status: 200 });
   } catch (error) {

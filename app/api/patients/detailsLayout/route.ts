@@ -16,7 +16,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { detailsLayoutString } = await request.json();
-    let newDetailsLayout = await updateDetailsLayout(detailsLayoutString);
+    const newDetailsLayout = await updateDetailsLayout(detailsLayoutString);
     return NextResponse.json(newDetailsLayout, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });

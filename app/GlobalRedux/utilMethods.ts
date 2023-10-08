@@ -155,7 +155,7 @@ export function arePatientDetailsEqual(
 // }
 
 export const isEmpty = (obj: Object) => {
-  for (let key in obj) {
+  for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       return false; // If any property is found, it's not empty
     }

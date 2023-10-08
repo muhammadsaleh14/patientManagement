@@ -1,15 +1,11 @@
 import {
   createSlice,
-  nanoid,
   createAsyncThunk,
   PayloadAction,
-  AsyncThunk,
   createSelector,
 } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import { error } from "console";
 import axios from "axios";
-import build from "next/dist/build";
 
 export interface Detail {
   detailHeading: string;

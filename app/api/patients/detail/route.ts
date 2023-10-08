@@ -4,7 +4,7 @@ export async function PUT(request: NextRequest) {
   try {
     const { detailId, detailHeading, detailText } = await request.json();
 
-    let detail = await updateDetail(detailId, detailHeading, detailText);
+    const detail = await updateDetail(detailId, detailHeading, detailText);
     return NextResponse.json(detail, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
@@ -13,7 +13,7 @@ export async function PUT(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { detailHeading, detail, visitId } = await request.json();
-    let newPatientDetail = await addPatientDetail(
+    const newPatientDetail = await addPatientDetail(
       detailHeading,
       detail,
       visitId

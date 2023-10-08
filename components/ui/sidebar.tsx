@@ -6,7 +6,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { FormEvent, useEffect, useState } from "react";
-import SortableItem from "./patientDetail";
 import { useSelector } from "react-redux";
 import {
   addDetailToPatient,

@@ -1,12 +1,11 @@
-import { Detail } from "@/app/GlobalRedux/store/detailSlice";
+// import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
 import {
-  VisitDetail,
+  // VisitDetail,
   VisitDetailTitle,
 } from "@/components/interfaces/databaseInterfaces";
 import { Patient } from "@prisma/client";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
-import { da } from "date-fns/locale";
 
 // import { format } from 'date-fns';
 // Function to create a new patient
@@ -29,8 +28,6 @@ export async function createPatient(name: string, age: number, gender: string) {
     });
 
     return { patient };
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -57,8 +54,6 @@ export async function deletePatient(patientId: number) {
     });
 
     return { message: `Patient with ID ${patientId} deleted successfully.` };
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -75,8 +70,6 @@ export async function updatePatient(
       },
       data: updates,
     });
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -114,8 +107,6 @@ export async function getPatientsWithLastVisit() {
     });
 
     return formattedPatients;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -269,8 +260,6 @@ export async function getAllPrescriptions() {
     const prescriptionStrings = Array.from(uniquePrescriptionSet);
 
     return prescriptionStrings;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -361,8 +350,6 @@ async function getUniquePatientDetails(
     await prisma.$disconnect();
 
     return selectedDetails;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -461,8 +448,6 @@ export async function deleteDetail(detail_Id: number) {
     });
 
     return detail.id;
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -508,8 +493,6 @@ export async function getAllVisitDetailTitles() {
     });
 
     return visitDetailTitles as VisitDetailTitle[];
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -551,17 +534,13 @@ export async function addVisitDetailTitle(detailTitle: string) {
 
 export async function deleteVisitDetailTitle(visitDetailTitleId: number) {
   try {
-    let isDeleted = false;
-    const a = await prisma.visitDetailTitle.delete({
+    await prisma.visitDetailTitle.delete({
       where: {
         id: visitDetailTitleId,
       },
     });
-    isDeleted = true;
 
     return { message: `Visit detail title deleted successfully.` };
-  } catch (error) {
-    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -575,7 +554,6 @@ export interface simpleVisitDetail {
 }
 
 export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
-  let updatedRowCount = 0;
   try {
     await prisma.$transaction(async () => {
       for (const visitDetail of visitDetails) {
@@ -600,8 +578,6 @@ export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {
             description: visitDetail.description,
           },
         });
-
-        updatedRowCount++;
       }
       // const updatedVisitDetails = prisma.
     });

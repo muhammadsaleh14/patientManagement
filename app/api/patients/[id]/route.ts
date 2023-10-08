@@ -3,14 +3,14 @@ import {
   deletePatient,
   getUniquePatientWithDetails,
 } from "../../util/patients";
-import { error } from "console";
+// import { error } from "console";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    let patientId = parseInt(params.id);
+    const patientId = parseInt(params.id);
 
     return NextResponse.json(
       { message: await deletePatient(patientId) },
@@ -29,7 +29,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    let patient = await getUniquePatientWithDetails(parseInt(params.id));
+    const patient = await getUniquePatientWithDetails(parseInt(params.id));
 
     return NextResponse.json(patient, { status: 201 });
   } catch (error) {

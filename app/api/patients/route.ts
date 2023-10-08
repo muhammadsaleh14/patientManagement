@@ -1,4 +1,4 @@
-import prisma from "@/app/api/util/db";
+// import prisma from "@/app/api/util/db";
 import { NextRequest, NextResponse } from "next/server";
 import { createPatient } from "../util/patients";
 

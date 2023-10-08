@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Alert, AlertTitle } from "@mui/material";
 interface Props {
-  title: String;
+  title: string;
   severity: "error" | "warning" | "info" | "success";
-  message: String;
+  message: string;
   onClose: () => void;
 }
 

@@ -45,7 +45,7 @@ import HistoryOfPatientDialog from "@/components/ui/historyOfPatientDialog";
 //   }> | null;
 // }
 
-const Page: React.FC = () => {
+const Page = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   // const [isHovered, setIsHovered] = useState(false);

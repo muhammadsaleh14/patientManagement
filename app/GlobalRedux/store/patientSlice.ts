@@ -13,16 +13,14 @@ import {
   Visit,
   VisitDetailTitle,
 } from "@/components/interfaces/databaseInterfaces";
-import { RootState, store } from "./store";
+import { RootState } from "./store";
 import { getPatientApi } from "../apiCalls";
 import {
   formatDateString,
   setDetailsOrder,
   sortVisitsByDate,
 } from "../utilMethods";
-import { Detail, setNewDetailsOrder } from "./detailSlice";
 import { setVisitDetailTitles } from "./visitDetailSlice";
-import { VisitDetail } from "@prisma/client";
 
 export interface simpleVisitDetail {
   id: number | undefined; // id of description
@@ -158,28 +156,22 @@ export const addPrescription = createAsyncThunk(
 export const deletePrescription = createAsyncThunk(
   "patient/deletePrescription",
   async (prescriptionId: number) => {
-    const response = await axios.delete(
-      "/api/patients/prescriptions/" + prescriptionId
-    );
+    await axios.delete("/api/patients/prescriptions/" + prescriptionId);
     return prescriptionId;
   }
 );
 
 export const addDetailToPatient = createAsyncThunk(
   "patient/addDetailToPatient",
-  async (
-    {
-      detailHeading,
-      detail,
-      visitId,
-    }: {
-      detailHeading: string;
-      detail: string;
-      visitId: number;
-    },
-    { getState }
-  ) => {
-    const state = getState() as RootState;
+  async ({
+    detailHeading,
+    detail,
+    visitId,
+  }: {
+    detailHeading: string;
+    detail: string;
+    visitId: number;
+  }) => {
     const response = await axios.post("/api/patients/detail", {
       detailHeading,
       detail,
@@ -233,7 +225,7 @@ export const deleteDetail = createAsyncThunk(
 
 export const saveVisitDetails = createAsyncThunk(
   "patient/saveVisitDetails",
-  async (visitDetails: simpleVisitDetail[], { getState, dispatch }) => {
+  async (visitDetails: simpleVisitDetail[], { dispatch }) => {
     const response = await axios.put("/api/patients/visitDetailDescription/", {
       visitDetails,
     });
@@ -317,12 +309,9 @@ const patientSlice = createSlice({
       .addCase(setPatient.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        setPatient.fulfilled,
-        (state, action: PayloadAction<Patient>) => {
-          state.status = "succeeded";
-        }
-      )
+      .addCase(setPatient.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
       .addCase(setPatient.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
@@ -340,7 +329,7 @@ const patientSlice = createSlice({
         }
 
         if (action.payload) {
-          let visit = action.payload;
+          const visit = action.payload;
           visit.date = formatDateString(visit.date);
           state.patient.visits = state.patient?.visits.concat(visit);
         }
@@ -388,7 +377,7 @@ const patientSlice = createSlice({
       })
 
       //? For deletePrescription
-      .addCase(deletePrescription.pending, (state, action) => {
+      .addCase(deletePrescription.pending, (state) => {
         state.status = "loading";
       })
       .addCase(
@@ -493,12 +482,9 @@ const patientSlice = createSlice({
       .addCase(saveVisitDetails.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        saveVisitDetails.fulfilled,
-        (state, action: PayloadAction<void>) => {
-          state.status = "succeeded";
-        }
-      )
+      .addCase(saveVisitDetails.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
       .addCase(saveVisitDetails.rejected, (state, action) => {
         state.error = action.error.message;
         state.status = "failed";
