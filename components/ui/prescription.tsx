@@ -1,15 +1,8 @@
 "use client";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Chip,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import axios from "axios";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { Patient, Prescription } from "../interfaces/databaseInterfaces";
+import { Prescription } from "../interfaces/databaseInterfaces";
 import { useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -17,16 +10,10 @@ import {
   deletePrescription,
   getCurrentVisit,
   getPatient,
-  getPatientState,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
-import DeleteDialog from "./deleteDialog";
-import SidebarContainer from "./sidebarContainer";
 
 // ... Import statements ...
-
-const API_PATIENT_PRESCRIPTIONS = "/api/patients/prescriptions";
-const API_ADD_PRESCRIPTION = "/api/patients/prescriptions/prescription";
 
 export default function Prescription() {
   const patient = useSelector(getPatient);
@@ -54,11 +41,11 @@ export default function Prescription() {
     setDomMounted(true);
   }, [loadPrescriptions]);
 
-  const handlePrescriptionChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setPrescription(event.target.value);
-  };
+  // const handlePrescriptionChange = (
+  //   event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   setPrescription(event.target.value);
+  // };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -74,7 +61,6 @@ export default function Prescription() {
     }
   };
   // const allPrescriptionProps = {
-  const options = allPrescriptions || [];
   // };
   const flatProps = {
     options: allPrescriptions || [],
@@ -128,7 +114,7 @@ export default function Prescription() {
             </form>
             {/* visit?.prescriptions.map((prescription) => prescription.prescription) */}
             {visit?.prescriptions ? (
-              visit.prescriptions.map((value, index) => {
+              visit.prescriptions.map((value) => {
                 return (
                   <div key={value.id} className="flex items-baseline">
                     <TextField

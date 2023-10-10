@@ -1,21 +1,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  VisitDetail,
-  VisitDetailTitle,
-} from "../interfaces/databaseInterfaces";
-import { getVisitDetailsFromStore } from "@/app/GlobalRedux/store/patientSlice";
-import axios from "axios";
+import { VisitDetailTitle } from "../interfaces/databaseInterfaces";
 import {
   addVisitDetailTitle,
   deleteVisitDetailTitle,
   getVisitDetailTitlesState,
-  setVisitDetailTitles,
 } from "@/app/GlobalRedux/store/visitDetailSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import deleteAlert from "./confirmDelete";
 import DeleteDialog from "./deleteDialog";
 
 export default function EditVisitDetails() {
@@ -121,11 +114,7 @@ export default function EditVisitDetails() {
               title={`Are you sure you want to delete title: ${visitDetailTitle.title}`}
               text=""
               onDelete={() => {
-                try {
-                  handleDelete(visitDetailTitle.id);
-                } catch (error) {
-                  throw error;
-                }
+                handleDelete(visitDetailTitle.id);
               }}
             >
               <Button

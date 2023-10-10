@@ -1,53 +1,26 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import {
-  SortableList,
-  SortableItemProps,
-  ItemRenderProps,
-  SortableItem,
-} from "@thaddeusjiang/react-sortable-list";
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  InputAdornment,
-  Paper,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, InputAdornment, TextField } from "@mui/material";
 
-import { useRouter } from "next/router";
-import { DragHandler } from "@/components/ui/DragHandler";
-import axios from "axios";
-import PersistantDrawerRight from "@/components/ui/simpleDrawer";
 import Prescription from "@/components/ui/prescription";
 import { useSearchParams } from "next/navigation";
-import format from "date-fns/format";
-import { Patient, Visit } from "@/components/interfaces/databaseInterfaces";
 import {
   getPatientState,
   // initializeState,
   setPatient,
-  setVisit,
-  setVisitId,
-  updateDetailsOrder,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { useSelector } from "react-redux";
-import { AppDispatch, store } from "@/app/GlobalRedux/store/store";
-import { useDispatch } from "react-redux";
 import Sidebar from "@/components/ui/sidebar";
 import SidebarContainer from "@/components/ui/sidebarContainer";
 import LoadingState from "@/components/ui/loadingState";
 import MiniSidebarContent from "@/components/miniSidebarContent";
+import { store } from "@/app/GlobalRedux/store/store";
 // { params }: { params: { id: string } }
 const Page = ({ params }: { params: { id: string } }) => {
-  const { patient, currentVisitId } = useSelector(getPatientState);
+  const { patient } = useSelector(getPatientState);
   const searchParams = useSearchParams();
 
-  const [domLoaded, setDomLoaded] = useState(false);
+  // const [domLoaded, setDomLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const date = searchParams.get("visitDate") as string;
 
@@ -63,9 +36,9 @@ const Page = ({ params }: { params: { id: string } }) => {
     initialiseState();
   }, [params.id, date]);
 
-  useEffect(() => {
-    setDomLoaded(true);
-  }, []);
+  // useEffect(() => {
+  //   setDomLoaded(true);
+  // }, []);
   return (
     (loading && <LoadingState />) || (
       // direction="row" spacing={0}

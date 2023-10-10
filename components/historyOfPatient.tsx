@@ -1,11 +1,7 @@
-import {
-  getPatientState,
-  getPatientStateWithSortedVisitDates,
-} from "@/app/GlobalRedux/store/patientSlice";
+import { getPatientStateWithSortedVisitDates } from "@/app/GlobalRedux/store/patientSlice";
 import Button from "@mui/material/Button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 function HistoryOfPatient() {

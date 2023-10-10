@@ -4,19 +4,16 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { deleteDetail } from "@/app/GlobalRedux/store/patientSlice";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import DetailsEditDialog from "./detailsEditDialog";
 import { detailContext } from "./sortabletest";
 import { store } from "@/app/GlobalRedux/store/store";
 import DeleteDialog from "./deleteDialog";
-import ReactDOM from "react-dom";
 
 enum Options {
   Edit = "Edit",
   Delete = "Delete",
 }
-
-const optionsArray: string[] = Object.values(Options);
 
 const ITEM_HEIGHT = 48;
 
@@ -93,7 +90,7 @@ export default function DetailsMenu() {
         <MenuItem
           key={Options.Delete}
           // selected={optionString === Options.Edit}
-          onClick={(e) => handleClose(Options.Delete)}
+          onClick={() => handleClose(Options.Delete)}
           className="hover:bg-slate-500"
         >
           {Options.Delete}
@@ -104,11 +101,9 @@ export default function DetailsMenu() {
         title={`Are you sure you want to delete detail`}
         text={"The detail will be removed"}
         onDelete={() => {
-          try {
-            if (detail?.id) {
-              store.dispatch(deleteDetail(detail.id));
-            }
-          } catch (error) {}
+          if (detail?.id) {
+            store.dispatch(deleteDetail(detail.id));
+          }
         }}
       >
         <div id={detail?.id.toString()}></div>

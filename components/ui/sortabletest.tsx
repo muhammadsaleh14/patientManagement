@@ -17,7 +17,7 @@ const DetailComponent = ({
   detail: PatientDetails | undefined;
   bold: boolean;
 }) => {
-  const [contextData, setContextData] = React.useState(detail);
+  const [contextData] = React.useState(detail);
 
   return (
     <detailContext.Provider value={contextData}>

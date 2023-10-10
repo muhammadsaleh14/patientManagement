@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -8,20 +8,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  PatientDetails,
-  Visit,
-} from "@/components/interfaces/databaseInterfaces";
 import { useSelector } from "react-redux";
-import { getCurrentVisit } from "@/app/GlobalRedux/store/patientSlice";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
 import {
   addDetailInfoWithHeading,
   deleteDetail,
@@ -47,18 +34,17 @@ const SortableDetails = ({
     transition,
     transform: CSS.Transform.toString(transform),
   };
-  const details = useSelector(getDetailsLayout);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(detail.detailHeading);
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [editText, setEditText] = useState(detail.detailHeading);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-  const handleDeleteClick = () => {
-    try {
-      store.dispatch(deleteDetail(detail.id));
-    } catch (error) {}
-  };
+  // const handleEditClick = () => {
+  //   setIsEditing(true);
+  // };
+  // const handleDeleteClick = () => {
+  //   try {
+  //     store.dispatch(deleteDetail(detail.id));
+  //   } catch (error) {}
+  // };
 
   return (
     <div
@@ -110,9 +96,7 @@ const SortableDetails = ({
                   "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
                 }
                 onDelete={() => {
-                  try {
-                    store.dispatch(deleteDetail(detail.id));
-                  } catch (error) {}
+                  store.dispatch(deleteDetail(detail.id));
                 }}
               >
                 Delete
@@ -133,7 +117,7 @@ const EditDetailsLayout: React.FC = () => {
   // const [saveBtnDisabled, setSaveBtnDisabled] = useState(true);
   const status = details.status;
 
-  const error = details.error;
+  // const error = details.error;
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -210,7 +194,7 @@ const EditDetailsLayout: React.FC = () => {
         <br />
         {status === "loading" ? (
           <div>Loading...</div>
-        ) : status === "succeeded" || "idle" ? (
+        ) : status === "succeeded" || status === "idle" ? (
           // Render your success content here
           <div>
             <DndContext

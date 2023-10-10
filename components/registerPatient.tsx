@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
-import Modal, { Props } from "react-modal";
+import Modal from "react-modal";
 import RegisterPatientForm from "@/components/registerPatientForm";
 import Button from "@mui/material/Button";
 const RegisterPatient = ({

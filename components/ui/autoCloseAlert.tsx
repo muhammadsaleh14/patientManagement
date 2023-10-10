@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Alert, AlertTitle } from "@mui/material";
 interface Props {
   title: string;

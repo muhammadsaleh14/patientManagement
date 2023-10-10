@@ -3,10 +3,7 @@ import React, { useEffect } from "react";
 import { store } from "./store";
 import { Provider } from "react-redux";
 import { initialiseDetailsLayout } from "./detailSlice";
-import {
-  getVisitDetailTitlesState,
-  setVisitDetailTitles,
-} from "./visitDetailSlice";
+import { setVisitDetailTitles } from "./visitDetailSlice";
 
 function UseStore() {
   useEffect(() => {

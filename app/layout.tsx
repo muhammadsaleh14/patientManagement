@@ -1,18 +1,12 @@
 // "use client";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Button from "@mui/material/Button";
-import { Router } from "react-router-dom";
-import { Box } from "@mui/material";
 import Provider from "./GlobalRedux/store/Provider";
-import { store } from "./GlobalRedux/store/store";
 import Link from "next/link";
 import { Suspense } from "react";
 import LoadingState from "@/components/ui/loadingState";
-import CachedIcon from "@mui/icons-material/Cached";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",

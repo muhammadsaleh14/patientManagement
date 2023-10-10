@@ -57,7 +57,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.5.1",
+    "@tauri-apps/cli": "^1.5.2",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-modal": "^3.16.0",
     "@types/sortablejs": "^1.15.2",

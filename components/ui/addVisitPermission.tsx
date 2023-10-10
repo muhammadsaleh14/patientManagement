@@ -7,8 +7,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { store } from "@/app/GlobalRedux/store/store";
-import { deleteDetail } from "@/app/GlobalRedux/store/detailSlice";
 
 interface AddVisitProps {
   children: React.ReactNode;

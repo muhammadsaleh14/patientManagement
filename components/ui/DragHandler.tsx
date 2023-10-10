@@ -6,7 +6,7 @@ import {
 } from "@thaddeusjiang/react-sortable-list";
 import { useState } from "react";
 
-const DragHandlerExample = (props: Object) => (
+const DragHandlerExample = (props: object) => (
   <div
     {...props}
     className=" flex justify-center items-center h-8 w-8 rounded border m-4 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-blue-500 hover:text-white duration-300"

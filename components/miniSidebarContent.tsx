@@ -1,25 +1,12 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
-import {
-  Box,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Edit, Delete, PaddingSharp } from "@mui/icons-material";
-import { VisitDetail } from "./interfaces/databaseInterfaces";
 import {
   getVisitDetailsFromStore,
   saveVisitDetails,
   simpleVisitDetail,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
+import { TextField } from "@mui/material";
 
 export default function MiniSidebarContent() {
   const initialValue = useSelector(getVisitDetailsFromStore);

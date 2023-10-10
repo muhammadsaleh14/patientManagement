@@ -1,9 +1,6 @@
 import { format, parse } from "date-fns";
-import { Detail } from "./store/detailSlice";
 import { Patient, Visit } from "@/components/interfaces/databaseInterfaces";
-import { PatientState, getCurrentVisit } from "./store/patientSlice";
-import { error } from "console";
-import { Store } from "redux";
+import { getCurrentVisit } from "./store/patientSlice";
 import { RootState } from "./store/store";
 import { PatientDetails } from "@prisma/client";
 
@@ -154,9 +151,9 @@ export function arePatientDetailsEqual(
 //   return true;
 // }
 
-export const isEmpty = (obj: Object) => {
+export const isEmpty = (obj: object) => {
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       return false; // If any property is found, it's not empty
     }
   }

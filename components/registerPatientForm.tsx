@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -14,8 +8,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import AutoCloseAlert from "./ui/autoCloseAlert";
-import { error } from "console";
-import { useRouter } from "next/navigation";
 
 const RegisterPatientForm = ({
   setSearchTerm,
@@ -32,7 +24,6 @@ const RegisterPatientForm = ({
     severity: "success" | "error";
     message: string;
   } | null>(null);
-  const router = useRouter();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -40,7 +31,7 @@ const RegisterPatientForm = ({
     setIsOpen(false);
     await axios
       .post("/api/patients", { name, age, gender })
-      .then((response) => {
+      .then(() => {
         setName("");
         setAge("");
         setGender("male");

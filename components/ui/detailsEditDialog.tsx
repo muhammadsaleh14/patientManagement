@@ -7,10 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { detailContext } from "./sortabletest";
-import {
-  deleteDetail,
-  updateDetail,
-} from "@/app/GlobalRedux/store/patientSlice";
+import { updateDetail } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "@/app/GlobalRedux/store/store";
 import { useEffect } from "react";
 
@@ -28,10 +25,6 @@ export default function DetailsEditDialog({
     detailHeading: string | undefined;
     detailText: string | undefined;
   }>({ detailHeading: detail?.detailHeading, detailText: detail?.details });
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = (save: boolean) => {
     if (save) {

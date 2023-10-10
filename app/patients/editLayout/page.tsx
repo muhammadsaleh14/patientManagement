@@ -1,9 +1,6 @@
 "use client";
 import EditDetailsLayout from "@/components/editDetailsLayout";
-import MiniSidebarContent from "@/components/miniSidebarContent";
 import EditVisitDetails from "@/components/ui/editVisitDetails";
-import Prescription from "@/components/ui/prescription";
-import Sidebar from "@/components/ui/sidebar";
 import SidebarContainer from "@/components/ui/sidebarContainer";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";

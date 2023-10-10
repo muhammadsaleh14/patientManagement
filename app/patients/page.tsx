@@ -1,7 +1,6 @@
 "use client";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Paper,
@@ -14,7 +13,6 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import RegisterPatient from "@/components/registerPatient";
 import AutoCloseAlert from "@/components/ui/autoCloseAlert";
@@ -22,14 +20,9 @@ import { useRouter } from "next/navigation";
 import AddBox from "@mui/icons-material/AddBox";
 import HistoryOfPatient from "@/components/historyOfPatient";
 import { Patient } from "@/components/interfaces/databaseInterfaces";
-import { format, parse } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
-import { getPatient, getPatientState } from "../GlobalRedux/store/patientSlice";
+import { format } from "date-fns";
 import { setPatient } from "@/app/GlobalRedux/store/patientSlice";
 import { store } from "../GlobalRedux/store/store";
-import SettingsIcon from "@mui/icons-material/Settings";
-import { formatDateString } from "../GlobalRedux/utilMethods";
-import deleteAlert from "@/components/ui/confirmDelete";
 import DeleteDialog from "@/components/ui/deleteDialog";
 import AddVisitPermission from "@/components/ui/addVisitPermission";
 import HistoryOfPatientDialog from "@/components/ui/historyOfPatientDialog";
@@ -102,7 +95,7 @@ const Page = () => {
   const deletePatient = (patientId: number) => {
     axios
       .delete("/api/patients/" + patientId)
-      .then((response) => {
+      .then(() => {
         setPatients((prevPatients) =>
           prevPatients.filter((p) => p.id !== patientId)
         );
@@ -211,9 +204,7 @@ const Page = () => {
                           "The details grouped with this heading will not be deleted, but will appear in the end of the details list"
                         }
                         onDelete={() => {
-                          try {
-                            deletePatient(patient.id);
-                          } catch (error) {}
+                          deletePatient(patient.id);
                         }}
                       >
                         <Button variant="outlined" color="warning">

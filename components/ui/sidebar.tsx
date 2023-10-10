@@ -1,16 +1,8 @@
-import logo from "./logo.svg";
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   addDetailToPatient,
   getCurrentVisit,
-  updateDetailsOrder,
 } from "@/app/GlobalRedux/store/patientSlice";
 import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import { store } from "@/app/GlobalRedux/store/store";
@@ -54,20 +46,18 @@ export default function Sidebar() {
   };
 
   const handleSubmit = (event: FormEvent) => {
-    try {
-      event.preventDefault();
+    event.preventDefault();
 
-      if (detail.detailText && detail.detailHeading && visit) {
-        store.dispatch(
-          addDetailToPatient({
-            detailHeading: detail.detailHeading,
-            detail: detail.detailText,
-            visitId: visit.id, // Replace with the actual visit ID
-          })
-        );
-        setDetail({ detailHeading: "", detailText: "" });
-      }
-    } catch (error) {}
+    if (detail.detailText && detail.detailHeading && visit) {
+      store.dispatch(
+        addDetailToPatient({
+          detailHeading: detail.detailHeading,
+          detail: detail.detailText,
+          visitId: visit.id, // Replace with the actual visit ID
+        })
+      );
+      setDetail({ detailHeading: "", detailText: "" });
+    }
   };
 
   return (
