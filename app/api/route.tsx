@@ -10,3 +10,5 @@ export async function GET() {
 // const { name, age, gender } = request;
 // return NextResponse.json(await deletePatient(name, parseInt(age), gender));
 // }
+
+export const dynamic = "force-dynamic";

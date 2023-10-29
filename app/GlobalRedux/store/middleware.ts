@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { Middleware } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { getCurrentVisit, updateDetailsOrder } from "./patientSlice";
@@ -7,6 +7,7 @@ import {
   setDetailsOrder,
 } from "../utilMethods";
 import axios from "axios";
+// import { revalidatePath } from "next/cache";
 // Define the shape of your state here
 // interface RootState {
 //   patient: typeof patientReducer; // Replace 'any' with the actual type of your 'patient' state slice
@@ -15,6 +16,7 @@ import axios from "axios";
 // export const customLocalStorageMiddleware: Middleware<{}, RootState> //! before
 export const customLocalStorageMiddleware: Middleware<object, RootState> =
   (store) => (next) => (action) => {
+    // revalidatePath("/");
     const prevState = store.getState(); // Get the previous state before the action is dispatched
     const oldVisit = getCurrentVisit(prevState);
     // Let the action pass through first

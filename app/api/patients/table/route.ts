@@ -6,3 +6,4 @@ export async function GET() {
   const a = NextResponse.json(await getPatientsWithLastVisit());
   return a;
 }
+export const dynamic = "force-dynamic";

@@ -51,6 +51,7 @@ const Page = () => {
     severity: "success" | "error";
     message: string;
   } | null>(null);
+
   async function getCompletePatientForStore(id: number) {
     try {
       await store.dispatch(setPatient({ patientId: id, date: undefined }));
@@ -64,6 +65,11 @@ const Page = () => {
     const formattedDate = format(currentDate, "hh:mm:ss a dd/MM/yyyy");
     return formattedDate;
   }
+  // const config = {
+  //   headers: {
+  //     "Cache-Control": "no-store",
+  //   },
+  // };
   async function fetchPatients() {
     try {
       const response = await axios.get("/api/patients/table");
@@ -73,6 +79,7 @@ const Page = () => {
       //   );
       // });
       // visit.date = ;
+      console.log("setting patients");
       setPatients(response.data);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -158,8 +165,8 @@ const Page = () => {
                 // onClick={() => axios.get(`/patients/${patient.id}`)}
               >
                 <TableCell
-                  className={`font-medium w-80 hover:cursor-pointer`}
-                  onClick={() => router.push(`/patients/${patient.id}`)}
+                  className={`font-medium w-80`}
+                  // onClick={() => router.push(`/patients/${patient.id}`)}
                 >
                   {patient.name}
                 </TableCell>
@@ -223,4 +230,5 @@ const Page = () => {
   );
 };
 
+// export const dynamic = "force-dynamic";
 export default Page;
