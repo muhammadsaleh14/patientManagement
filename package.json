@@ -5,7 +5,8 @@
   "scripts": {
     "tauri": "tauri",
     "dev": "next dev",
-    "build": "next build && npx prisma generate",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
