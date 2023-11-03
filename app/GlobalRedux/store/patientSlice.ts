@@ -93,11 +93,6 @@ export const setPatient = createAsyncThunk(
 //     }
 //     const pId = state.patient.id;
 
-//     const response = await axios.post("/api/patients/" + pId + "/visits", {
-//       visitDate,
-//     });
-//     const visit = response.data as Visit;
-
 //     dispatch(setVisitId(visit.id));
 //     return response.data;
 //   }
@@ -124,10 +119,13 @@ export const setVisit = createAsyncThunk(
       return "";
     } else {
       const pId = state.patient.id;
-
-      const response = await axios.post("/api/patients/" + pId + "/visits", {
-        visitDate,
-      });
+      const url = process.env.REACT_APP_API_URL;
+      const response = await axios.post(
+        url + "/api/patients/" + pId + "/visits",
+        {
+          visitDate,
+        }
+      );
       const visitResponse = response.data as Visit;
 
       dispatch(setVisitId(visitResponse.id));
@@ -141,8 +139,9 @@ export const addPrescription = createAsyncThunk(
   "patient/addPrescription",
   async (prescriptionText: string, { getState }) => {
     const state = getState() as RootState;
+    const url = process.env.REACT_APP_API_URL;
     const response = await axios.post(
-      "/api/patients/prescriptions/prescription",
+      url + "/api/patients/prescriptions/prescription",
       {
         visitId: state.patient.currentVisitId,
         prescription: prescriptionText,
@@ -156,7 +155,8 @@ export const addPrescription = createAsyncThunk(
 export const deletePrescription = createAsyncThunk(
   "patient/deletePrescription",
   async (prescriptionId: string) => {
-    await axios.delete("/api/patients/prescriptions/" + prescriptionId);
+    const url = process.env.REACT_APP_API_URL;
+    await axios.delete(url + "/api/patients/prescriptions/" + prescriptionId);
     return prescriptionId;
   }
 );
@@ -172,7 +172,8 @@ export const addDetailToPatient = createAsyncThunk(
     detail: string;
     visitId: string;
   }) => {
-    const response = await axios.post("/api/patients/detail", {
+    const url = process.env.REACT_APP_API_URL;
+    const response = await axios.post(url + "/api/patients/detail", {
       detailHeading,
       detail,
       visitId,
@@ -194,7 +195,8 @@ export const updateDetail = createAsyncThunk(
     detailHeading: PatientDetails["detailHeading"];
     detailText: PatientDetails["details"];
   }) => {
-    const response = await axios.put("/api/patients/detail", {
+    const url = process.env.REACT_APP_API_URL;
+    const response = await axios.put(url + "/api/patients/detail", {
       detailId,
       detailHeading,
       detailText,
@@ -205,30 +207,25 @@ export const updateDetail = createAsyncThunk(
 export const deleteDetail = createAsyncThunk(
   "patient/deleteDetail",
   async (detailID: string) => {
-    const response = await axios.delete("/api/patients/detail/" + detailID);
+    const url = process.env.REACT_APP_API_URL;
+    const response = await axios.delete(
+      url + "/api/patients/detail/" + detailID
+    );
     const { detailId } = response.data;
     return detailId;
   }
 );
 
-// export const getVisitDetails = createAsyncThunk(
-//   "patient/getVisitDetails",
-//   async ({}, { getState }) => {
-//     const rootState = getState() as RootState;
-//     const response = await axios.get(
-//       "/api/patients/visitDetailDescription/" + rootState.patient.currentVisitId
-//     );
-//     // const  = response.data;
-//     // return detailId;
-//   }
-// );
-
 export const saveVisitDetails = createAsyncThunk(
   "patient/saveVisitDetails",
   async (visitDetails: simpleVisitDetail[], { dispatch }) => {
-    const response = await axios.put("/api/patients/visitDetailDescription/", {
-      visitDetails,
-    });
+    const url = process.env.REACT_APP_API_URL;
+    const response = await axios.put(
+      url + "/api/patients/visitDetailDescription/",
+      {
+        visitDetails,
+      }
+    );
     const visitDetailTitles = response.data as VisitDetailTitle[];
     // console.error(visitDetailTitles);
     dispatch(setVisitDetails(visitDetailTitles));
