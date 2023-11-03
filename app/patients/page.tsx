@@ -71,7 +71,8 @@ const Page = () => {
   // };
   async function fetchPatients() {
     try {
-      const response = await axios.get("/api/patients/table");
+      const url = process.env.API_URL;
+      const response = await axios.get(url + "/api/patients/table");
       // const patients = response.map((patient) => {
       //   patient.visits.map(
       //     (visit) => (visit.date = formatDateString(visit.date))
