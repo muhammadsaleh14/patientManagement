@@ -10,7 +10,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const patientId = parseInt(params.id);
+    const patientId = params.id;
 
     return NextResponse.json(
       { message: await deletePatient(patientId) },
@@ -29,7 +29,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const patient = await getUniquePatientWithDetails(parseInt(params.id));
+    const patient = await getUniquePatientWithDetails(params.id);
 
     return NextResponse.json(patient, { status: 201 });
   } catch (error) {

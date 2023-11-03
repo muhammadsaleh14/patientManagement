@@ -48,7 +48,7 @@ export default function EditVisitDetails() {
     setVisitDetailInput("");
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     store.dispatch(deleteVisitDetailTitle(id));
   };
 

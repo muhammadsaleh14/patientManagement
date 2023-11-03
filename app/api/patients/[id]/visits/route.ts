@@ -6,7 +6,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const patientId = parseInt(params.id);
+    const patientId = params.id;
     const { visitDate }: { visitDate: string } = await request.json();
 
     const newVisit = await addNewVisit(patientId, visitDate);

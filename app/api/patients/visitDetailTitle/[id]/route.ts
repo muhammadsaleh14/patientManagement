@@ -6,7 +6,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const visitDetailTitleId = parseInt(params.id);
+    const visitDetailTitleId = params.id;
     const isDeleted = await deleteVisitDetailTitle(visitDetailTitleId);
 
     return NextResponse.json(isDeleted, { status: 200 });

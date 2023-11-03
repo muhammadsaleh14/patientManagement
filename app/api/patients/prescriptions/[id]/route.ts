@@ -64,7 +64,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const prescriptionId = parseInt(params.id);
+    const prescriptionId = params.id;
     const deletedPrescription = await deletePrescription(prescriptionId);
 
     return NextResponse.json(deletedPrescription, { status: 200 });

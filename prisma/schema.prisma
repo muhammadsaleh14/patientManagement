@@ -1,29 +1,29 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:./prisma/dev.db" // Change the file name if needed
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model Doctor {
-  id         Int             @id @default(autoincrement())
-  name       String
-  profession String
-  details    DoctorDetails[]
-}
+  model Doctor {
+    id         String         @id @default(auto()) @map("_id") @db.ObjectId
+    name       String
+    profession String
+    details    DoctorDetails[]
+  }
 
 model DoctorDetails {
-  id         Int             @id @default(autoincrement())
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
   details    String
-  doctorId   Int
+  doctorId   String         @db.ObjectId
   doctor     Doctor         @relation(fields: [doctorId], references: [id])
   @@index([id], name: "doctorId")
 }
 
 model Patient {
-  id         Int             @id @default(autoincrement())
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
   name       String 
   age        Int
   gender     String
@@ -32,43 +32,43 @@ model Patient {
 }
 
 model visit{
-  id  Int   @id @default(autoincrement())
+  id  String         @id @default(auto()) @map("_id") @db.ObjectId
   date DateTime @unique
-  patientId Int
+  patientId String @db.ObjectId
   patient   Patient   @relation(fields:[patientId],references: [id], onDelete: Cascade)
   patientDetails PatientDetails[]
   prescriptions Prescriptions[]
   visitDetails  VisitDetail[]
 }
 model PatientDetails {
-  id            Int             @id @default(autoincrement())
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   details       String
   detailHeading String
-  visitId        Int
+  visitId        String       @db.ObjectId
   visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)    
   @@index([id], name: "patientDetailsId")
   @@unique([detailHeading,visitId])
 }
 model Prescriptions {
-  id            Int       @id @default(autoincrement())
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   prescription  String    
-  visitId        Int
+  visitId        String       @db.ObjectId
   visit        visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
   // @@index([id], name: "prescriptionId")
 }
 
 
 model VisitDetailTitle {
-  id     Int        @id @default(autoincrement())
+  id     String         @id @default(auto()) @map("_id") @db.ObjectId
   title  String     @unique
   visitDetails VisitDetail[]
 }
 
 model VisitDetail {
-  id                 Int       @id @default(autoincrement())
-  titleId            Int
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  titleId            String         @db.ObjectId
   description        String
-  visitId            Int
+  visitId            String         @db.ObjectId
 
   visitDetailTitle   VisitDetailTitle @relation(fields: [titleId], references: [id], onDelete: Cascade)
   visit              visit          @relation(fields:[visitId],references: [id],  onDelete: Cascade)
@@ -77,7 +77,7 @@ model VisitDetail {
 }
 
 model detailsLayout {
-  id                Int       @id @default(autoincrement())
+  id      Int   @id @map("_id")
   layout            String 
 } 
 

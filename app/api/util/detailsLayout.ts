@@ -25,6 +25,7 @@ export async function updateDetailsLayout(
         id: idArg,
       },
       create: {
+        id: idArg,
         layout: detailsLayout,
       },
       update: {

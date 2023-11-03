@@ -6,7 +6,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const patientId = parseInt(params.id);
+    const patientId = params.id;
 
     return NextResponse.json(
       { detailId: await deleteDetail(patientId) },

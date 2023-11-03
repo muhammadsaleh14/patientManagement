@@ -1,9 +1,8 @@
 // import { Detail } from "@/app/GlobalRedux/store/detailSlice";
 import prisma from "@/app/api/util/db";
-import {
-  // VisitDetail,
-  VisitDetailTitle,
-} from "@/components/interfaces/databaseInterfaces";
+import // VisitDetail,
+// VisitDetailTitle,
+"@/components/interfaces/databaseInterfaces";
 import { Patient } from "@prisma/client";
 import { format, parse } from "date-fns"; // Import the format function from date-fns
 
@@ -28,6 +27,8 @@ export async function createPatient(name: string, age: number, gender: string) {
     });
 
     return { patient };
+  } catch (error) {
+    console.error(error);
   } finally {
     await prisma.$disconnect();
   }
@@ -35,7 +36,7 @@ export async function createPatient(name: string, age: number, gender: string) {
 
 // Function to delete a patient by ID
 
-export async function deletePatient(patientId: number) {
+export async function deletePatient(patientId: string) {
   try {
     const patient = await prisma.patient.findUnique({
       where: {
@@ -54,13 +55,15 @@ export async function deletePatient(patientId: number) {
     });
 
     return { message: `Patient with ID ${patientId} deleted successfully.` };
+  } catch (error) {
+    console.error(error);
   } finally {
     await prisma.$disconnect();
   }
 }
 // Function to update a patient by ID
 export async function updatePatient(
-  patientId: number,
+  patientId: string,
   updates: Partial<{ name: string; gender: string; age: number }>
 ) {
   try {
@@ -70,6 +73,8 @@ export async function updatePatient(
       },
       data: updates,
     });
+  } catch (error) {
+    console.error(error);
   } finally {
     await prisma.$disconnect();
   }
@@ -107,6 +112,8 @@ export async function getPatientsWithLastVisit() {
     });
 
     return formattedPatients;
+  } catch (error) {
+    console.error(error);
   } finally {
     await prisma.$disconnect();
   }
@@ -131,7 +138,7 @@ export async function getPatientsWithLastVisit() {
 //     await prisma.$disconnect();
 //   }
 // }
-export async function getUniquePatientWithDetails(patientId: number) {
+export async function getUniquePatientWithDetails(patientId: string) {
   try {
     const patient = await prisma.patient.findUnique({
       where: {
@@ -168,7 +175,7 @@ export async function getUniquePatientWithDetails(patientId: number) {
 }
 
 export async function addPrescription(
-  visitIdProp: number,
+  visitIdProp: string,
   prescriptionText: string
 ) {
   try {
@@ -193,7 +200,7 @@ export async function addPrescription(
   }
 }
 
-export async function deletePrescription(prescriptionId: number) {
+export async function deletePrescription(prescriptionId: string) {
   try {
     const prescription = await prisma.prescriptions.delete({
       where: {
@@ -265,7 +272,7 @@ export async function getAllPrescriptions() {
   }
 }
 
-export async function addNewVisit(patientId: number, dateString: string) {
+export async function addNewVisit(patientId: string, dateString: string) {
   try {
     const selectedDetails = await getUniquePatientDetails(patientId);
     const newVisit = await prisma.visit.create({
@@ -303,7 +310,7 @@ interface SelectedDetail {
   detail: string;
 }
 async function getUniquePatientDetails(
-  patientId: number
+  patientId: string
 ): Promise<SelectedDetail[]> {
   try {
     const patient = await prisma.patient.findUnique({
@@ -358,7 +365,7 @@ async function getUniquePatientDetails(
 export async function addPatientDetail(
   detailHeadingArg: string,
   detailArg: string,
-  visitIdArg: number
+  visitIdArg: string
 ) {
   try {
     const patientDetail = await prisma.patientDetails.create({
@@ -384,10 +391,10 @@ export async function addPatientDetail(
 }
 
 export interface PatientDetails {
-  id: number;
+  id: string;
   details: string;
   detailHeading: string;
-  visitId: number;
+  visitId: string;
 }
 
 export async function updateDetail(
@@ -397,6 +404,7 @@ export async function updateDetail(
 ) {
   try {
     // Find the patient by ID
+
     const existingDetail = await prisma.patientDetails.findUnique({
       where: { id: detailId },
     });
@@ -429,7 +437,7 @@ export async function updateDetail(
   }
 }
 
-export async function deleteDetail(detail_Id: number) {
+export async function deleteDetail(detail_Id: string) {
   try {
     const detail = await prisma.patientDetails.findUnique({
       where: {
@@ -492,7 +500,7 @@ export async function getAllVisitDetailTitles() {
       },
     });
 
-    return visitDetailTitles as VisitDetailTitle[];
+    return visitDetailTitles;
   } finally {
     await prisma.$disconnect();
   }
@@ -532,7 +540,7 @@ export async function addVisitDetailTitle(detailTitle: string) {
   }
 }
 
-export async function deleteVisitDetailTitle(visitDetailTitleId: number) {
+export async function deleteVisitDetailTitle(visitDetailTitleId: string) {
   try {
     await prisma.visitDetailTitle.delete({
       where: {
@@ -546,11 +554,11 @@ export async function deleteVisitDetailTitle(visitDetailTitleId: number) {
   }
 }
 export interface simpleVisitDetail {
-  id: number | undefined; // id of description
+  id: string | undefined; // id of description
   title: string;
   description: string;
-  titleId: number;
-  visitId: number;
+  titleId: string;
+  visitId: string;
 }
 
 export async function updateVisitDetails(visitDetails: simpleVisitDetail[]) {

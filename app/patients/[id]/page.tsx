@@ -28,7 +28,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     // store.dispatch(initializeState());
 
     const initialiseState = async () => {
-      const pId = parseInt(params.id);
+      const pId = params.id;
       await store.dispatch(setPatient({ patientId: pId, date }));
       // store.dispatch(setVisit());
       setLoading(false);

@@ -42,7 +42,7 @@ export default function DetailsMenu() {
     if (optionString === Options.Delete) {
       // setDeleteOpen(true);
       const deleteDialog = document.getElementById(
-        detail?.id.toString() ?? "-1"
+        detail?.id ?? "-1"
       );
       if (!deleteDialog) {
         throw new Error("The detail to be deleted is not availible");

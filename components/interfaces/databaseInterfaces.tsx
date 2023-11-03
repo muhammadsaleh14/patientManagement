@@ -1,19 +1,19 @@
 interface Doctor {
-  id: number;
+  id: string;
   name: string;
   profession: string;
   details: DoctorDetails[];
 }
 
 export interface DoctorDetails {
-  id: number;
+  id: string;
   details: string;
-  doctorId: number;
+  doctorId: string;
   doctor: Doctor;
 }
 
 export interface Patient {
-  id: number;
+  id: string;
   name: string;
   age: number;
   gender: string;
@@ -21,7 +21,7 @@ export interface Patient {
 }
 
 export interface Visit {
-  id: number;
+  id: string;
   date: string;
   patientId: Patient["id"];
   patientDetails: PatientDetails[];
@@ -29,21 +29,21 @@ export interface Visit {
 }
 
 export interface PatientDetails {
-  id: number;
+  id: string;
   details: string;
   detailHeading: string;
   visitId: Visit["id"];
 }
 
 export interface Prescription {
-  id: number;
+  id: string;
   prescription: string;
   dateId: number;
   visitId: Visit["id"];
 }
 
 export interface VisitDetailTitle {
-  id: number;
+  id: string;
   title: string;
   _count: {
     visitDetails: number;
@@ -52,9 +52,9 @@ export interface VisitDetailTitle {
 }
 
 export interface VisitDetail {
-  id: number;
+  id: string;
   // titleId: number;
   description: string;
   visitDetailTitle: VisitDetailTitle;
-  visitId: number;
+  visitId: string;
 }

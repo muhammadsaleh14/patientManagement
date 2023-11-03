@@ -23,16 +23,16 @@ import {
 import { setVisitDetailTitles } from "./visitDetailSlice";
 
 export interface simpleVisitDetail {
-  id: number | undefined; // id of description
+  id: string | undefined; // id of description
   title: string;
   description: string;
-  titleId: number;
-  visitId: number;
+  titleId: string;
+  visitId: string;
 }
 export interface PatientState {
   patient: Patient | undefined;
   visitDetails: simpleVisitDetail[] | undefined;
-  currentVisitId: number | undefined;
+  currentVisitId: string | undefined;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: undefined | string;
 }
@@ -53,7 +53,7 @@ export const setPatient = createAsyncThunk(
     {
       patientId,
       date = undefined,
-    }: { patientId: number; date: undefined | string },
+    }: { patientId: string; date: undefined | string },
     { getState, dispatch }
   ) => {
     dispatch(clearPatientState());
@@ -155,7 +155,7 @@ export const addPrescription = createAsyncThunk(
 
 export const deletePrescription = createAsyncThunk(
   "patient/deletePrescription",
-  async (prescriptionId: number) => {
+  async (prescriptionId: string) => {
     await axios.delete("/api/patients/prescriptions/" + prescriptionId);
     return prescriptionId;
   }
@@ -170,7 +170,7 @@ export const addDetailToPatient = createAsyncThunk(
   }: {
     detailHeading: string;
     detail: string;
-    visitId: number;
+    visitId: string;
   }) => {
     const response = await axios.post("/api/patients/detail", {
       detailHeading,
@@ -204,7 +204,7 @@ export const updateDetail = createAsyncThunk(
 );
 export const deleteDetail = createAsyncThunk(
   "patient/deleteDetail",
-  async (detailID: number) => {
+  async (detailID: string) => {
     const response = await axios.delete("/api/patients/detail/" + detailID);
     const { detailId } = response.data;
     return detailId;
@@ -247,7 +247,7 @@ const patientSlice = createSlice({
     setPatientFromApi: (state, action: PayloadAction<Patient>) => {
       state.patient = action.payload;
     },
-    setVisitId: (state, action: PayloadAction<number>) => {
+    setVisitId: (state, action: PayloadAction<string>) => {
       state.currentVisitId = action.payload;
     },
     setVisitDetails: (
@@ -498,8 +498,10 @@ export default patientSlice;
 export const getPatientState = (state: RootState) => state?.patient;
 export const getPatient = (state: RootState) => state?.patient?.patient;
 export const getPatientError = (state: RootState) => state?.patient?.error;
-export const getVisitById = (state: RootState, visitId: number) =>
-  state?.patient?.patient?.visits.find((visit) => visit.id === visitId);
+export const getVisitById = (state: RootState, visitId: string) =>
+  state?.patient?.patient?.visits.find(
+    (visit) => visit.id === visitId?.toString()
+  );
 export const getCurrentVisit = (state: RootState): Visit | undefined => {
   // Use the find method to search for the visit with the matching ID
   return state.patient.patient?.visits.find(
@@ -531,7 +533,7 @@ export const getCurrentVisitWithPatientState = (
 ): Visit | undefined => {
   // Use the find method to search for the visit with the matching ID
   return state.patient?.visits.find(
-    (visit) => visit.id === state.currentVisitId
+    (visit) => visit.id === state.currentVisitId?.toString()
   );
 };
 

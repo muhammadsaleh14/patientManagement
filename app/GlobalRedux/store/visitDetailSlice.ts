@@ -27,7 +27,7 @@ export const addVisitDetailTitle = createAsyncThunk(
 
 export const deleteVisitDetailTitle = createAsyncThunk(
   "patient/deleteVisitDetailTitle",
-  async (id: number) => {
+  async (id: string) => {
     const isDeleted = (await axios.delete(
       "/api/patients/visitDetailTitle/" + id
     )) as boolean;
@@ -119,10 +119,11 @@ const visitDetailTitlesSlice = createSlice({
       })
       .addCase(
         deleteVisitDetailTitle.fulfilled,
-        (state, action: PayloadAction<number | undefined>) => {
+        (state, action: PayloadAction<string | undefined>) => {
           if (action.payload) {
             state.visitDetailTitles = state.visitDetailTitles?.filter(
-              (visitDetailTitle) => visitDetailTitle.id !== action.payload
+              (visitDetailTitle) =>
+                visitDetailTitle.id !== action.payload
             );
           }
           state.status = "succeeded";

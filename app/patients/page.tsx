@@ -42,7 +42,6 @@ const Page = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   // const [isHovered, setIsHovered] = useState(false);
-  // const [patientId, setPatientId] = useState<null | number>(null);
   // const patient = useSelector(getPatient);
   //? setPatient imported from redux
 
@@ -52,7 +51,7 @@ const Page = () => {
     message: string;
   } | null>(null);
 
-  async function getCompletePatientForStore(id: number) {
+  async function getCompletePatientForStore(id: string) {
     try {
       await store.dispatch(setPatient({ patientId: id, date: undefined }));
     } catch (error) {
@@ -99,7 +98,7 @@ const Page = () => {
     fetchPatients();
   }, [searchTerm]);
 
-  const deletePatient = (patientId: number) => {
+  const deletePatient = (patientId: string) => {
     axios
       .delete("/api/patients/" + patientId)
       .then(() => {
