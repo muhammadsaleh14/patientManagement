@@ -15,8 +15,8 @@ So this is my very first react and nextjs project so it has some issues:
 Features:  
 * A doctor can add a patient  
 * A patient has visit in which the doctor can record chronic illnessed and the diagnosis related to that visit and assign prescription  
-* The doctor can also sort the Acute illnesses by priority
-* The table of acute illnessed is carried over for every new visit
+* The doctor can also sort the Chronic illnesses by priority
+* The table of Chronic illnessed is carried over for every new visit
 * Other features are obvious
 
 ![image](https://github.com/muhammadsaleh14/patientManagement/assets/104164140/5dd7f7e4-10af-4c7a-a9f1-a7f47a431ef5)
