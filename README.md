@@ -20,7 +20,7 @@ So this is my very first react and nextjs project so it has some issues:
 * I had started out intending to make this a desktop app so the doctor could use it offline, I had looked up electron and thought it should work, after almost completion I realised that nextjs does not support making a webapp into a desktop app. So there is no way to run this as a desktop app.  
 * I then tried to use mongodb with prisma instead of sqlite and prisma. It worked in the development server, I tried to deploy on netlify but it showed error which i gave up on as the project was intended to be used as a desktop application.  
   
-**Features: ** 
+**Features:** 
 * A doctor can add a patient  
 * A patient has visit in which the doctor can record chronic illnessed and the diagnosis related to that visit and assign prescription  
 * The doctor can also sort the Chronic illnesses by priority
