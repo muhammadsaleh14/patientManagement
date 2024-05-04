@@ -1,8 +1,6 @@
 Install the modules by **_npm install_  **
 
-Run the project by running **_npm run dev_  **
-
-**_The server is a bit slow to start_**  
+Run the project by running **_npm run dev_  ** 
   
 ****Patient Management System****  
 This is a simple patient management system that a doctor can use to record his patients data. The app allows for high customizability.  
